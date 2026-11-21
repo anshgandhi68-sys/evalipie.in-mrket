@@ -142,7 +142,14 @@ export class SearchService {
 
         score = phraseBonus + titleScore + brandScore + tagsScore + catScore + descScore;
 
-        if (score < 1.0) {
+        const primaryFieldMatch = phraseBonus > 0 || titleScore > 0 || brandScore > 0 || tagsScore > 0 || catScore > 0;
+        // Require at least one match on primary attributes (title, brand, tags, category, phrase).
+        // A single incidental word in the description alone is insufficient to prevent hallucinated matches.
+        if (!primaryFieldMatch && descScore < 2.5) {
+          continue;
+        }
+
+        if (score < 1.5) {
           continue; // No sufficient match
         }
       }

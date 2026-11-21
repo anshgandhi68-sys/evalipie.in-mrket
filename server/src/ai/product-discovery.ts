@@ -3,6 +3,8 @@ import { intentParser } from './intent-parser.js';
 import { searchProducts } from './tools/search-products.js';
 import { productRankingEngine } from './product-ranking.js';
 import { responseGenerator } from './response-generator.js';
+import { compareProducts } from './tools/compare-products.js';
+import { findAlternatives } from './tools/find-alternatives.js';
 import { DiscoveryRequest, DiscoveryResponse, StructuredIntent, ProductOfferMatch } from './schemas.js';
 
 export interface ConversationTurn {
@@ -26,14 +28,14 @@ export class ProductDiscoveryOrchestrator {
 
   /**
    * Main discovery entry point.
-   * Full pipeline: Parse Intent -> Controlled Search -> Deterministic Rank -> Grounded Synthesis.
+   * Full pipeline: Context Retrieval -> Parse Intent -> Controlled Search -> Deterministic Rank -> Grounded Synthesis.
    */
   async discover(request: DiscoveryRequest): Promise<DiscoveryResponse> {
     const startTime = Date.now();
     const conversationId = request.conversationId || uuidv4();
     const city = request.city || 'Bengaluru';
 
-    // 1. Retrieve or create session context
+    // 1. Retrieve or create session context for multi-turn shopping
     let session = this.sessions.get(conversationId);
     if (!session) {
       session = {
@@ -47,6 +49,24 @@ export class ProductDiscoveryOrchestrator {
 
     // 2. Parse Multilingual Shopping Intent
     const { intent, source } = await intentParser.parse(request.prompt);
+
+    // Multi-turn context preservation (if query is a follow-up refinement)
+    if (session.turns.length > 0) {
+      const lastTurn = session.turns[session.turns.length - 1];
+      const isRefinement =
+        request.prompt.toLowerCase().includes('more') ||
+        request.prompt.toLowerCase().includes('cheaper') ||
+        request.prompt.toLowerCase().includes('lighter') ||
+        request.prompt.toLowerCase().includes('other') ||
+        request.prompt.toLowerCase().includes('only') ||
+        !intent.category;
+
+      if (isRefinement && lastTurn.intent.category) {
+        if (!intent.category) intent.category = lastTurn.intent.category;
+        if (!intent.budget.max && lastTurn.intent.budget.max) intent.budget.max = lastTurn.intent.budget.max;
+        if (!intent.brand && lastTurn.intent.brand) intent.brand = lastTurn.intent.brand;
+      }
+    }
 
     // Apply explicit request filters if provided
     if (request.filters?.category) {
@@ -106,10 +126,31 @@ export class ProductDiscoveryOrchestrator {
   }
 
   /**
-   * Get historical context of a conversation
+   * Compare multiple products side-by-side using authoritative records.
+   */
+  compare(productIds: string[], city = 'Bengaluru') {
+    return compareProducts(productIds, city);
+  }
+
+  /**
+   * Find verified alternatives for a given product.
+   */
+  alternatives(productId: string, maxPrice?: number, city = 'Bengaluru') {
+    return findAlternatives(productId, maxPrice, city);
+  }
+
+  /**
+   * Get historical context of a conversation session.
    */
   getConversation(id: string): ConversationSession | null {
     return this.sessions.get(id) || null;
+  }
+
+  /**
+   * Clear historical context of a conversation session.
+   */
+  clearConversation(id: string): boolean {
+    return this.sessions.delete(id);
   }
 }
 

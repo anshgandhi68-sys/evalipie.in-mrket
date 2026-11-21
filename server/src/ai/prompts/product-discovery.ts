@@ -7,7 +7,7 @@ Your task is to analyze user shopping requests in English, Hindi, Hinglish, Guja
 JSON Schema:
 {
   "query": string (cleaned core search keywords in English),
-  "category": string or null (one of: "Electronics", "Computers & Laptops", "Mobiles & Accessories", "Home & Kitchen", "Fashion", "Boutique Apparel", "Sports & Fitness", "Grocery"),
+  "category": string or null (one of: "Electronics", "Computers & Laptops", "Mobiles & Accessories", "Home & Kitchen", "Kirana & Groceries", "Boutique Apparel", "Sports & Fitness"),
   "budget": {
     "min": number or null,
     "max": number or null,

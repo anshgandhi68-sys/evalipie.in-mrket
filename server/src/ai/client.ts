@@ -20,10 +20,13 @@ export interface ChatCompletionResponse {
     totalTokens: number;
   };
   model: string;
-  source: 'truefoundry' | 'fallback';
+  source: 'self_hosted' | 'fallback';
 }
 
 export interface AiTelemetry {
+  provider: string;
+  modelId: string;
+  inferenceUrl: string;
   totalRequests: number;
   successfulRequests: number;
   failedRequests: number;
@@ -32,11 +35,15 @@ export interface AiTelemetry {
   lastLatencyMs: number;
   averageLatencyMs: number;
   lastError: string | null;
-  gatewayStatus: 'configured' | 'unconfigured' | 'degraded';
+  runtimeStatus: 'healthy' | 'offline' | 'degraded';
+  availableModels: string[];
 }
 
-class TrueFoundryClient {
+export class SelfHostedAiClient {
   private telemetry: AiTelemetry = {
+    provider: aiConfig.provider,
+    modelId: aiConfig.modelId,
+    inferenceUrl: aiConfig.inferenceBaseUrl,
     totalRequests: 0,
     successfulRequests: 0,
     failedRequests: 0,
@@ -45,16 +52,74 @@ class TrueFoundryClient {
     lastLatencyMs: 0,
     averageLatencyMs: 0,
     lastError: null,
-    gatewayStatus: aiConfig.isConfigured ? 'configured' : 'unconfigured'
+    runtimeStatus: 'offline',
+    availableModels: []
   };
 
   private latencies: number[] = [];
+
+  constructor() {
+    // Perform initial health check asynchronously
+    this.checkHealth().catch(() => {});
+  }
 
   getTelemetry(): AiTelemetry {
     return { ...this.telemetry };
   }
 
-  // Complete a chat request via TrueFoundry AI Gateway (OpenAI compatible)
+  /**
+   * Health check verifying inference runtime connectivity and loaded models.
+   */
+  async checkHealth(): Promise<{ status: 'healthy' | 'offline'; models: string[] }> {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+      // Probe Ollama /api/tags
+      const res = await fetch(`${aiConfig.inferenceBaseUrl}/api/tags`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = (await res.json()) as any;
+        const models = (data.models || []).map((m: any) => m.name || m.model);
+        this.telemetry.runtimeStatus = 'healthy';
+        this.telemetry.availableModels = models;
+        this.telemetry.lastError = null;
+        return { status: 'healthy', models };
+      }
+    } catch (err: any) {
+      // Also try OpenAI-compatible /v1/models if Ollama specific path failed
+      try {
+        const controller2 = new AbortController();
+        const timeout2 = setTimeout(() => controller2.abort(), 3000);
+        const res2 = await fetch(`${aiConfig.inferenceBaseUrl}/v1/models`, {
+          signal: controller2.signal
+        });
+        clearTimeout(timeout2);
+        if (res2.ok) {
+          const data2 = (await res2.json()) as any;
+          const models2 = (data2.data || []).map((m: any) => m.id);
+          this.telemetry.runtimeStatus = 'healthy';
+          this.telemetry.availableModels = models2;
+          this.telemetry.lastError = null;
+          return { status: 'healthy', models: models2 };
+        }
+      } catch {
+        // Model server is offline or starting up
+      }
+
+      this.telemetry.runtimeStatus = 'offline';
+      this.telemetry.lastError = err.message || 'Inference server unreachable';
+    }
+
+    return { status: 'offline', models: [] };
+  }
+
+  /**
+   * Send chat completion request to self-hosted LLM runtime (Ollama / vLLM).
+   */
   async chatCompletion(
     messages: ChatMessage[],
     options: ChatCompletionOptions = {}
@@ -62,26 +127,19 @@ class TrueFoundryClient {
     const startTime = Date.now();
     this.telemetry.totalRequests++;
 
-    if (!aiConfig.isConfigured) {
-      this.telemetry.gatewayStatus = 'unconfigured';
-      return {
-        content: '',
-        latencyMs: 0,
-        model: 'unconfigured',
-        source: 'fallback'
-      };
-    }
-
-    const endpoint = `${aiConfig.gatewayBaseUrl}/v1/chat/completions`;
+    const endpoint = `${aiConfig.inferenceBaseUrl}/api/chat`;
     const payload: Record<string, any> = {
       model: aiConfig.modelId,
       messages,
-      temperature: options.temperature ?? 0.1,
-      max_tokens: options.maxTokens ?? 1024
+      stream: false,
+      options: {
+        temperature: options.temperature ?? aiConfig.temperature,
+        num_predict: options.maxTokens ?? aiConfig.maxTokens
+      }
     };
 
     if (options.responseFormatJson) {
-      payload.response_format = { type: 'json_object' };
+      payload.format = 'json';
     }
 
     let attempt = 0;
@@ -96,9 +154,7 @@ class TrueFoundryClient {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${aiConfig.virtualAccountToken}`,
-            'X-Source': 'evalipie-marketplace-intelligence'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(payload),
           signal: controller.signal
@@ -107,72 +163,64 @@ class TrueFoundryClient {
         clearTimeout(timeoutId);
 
         if (!res.ok) {
-          const errText = await res.text().catch(() => '');
-          throw new Error(`TrueFoundry Gateway Error (${res.status}): ${errText}`);
+          const errorText = await res.text().catch(() => '');
+          throw new Error(`Inference HTTP ${res.status}: ${errorText || res.statusText}`);
         }
 
-        const data: any = await res.json();
+        const data = (await res.json()) as any;
         const latencyMs = Date.now() - startTime;
 
-        const content = data.choices?.[0]?.message?.content || '';
-        const usage = data.usage
-          ? {
-              promptTokens: data.usage.prompt_tokens || 0,
-              completionTokens: data.usage.completion_tokens || 0,
-              totalTokens: data.usage.total_tokens || 0
-            }
-          : undefined;
+        const content = data.message?.content || '';
+        const promptTokens = data.prompt_eval_count || 0;
+        const completionTokens = data.eval_count || 0;
 
-        // Record telemetry
-        this.recordSuccess(latencyMs, usage);
+        // Record metrics
+        this.telemetry.successfulRequests++;
+        this.telemetry.runtimeStatus = 'healthy';
+        this.telemetry.lastLatencyMs = latencyMs;
+        this.telemetry.totalPromptTokens += promptTokens;
+        this.telemetry.totalCompletionTokens += completionTokens;
+        this.telemetry.lastError = null;
+
+        this.latencies.push(latencyMs);
+        if (this.latencies.length > 50) this.latencies.shift();
+        this.telemetry.averageLatencyMs = Math.round(
+          this.latencies.reduce((a, b) => a + b, 0) / this.latencies.length
+        );
 
         return {
           content,
           latencyMs,
-          usage,
+          usage: {
+            promptTokens,
+            completionTokens,
+            totalTokens: promptTokens + completionTokens
+          },
           model: data.model || aiConfig.modelId,
-          source: 'truefoundry'
+          source: 'self_hosted'
         };
       } catch (err: any) {
         lastErr = err;
-        // Bounded exponential backoff before retry (only if attempts remain)
+        this.telemetry.lastError = err.message || 'Request failed';
         if (attempt <= aiConfig.maxRetries) {
-          const backoff = Math.min(1000 * Math.pow(2, attempt - 1), 3000);
-          await new Promise(r => setTimeout(r, backoff));
+          await new Promise(r => setTimeout(r, 600 * attempt));
         }
       }
     }
 
-    // All retries failed
-    const latencyMs = Date.now() - startTime;
-    this.recordFailure(lastErr?.message || 'Unknown network error', latencyMs);
-    throw lastErr || new Error('TrueFoundry request failed');
-  }
-
-  private recordSuccess(latencyMs: number, usage?: { promptTokens: number; completionTokens: number }) {
-    this.telemetry.successfulRequests++;
-    this.telemetry.lastLatencyMs = latencyMs;
-    this.telemetry.gatewayStatus = 'configured';
-    this.telemetry.lastError = null;
-
-    this.latencies.push(latencyMs);
-    if (this.latencies.length > 50) this.latencies.shift();
-    this.telemetry.averageLatencyMs = Math.round(
-      this.latencies.reduce((a, b) => a + b, 0) / this.latencies.length
-    );
-
-    if (usage) {
-      this.telemetry.totalPromptTokens += usage.promptTokens;
-      this.telemetry.totalCompletionTokens += usage.completionTokens;
-    }
-  }
-
-  private recordFailure(errorMessage: string, latencyMs: number) {
     this.telemetry.failedRequests++;
-    this.telemetry.lastLatencyMs = latencyMs;
-    this.telemetry.lastError = errorMessage;
-    this.telemetry.gatewayStatus = 'degraded';
+    this.telemetry.runtimeStatus = 'degraded';
+    console.warn(`[SelfHostedAI] Inference failed after ${attempt} attempts: ${lastErr?.message}`);
+
+    return {
+      content: '',
+      latencyMs: Date.now() - startTime,
+      model: aiConfig.modelId,
+      source: 'fallback'
+    };
   }
 }
 
-export const trueFoundryClient = new TrueFoundryClient();
+export const selfHostedAiClient = new SelfHostedAiClient();
+// Backward-compatible alias for existing imports
+export const trueFoundryClient = selfHostedAiClient;

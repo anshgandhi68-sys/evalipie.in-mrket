@@ -1,4 +1,4 @@
-import { trueFoundryClient } from './client.js';
+import { selfHostedAiClient } from './client.js';
 import { aiConfig } from './config.js';
 import { StructuredIntent, ProductOfferMatch } from './schemas.js';
 import { GROUNDED_SYNTHESIS_SYSTEM_PROMPT } from './prompts/product-discovery.js';
@@ -11,15 +11,15 @@ export interface GroundedExplanation {
 export class ResponseGenerator {
   /**
    * Synthesize a grounded conversational response.
-   * Leverages TrueFoundry AI Gateway with fallback to structured deterministic synthesis.
+   * Leverages self-hosted open-weight LLM (Qwen2.5) with fallback to structured deterministic synthesis.
    */
   async generate(
     prompt: string,
     intent: StructuredIntent,
     matches: ProductOfferMatch[]
   ): Promise<GroundedExplanation> {
-    // 1. If TrueFoundry is configured, ask it to synthesize using ONLY the grounded matches
-    if (aiConfig.isConfigured && matches.length > 0) {
+    // 1. If self-hosted model is online and we have verified matches, ask it to synthesize using ONLY the grounded matches
+    if (matches.length > 0) {
       try {
         const catalogContext = matches.slice(0, 3).map(m => ({
           title: m.title,
@@ -37,13 +37,13 @@ User Query: "${prompt}"
 Inferred Need: "${intent.inferred_need}"
 Budget Limit: ${intent.budget.max ? `₹${intent.budget.max.toLocaleString('en-IN')}` : 'No limit'}
 
-Verified Local Catalogue Matches (STRICT GROUNDING SOURCE):
+Verified Local Catalogue Matches (STRICT GROUNDING SOURCE - ONLY RECOMMEND FROM THESE):
 ${JSON.stringify(catalogContext, null, 2)}
 
-Provide a concise, 2-paragraph helpful Indian marketplace recommendation. Mention the merchant name and price accurately. Then end with 2-3 follow-up suggestions.
+Provide a concise, helpful Indian marketplace recommendation in 1-2 natural paragraphs. Mention the merchant name and price accurately. Never invent products or specs.
         `.trim();
 
-        const response = await trueFoundryClient.chatCompletion(
+        const response = await selfHostedAiClient.chatCompletion(
           [
             { role: 'system', content: GROUNDED_SYNTHESIS_SYSTEM_PROMPT },
             { role: 'user', content: userMessage }
@@ -51,7 +51,7 @@ Provide a concise, 2-paragraph helpful Indian marketplace recommendation. Mentio
           { temperature: 0.2, maxTokens: 400 }
         );
 
-        if (response.content.trim()) {
+        if (response.content && response.content.trim().length > 10) {
           const suggestions = this.extractSuggestions(response.content, intent, matches);
           return {
             message: response.content.trim(),
@@ -59,7 +59,7 @@ Provide a concise, 2-paragraph helpful Indian marketplace recommendation. Mentio
           };
         }
       } catch (err: any) {
-        console.warn(`[AI Engine] TrueFoundry response generation failed, falling back to deterministic template:`, err.message);
+        console.warn(`[SelfHostedAI] Response synthesis failed, falling back to deterministic template:`, err.message);
       }
     }
 
@@ -98,47 +98,50 @@ Provide a concise, 2-paragraph helpful Indian marketplace recommendation. Mentio
     const stockText =
       top.bestOffer.stockStatus === 'IN_STOCK'
         ? `${top.bestOffer.availableQuantity} units verified in stock`
-        : 'Limited units remaining';
+        : 'Low stock (reserve now)';
 
-    let intro = `Here are the strongest verified local matches for your requirement. `;
-    intro += `The best offer for **${top.title}** is available at **${shopText}** for **${priceText}** (${stockText}). `;
+    let message = `We found ${matches.length} verified item${matches.length > 1 ? 's' : ''} in Bengaluru matching your requirements. Top pick: **${top.title}** starting at **${priceText}** from **${shopText}** (${stockText}).`;
 
     if (sellerCount > 1) {
-      intro += `This item is also carried by ${sellerCount - 1} other local merchants, allowing instant physical pickup or 30-min doorstep delivery.`;
-    } else {
-      intro += `You can order directly for 30-minute doorstep delivery or store walk-in.`;
+      message += ` It is also available from ${sellerCount - 1} other local verified store${sellerCount > 2 ? 's' : ''} with 30-minute delivery or counter pickup.`;
     }
 
-    // Generate dynamic suggestions based on found matches
-    const suggestions: string[] = [];
     if (matches.length > 1) {
-      suggestions.push(`Compare ${matches[0].brand} vs ${matches[1].brand}`);
+      const second = matches[1];
+      message += ` Another solid option is **${second.title}** at **₹${second.bestOffer.sellingPrice.toLocaleString('en-IN')}** from **${second.bestOffer.shopName}**.`;
     }
-    suggestions.push(`Show cheaper alternatives to ${top.title}`);
-    suggestions.push(`View all verified sellers in Indiranagar`);
+
+    const suggestions = [
+      `Compare prices across all ${sellerCount} sellers`,
+      `Show alternatives under ₹${Math.round((top.bestOffer.sellingPrice || 1000) * 1.2).toLocaleString('en-IN')}`,
+      `Check inventory in Indiranagar & Jayanagar`
+    ];
 
     return {
-      message: intro,
-      followUpSuggestions: suggestions.slice(0, 3)
+      message,
+      followUpSuggestions: suggestions
     };
   }
 
   private extractSuggestions(
-    content: string,
+    text: string,
     intent: StructuredIntent,
     matches: ProductOfferMatch[]
   ): string[] {
-    const defaultSuggestions = [
-      `Compare top 2 ${intent.category || 'items'}`,
-      'Show cheaper local alternatives',
-      'Check stock in Indiranagar'
+    const fallback = [
+      `Compare prices across local merchants`,
+      `Show other verified options in Bengaluru`,
+      `Check stock in Indiranagar & Jayanagar`
     ];
 
-    if (matches.length >= 2) {
-      defaultSuggestions[0] = `Compare ${matches[0].title} with ${matches[1].title}`;
-    }
+    if (matches.length === 0) return fallback;
 
-    return defaultSuggestions;
+    const top = matches[0];
+    return [
+      `Compare prices for ${top.brand} ${top.category}`,
+      `Show similar items under ₹${Math.round(top.bestOffer.sellingPrice * 1.3).toLocaleString('en-IN')}`,
+      `Check physical store inventory`
+    ];
   }
 }
 

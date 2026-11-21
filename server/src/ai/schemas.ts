@@ -8,10 +8,10 @@ export const BudgetConstraintSchema = z.object({
 });
 
 export const StructuredIntentSchema = z.object({
-  query: z.string().default(''),
+  query: z.string().nullable().optional().transform(v => v || '').default(''),
   category: z.string().nullable().optional().default(null),
   budget: BudgetConstraintSchema.default({ min: null, max: null, currency: 'INR' }),
-  attributes: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).default({}),
+  attributes: z.record(z.string(), z.any()).nullable().optional().transform(val => val || {}).default({}),
   brand: z.string().nullable().optional().default(null),
   location: z.string().nullable().optional().default('Bengaluru'),
   availability_required: z.boolean().default(true),
@@ -19,7 +19,7 @@ export const StructuredIntentSchema = z.object({
   language: z.enum(['en', 'hi', 'hinglish', 'gu', 'other']).default('en'),
   clarification_needed: z.boolean().default(false),
   clarification_question: z.string().nullable().optional().default(null),
-  inferred_need: z.string().default('')
+  inferred_need: z.string().nullable().optional().transform(v => v || '').default('')
 });
 
 export type StructuredIntent = z.infer<typeof StructuredIntentSchema>;
@@ -93,7 +93,7 @@ export const DiscoveryResponseSchema = z.object({
   followUpSuggestions: z.array(z.string()),
   matches: z.array(ProductOfferMatchSchema),
   totalFound: z.number(),
-  source: z.enum(['truefoundry', 'fallback']),
+  source: z.enum(['self_hosted', 'fallback', 'truefoundry']).default('self_hosted'),
   latencyMs: z.number(),
   unmetDemandLogged: z.boolean()
 });
