@@ -13,6 +13,98 @@ import { AiDiscoveryModal } from '../../components/ai/AiDiscoveryModal.js';
 import { api } from '../../services/api.js';
 import { CanonicalProduct, MultiSellerOffer, Shop } from '../../../../shared/types.js';
 
+// Flagship Trending Kirana & Grocery Products matching Screenshot 1 exactly
+const FLAGSHIP_TRENDING_PRODUCTS = [
+  {
+    product: {
+      id: 'prod-kirana-1',
+      title: 'Daawat Rozana Gold Basmati Rice (5kg)',
+      brand: 'DAAWAT',
+      category: 'Kirana & Groceries',
+      subCategory: 'Rice & Grains',
+      description: 'Finest long-grain Rozana Gold Basmati rice with authentic rich aroma, fluffy texture, and slender grains.',
+      attributes: { weight: '5kg', grain_type: 'Long Grain Basmati' },
+      imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
+      tags: ['rice', 'basmati', 'daawat', 'rozana', 'groceries', 'kirana']
+    },
+    minPrice: 420,
+    originalMrp: 480,
+    sellerCount: 3,
+    inStock: true,
+    rating: 4.8,
+    reviewsCount: 310,
+    featuredStoreName: 'City Supermarket (Indiranagar)',
+    distanceKm: 0.8,
+    badge: 'Fresh Stock'
+  },
+  {
+    product: {
+      id: 'prod-kirana-2',
+      title: 'Fortune Sunlite Refined Sunflower Oil (1L Pouch)',
+      brand: 'FORTUNE',
+      category: 'Kirana & Groceries',
+      subCategory: 'Edible Oils',
+      description: 'Light, non-sticky refined sunflower cooking oil enriched with Vitamin A and Vitamin D.',
+      attributes: { volume: '1L', packaging: 'Pouch' },
+      imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=80',
+      tags: ['oil', 'cooking oil', 'sunflower oil', 'fortune', 'sunlite']
+    },
+    minPrice: 145,
+    originalMrp: 175,
+    sellerCount: 4,
+    inStock: true,
+    rating: 4.9,
+    reviewsCount: 520,
+    featuredStoreName: 'Sharma General Kirana',
+    distanceKm: 0.5,
+    badge: 'Popular'
+  },
+  {
+    product: {
+      id: 'prod-kirana-3',
+      title: 'Tata Tea Gold Premium Black Tea (500g Pack)',
+      brand: 'TATA TEA',
+      category: 'Kirana & Groceries',
+      subCategory: 'Tea & Beverages',
+      description: 'Exquisite blend of rich Assam CTC tea with 15% gently rolled long leaves for an irresistible aroma.',
+      attributes: { weight: '500g', blend: 'Assam CTC with Long Leaves' },
+      imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80',
+      tags: ['tea', 'chai', 'tata tea', 'gold', 'assam tea']
+    },
+    minPrice: 285,
+    originalMrp: 320,
+    sellerCount: 3,
+    inStock: true,
+    rating: 4.9,
+    reviewsCount: 680,
+    featuredStoreName: 'City Supermarket (Jayanagar)',
+    distanceKm: 1.1,
+    badge: 'Top Rated'
+  },
+  {
+    product: {
+      id: 'prod-kirana-4',
+      title: 'Aashirvaad Select 100% Sharbati Whole Wheat Atta (5kg)',
+      brand: 'AASHIRVAAD',
+      category: 'Kirana & Groceries',
+      subCategory: 'Flours & Grains',
+      description: 'Premium quality 100% pure Sharbati wheat flour harvested from Sehore, Madhya Pradesh.',
+      attributes: { weight: '5kg', grain_source: 'Madhya Pradesh Sharbati' },
+      imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
+      tags: ['atta', 'wheat flour', 'aashirvaad', 'sharbati', 'roti']
+    },
+    minPrice: 310,
+    originalMrp: 360,
+    sellerCount: 3,
+    inStock: true,
+    rating: 4.8,
+    reviewsCount: 440,
+    featuredStoreName: 'Sharma General Kirana',
+    distanceKm: 0.5,
+    badge: 'Daily Essential'
+  }
+];
+
 // Curated Apparel Products matching the Boutique Rail
 const BOUTIQUE_APPAREL_PRODUCTS = [
   {
@@ -199,10 +291,15 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  // Combine products with curated Boutique Apparel
+  // Deduplicate products: FLAGSHIP_TRENDING_PRODUCTS first (matching Screenshot 1), then API and Boutique
+  const existingIds = new Set(FLAGSHIP_TRENDING_PRODUCTS.map(p => p.product.id));
+  const remainingApiProducts = products.filter(p => !existingIds.has(p.product?.id));
+  const remainingBoutique = BOUTIQUE_APPAREL_PRODUCTS.filter(p => !existingIds.has(p.product?.id));
+
   const allCombinedProducts = [
-    ...products,
-    ...BOUTIQUE_APPAREL_PRODUCTS
+    ...FLAGSHIP_TRENDING_PRODUCTS,
+    ...remainingApiProducts,
+    ...remainingBoutique
   ];
 
   // Filter products by active category

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Store, ShoppingCart, Star, Check, Sparkles, MapPin, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Store, ShoppingCart, Star, Check, MapPin, Zap } from 'lucide-react';
 import { CanonicalProduct } from '../../../../shared/types.js';
 import { useCart } from '../../context/CartContext.js';
 
@@ -36,7 +36,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [added, setAdded] = useState(false);
 
   // Compute realistic MRP and discount %
-  const mrp = originalMrp || Math.round(minPrice * 1.2);
+  const mrp = originalMrp || Math.round(minPrice * 1.18);
   const discountPercent = mrp > minPrice ? Math.round(((mrp - minPrice) / mrp) * 100) : 0;
 
   // Determine tag badge (Fresh Stock, Popular, Top Rated, Daily Essential)
@@ -69,12 +69,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <article className="bg-white rounded-2xl border border-gray-200/90 hover:border-[#167D73]/60 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col group relative overflow-hidden">
+    <article className="bg-white rounded-3xl border border-gray-200/90 hover:border-[#167D73]/60 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col group relative overflow-hidden">
       
       {/* Top Badges (Matching Screenshot 1) */}
-      <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-1.5 items-center">
+      <div className="absolute top-3.5 left-3.5 z-10 flex flex-wrap gap-1.5 items-center">
         {discountPercent > 0 && (
-          <span className="bg-[#DC2626] text-white text-[10px] font-extrabold px-2 py-0.5 rounded shadow-2xs tracking-wider uppercase">
+          <span className="bg-[#DC2626] text-white text-[10px] font-black px-2 py-0.5 rounded shadow-2xs tracking-wider uppercase">
             {discountPercent}% OFF
           </span>
         )}
@@ -83,9 +83,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </span>
       </div>
 
-      <div className="absolute top-3 right-3 z-10">
-        <span className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-md border border-gray-200 text-[10px] font-semibold text-gray-600 px-2.5 py-0.5 rounded-full shadow-2xs">
-          <MapPin className="w-2.5 h-2.5 text-[#167D73]" />
+      <div className="absolute top-3.5 right-3.5 z-10">
+        <span className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-md border border-gray-200 text-[10px] font-semibold text-gray-700 px-2.5 py-0.5 rounded-full shadow-2xs">
+          <MapPin className="w-2.5 h-2.5 text-[#059669]" />
           <span>{distanceKm} km</span>
         </span>
       </div>
@@ -93,25 +93,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image Canvas -> Navigates to Product Detail */}
       <div 
         onClick={handleOpenDetail}
-        className="relative aspect-4/3 bg-white overflow-hidden flex items-center justify-center p-6 cursor-pointer border-b border-gray-100/80"
+        className="relative aspect-4/3 bg-white overflow-hidden flex items-center justify-center p-5 cursor-pointer border-b border-gray-100"
       >
         <img 
           src={product.imageUrl} 
           alt={product.title}
-          className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          onError={(e) => {
+            // High-quality fallback if network glitch
+            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80';
+          }}
         />
       </div>
 
       {/* Card Body */}
-      <div className="p-4 flex flex-col flex-1 gap-2.5">
+      <div className="p-4 sm:p-5 flex flex-col flex-1 gap-2.5">
         
-        {/* Brand & Category Pill */}
+        {/* Brand & Category Pill (Matching Screenshot 1) */}
         <div className="flex items-center justify-between text-xs">
-          <span className="font-extrabold text-gray-400 uppercase tracking-wider text-[10px]">
+          <span className="font-extrabold text-gray-400 uppercase tracking-wider text-[11px]">
             {product.brand}
           </span>
-          <span className="text-[10px] font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
+          <span className="text-[10px] font-semibold text-gray-500 bg-gray-100/90 px-2 py-0.5 rounded-md">
             {product.category}
           </span>
         </div>
@@ -124,21 +128,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.title}
         </h3>
 
-        {/* Rating & In-Stock Status */}
+        {/* Rating & In-Stock Status (Matching Screenshot 1) */}
         <div className="flex items-center justify-between text-xs pt-0.5">
-          <div className="flex items-center gap-1 text-xs">
+          <div className="flex items-center gap-1">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
             <span className="font-bold text-gray-900">{rating}</span>
             <span className="text-gray-400 font-normal">({reviewsCount})</span>
           </div>
 
           <div className="flex items-center gap-1 text-[11px] font-bold text-[#059669]">
-            <Sparkles className="w-3 h-3 text-[#059669]" />
+            <Zap className="w-3 h-3 text-[#059669] fill-[#059669]" />
             <span>Store In Stock</span>
           </div>
         </div>
 
-        {/* Local Verified Merchant Pill */}
+        {/* Local Verified Merchant Pill (Matching Screenshot 1) */}
         <div 
           onClick={() => onCompare(product)}
           className="bg-gray-50/90 hover:bg-emerald-50/50 border border-gray-200/80 hover:border-emerald-200 rounded-xl px-2.5 py-1.5 flex items-center justify-between cursor-pointer transition-colors"

@@ -5,7 +5,7 @@ import './DoorHero.css';
 
 // ─────────────────────────────────────────────────────────────
 // EVALIPIE ARCHITECTURAL 3D DOOR SCROLL HERO
-// Exactly matching prototype reference in media_1795265028299_796ce432.html
+// Exactly matching prototype reference in media_1795265028299_796ce432.html & Screenshot 5
 // ─────────────────────────────────────────────────────────────
 
 export const DoorHero: React.FC = () => {
@@ -77,15 +77,19 @@ export const DoorHero: React.FC = () => {
       const e = ease(clamp((p - 0.30) / 0.62, 0, 1));
       world.style.transform = `translate(${(window.innerWidth / 2 - cx) * e}px, ${(window.innerHeight / 2 - cy) * e}px) scale(${1 + (S - 1) * e})`;
 
-      // 3. Intro fade & slide up
+      // 3. Intro fade & slide up (0 -> 0.16)
       if (intro) {
-        intro.style.opacity = String(1 - clamp(p / 0.16, 0, 1));
+        const introOpacity = 1 - clamp(p / 0.16, 0, 1);
+        intro.style.opacity = String(introOpacity);
         intro.style.transform = `translateY(${-p * 80}px)`;
+        intro.style.visibility = introOpacity <= 0.01 ? 'hidden' : 'visible';
+        intro.style.pointerEvents = introOpacity < 0.5 ? 'none' : 'auto';
       }
 
       // 4. Hint button fade
       if (hint) {
-        hint.style.opacity = String(1 - clamp(p * 10, 0, 1));
+        const hintOpacity = 1 - clamp(p * 10, 0, 1);
+        hint.style.opacity = String(hintOpacity);
         hint.style.pointerEvents = p > 0.08 ? 'none' : 'auto';
       }
 
@@ -133,16 +137,15 @@ export const DoorHero: React.FC = () => {
     <section id="hero" ref={heroRef}>
       <div className="stage" id="top" ref={stageRef}>
         
-        {/* Daytime Sky with Morning Sunshine Glow & Parallax Clouds */}
+        {/* Daytime Sky with Morning Sunshine & Parallax Clouds (Matching Screenshot 5) */}
         <div className="sky">
-          <i className="sun" title="Morning Sunshine" />
-          <div className="sun-rays" />
+          <i className="sun" />
           <i className="cloud c1" ref={c1Ref} />
           <i className="cloud c2" ref={c2Ref} />
           <i className="cloud c3" ref={c3Ref} />
         </div>
 
-        {/* Intro Typography (Clear in the sky above building facade) */}
+        {/* Intro Headline (Clear in sky above building facade, zero overlap) */}
         <div className="intro" id="intro" ref={introRef}>
           <p className="eyebrow">evalipie.in</p>
           <h1>
@@ -151,12 +154,12 @@ export const DoorHero: React.FC = () => {
           </h1>
         </div>
 
-        {/* 3D Storefront Building */}
+        {/* 3D Storefront Building (Matching Screenshot 5) */}
         <div className="world" id="world" ref={worldRef}>
           <div className="wall">
             <div className="sign">Evalipie</div>
             
-            {/* Display Windows with Daytime Sunshine Sheen */}
+            {/* Display Windows */}
             <div className="win l">
               🎧
               <small>ELECTRONICS</small>
