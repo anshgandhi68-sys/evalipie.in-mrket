@@ -83,7 +83,7 @@ const BOUTIQUE_APPAREL_PRODUCTS = [
   }
 ];
 
-// Curated Category Tiles Matching Screenshot 2
+// Curated Category Tiles Matching Prototype & Screenshot 2
 const CATEGORY_TILES = [
   {
     id: 'Kirana & Groceries',
@@ -94,7 +94,7 @@ const CATEGORY_TILES = [
   },
   {
     id: 'Electronics',
-    title: 'Audio & Electronics',
+    title: 'Audio & Sound',
     itemCount: '3 Items',
     badge: 'STORE PRICES',
     imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80'
@@ -107,6 +107,13 @@ const CATEGORY_TILES = [
     imageUrl: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&auto=format&fit=crop&q=80'
   },
   {
+    id: 'Mobiles & Accessories',
+    title: 'Mobiles & 5G',
+    itemCount: '2 Items',
+    badge: 'STORE PRICES',
+    imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&auto=format&fit=crop&q=80'
+  },
+  {
     id: 'Home & Kitchen',
     title: 'Kitchen & Home',
     itemCount: '2 Items',
@@ -115,10 +122,24 @@ const CATEGORY_TILES = [
   },
   {
     id: 'Boutique Apparel',
-    title: 'Boutique Apparel',
+    title: 'Fashion & Apparel',
     itemCount: '3 Items',
     badge: 'STORE PRICES',
     imageUrl: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=300&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'Sports & Fitness',
+    title: 'Sports & Running',
+    itemCount: '2 Items',
+    badge: 'STORE PRICES',
+    imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'All',
+    title: 'Verified Hubs',
+    itemCount: '6 Shops',
+    badge: 'STORE PRICES',
+    imageUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&auto=format&fit=crop&q=80'
   }
 ];
 
@@ -254,7 +275,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Category Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 sm:gap-5">
               {CATEGORY_TILES.map(cat => {
                 const isSelected = selectedCategory === cat.id;
                 return (

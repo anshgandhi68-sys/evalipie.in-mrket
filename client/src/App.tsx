@@ -12,6 +12,7 @@ import { CategoriesPage } from './pages/marketplace/CategoriesPage.js';
 import { ShopsPage } from './pages/marketplace/ShopsPage.js';
 import { ShopStorefrontPage } from './pages/marketplace/ShopStorefrontPage.js';
 import { AccountPage } from './pages/marketplace/AccountPage.js';
+import { PrivacyPolicyPage } from './pages/legal/PrivacyPolicyPage.js';
 import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 import DemoOne from './components/ui/demo.js';
@@ -37,6 +38,7 @@ export const App: React.FC = () => {
                 <Route path="/shops" element={<ShopsPage />} />
                 <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
                 <Route path="/account" element={<AccountPage />} />
+                <Route path="/privacy" element={<PrivacyPolicyPage />} />
                 <Route path="/ai" element={<HomePage />} />
 
                 {/* Demos */}

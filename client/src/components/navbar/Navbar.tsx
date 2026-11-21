@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X, Sparkles } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, Sparkles, ShieldCheck } from 'lucide-react';
 import { useCart } from '../../context/CartContext.js';
 import { useAuth } from '../../context/AuthContext.js';
+import { PrivacyPolicyModal } from '../legal/PrivacyPolicyModal.js';
 
 export const Navbar: React.FC = () => {
   const { totalCount, openCart } = useCart();
@@ -15,6 +16,7 @@ export const Navbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +84,15 @@ export const Navbar: React.FC = () => {
           <Link to="/business/dashboard" className="hover:text-[#167D73] transition-colors">
             Become a Seller
           </Link>
+
+          {/* Privacy Policy Link */}
+          <button
+            type="button"
+            onClick={() => setIsPrivacyModalOpen(true)}
+            className="nav-btn hover:text-[#167D73] transition-colors"
+          >
+            Privacy Policy
+          </button>
 
           {/* Quick Search Toggle Icon Button */}
           <button
@@ -214,6 +225,16 @@ export const Navbar: React.FC = () => {
             >
               Become a Seller
             </Link>
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsPrivacyModalOpen(true);
+              }}
+              className="p-2 hover:bg-gray-50 rounded-xl text-left text-gray-700 hover:text-[#167D73] flex items-center justify-between font-semibold"
+            >
+              <span>Privacy Policy</span>
+              <ShieldCheck className="w-4 h-4 text-[#167D73]" />
+            </button>
             <Link 
               to="/account" 
               onClick={() => setIsMobileMenuOpen(false)}
@@ -227,6 +248,12 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Privacy Policy Modal */}
+      <PrivacyPolicyModal 
+        isOpen={isPrivacyModalOpen} 
+        onClose={() => setIsPrivacyModalOpen(false)} 
+      />
     </>
   );
 };
