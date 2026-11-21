@@ -88,7 +88,7 @@ export class AivenOpenSearchService {
           product_id: p.id,
           name: p.title,
           description: p.description,
-          category: p.category,
+          category: p.categoryName || p.categoryId,
           brand: p.brand,
           price: p.price,
           original_mrp: p.originalMrp,

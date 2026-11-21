@@ -69,7 +69,9 @@ export interface OutboxRow {
 class MemoryPostgreSqlStore {
   users: Map<string, any> = new Map();
   categories: Map<string, any> = new Map();
+  subcategories: Map<string, any> = new Map();
   products: Map<string, ProductRow> = new Map();
+  detailedProducts: Map<string, any> = new Map();
   inventory: Map<string, InventoryRow> = new Map();
   carts: Map<string, any> = new Map();
   cart_items: Map<string, any> = new Map();
@@ -77,6 +79,10 @@ class MemoryPostgreSqlStore {
   order_items: Map<string, any[]> = new Map();
   payments: Map<string, any> = new Map();
   outbox_events: Map<string, OutboxRow> = new Map();
+  coupons: Map<string, any> = new Map();
+  reviews: Map<string, any[]> = new Map();
+  wishlists: Map<string, Set<string>> = new Map();
+  addresses: Map<string, any[]> = new Map();
 
   private rowLocks: Set<string> = new Set();
 

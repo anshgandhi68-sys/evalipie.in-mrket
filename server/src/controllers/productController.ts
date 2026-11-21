@@ -39,9 +39,18 @@ export class ProductController {
           // Initialize from seed
           for (const p of SEED_PRODUCTS) {
             memoryPg.products.set(p.id, {
-              ...p,
+              id: p.id,
+              title: p.title,
+              brand: p.brand,
+              category: p.categoryName,
+              category_id: p.categoryId,
+              sku: p.sku,
+              description: p.description,
+              price: p.price,
               original_mrp: p.originalMrp,
               image_url: p.imageUrl,
+              attributes: p.specifications,
+              tags: p.tags,
               created_at: new Date()
             });
           }
@@ -170,9 +179,18 @@ export class ProductController {
       if (all.length === 0) {
         for (const p of SEED_PRODUCTS) {
           memoryPg.products.set(p.id, {
-            ...p,
+            id: p.id,
+            title: p.title,
+            brand: p.brand,
+            category: p.categoryName,
+            category_id: p.categoryId,
+            sku: p.sku,
+            description: p.description,
+            price: p.price,
             original_mrp: p.originalMrp,
             image_url: p.imageUrl,
+            attributes: p.specifications,
+            tags: p.tags,
             created_at: new Date()
           });
         }

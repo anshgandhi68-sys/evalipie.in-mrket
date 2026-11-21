@@ -230,3 +230,110 @@ export interface AiDiscoveryResult {
   }>;
   unmetDemandLogged: boolean;
 }
+
+// ── Multi-Category Flagship E-Commerce Extensions ──────────────────
+export interface Subcategory {
+  id: string;
+  categoryId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  displayOrder: number;
+  isActive: boolean;
+  productCount?: number;
+}
+
+export interface CategoryHierarchy {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  bannerUrl?: string;
+  icon: string;
+  displayOrder: number;
+  isActive: boolean;
+  count: number;
+  subcategories: Subcategory[];
+}
+
+export interface DetailedProduct {
+  id: string;
+  sku: string;
+  title: string;
+  slug: string;
+  brand: string;
+  categoryId: string;
+  categoryName: string;
+  subcategoryId: string;
+  subcategoryName: string;
+  description: string;
+  specifications: Record<string, string>;
+  price: number;
+  originalMrp: number;
+  discountPercent: number;
+  isFeatured: boolean;
+  isBestseller: boolean;
+  isActive: boolean;
+  imageUrl: string;
+  images: string[];
+  stockQuantity: number;
+  rating: number;
+  reviewsCount: number;
+  tags: string[];
+  createdAt: string;
+}
+
+export interface UserAddress {
+  id: string;
+  userId?: string;
+  fullName: string;
+  phone: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  isDefault: boolean;
+}
+
+export interface CouponItem {
+  id: string;
+  code: string;
+  discountType: 'PERCENTAGE' | 'FLAT';
+  discountValue: number;
+  minOrderInr: number;
+  maxDiscountInr?: number;
+  usageLimit: number;
+  usedCount: number;
+  expiresAt: string;
+  isActive: boolean;
+  description: string;
+}
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  title: string;
+  comment: string;
+  isVerifiedPurchase: boolean;
+  createdAt: string;
+}
+
+export interface WishlistProduct {
+  productId: string;
+  product: DetailedProduct;
+  addedAt: string;
+}
+
+export interface AdminStats {
+  totalRevenue: number;
+  totalOrders: number;
+  totalProducts: number;
+  totalCustomers: number;
+  lowStockCount: number;
+  recentOrders: Order[];
+}

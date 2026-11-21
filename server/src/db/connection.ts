@@ -22,6 +22,7 @@ import {
   initialOrders,
   initialOutboxEvents
 } from './seedData.js';
+import { PRODUCTS_SEED } from './marketplaceCatalogueSeed.js';
 
 class DatabaseStore {
   organizations: Map<string, Organization> = new Map();
@@ -53,6 +54,47 @@ class DatabaseStore {
     this.outbox = [...initialOutboxEvents];
     initialLedgerCustomers.forEach(c => this.ledgerCustomers.set(c.id, { ...c }));
     this.ledgerEntries = [...initialLedgerEntries];
+
+    // Merge full 180-product catalogue
+    PRODUCTS_SEED.forEach(p => {
+      if (!this.products.has(p.id)) {
+        this.products.set(p.id, {
+          id: p.id,
+          title: p.title,
+          brand: p.brand,
+          category: p.categoryName,
+          subCategory: p.subcategoryName,
+          description: p.description,
+          attributes: p.specifications,
+          imageUrl: p.imageUrl,
+          tags: p.tags
+        });
+      }
+      const listingId = `list-${p.id}`;
+      if (!this.listings.has(listingId)) {
+        this.listings.set(listingId, {
+          id: listingId,
+          organizationId: 'org-apex',
+          productId: p.id,
+          sellingPrice: p.price,
+          originalMrp: p.originalMrp,
+          condition: 'NEW',
+          isActive: true
+        });
+      }
+      const invId = `inv-${listingId}-indira`;
+      if (!this.inventory.has(invId)) {
+        this.inventory.set(invId, {
+          id: invId,
+          listingId: listingId,
+          storeId: 'store-apex-indira',
+          quantity: p.stockQuantity,
+          availableQuantity: p.stockQuantity,
+          reservedQuantity: 0,
+          reorderThreshold: 2
+        });
+      }
+    });
   }
 
   // Atomic row locking simulating PostgreSQL "SELECT ... FOR UPDATE"

@@ -7,9 +7,15 @@ import { config } from './config.js';
 import { apiRouter } from './routes/apiRoutes.js';
 import { outboxService } from './services/outboxService.js';
 import { setupVoiceWebSocket } from './services/voiceWebSocket.js';
+import { runAivenSeed } from './db/aivenSeed.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Initialize 180-product flagship catalogue into memory & DB
+runAivenSeed().catch(err => {
+  console.error('[Startup Seed Error]', err);
+});
 
 const app = express();
 app.use(cors());

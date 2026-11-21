@@ -3,23 +3,36 @@ import {
   MultiSellerOffer,
   Shop,
   Order,
-  AiDiscoveryResult
+  AiDiscoveryResult,
+  CategoryHierarchy,
+  DetailedProduct,
+  ProductReview,
+  CouponItem,
+  UserAddress,
+  AdminStats
 } from '../../../shared/types.js';
 
 const BASE_URL = '/api/v1';
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const token = localStorage.getItem('evalipie_token');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options?.headers as Record<string, string>),
+  };
+
+  if (token && !headers['Authorization']) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${BASE_URL}${url}`, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
+    headers,
   });
 
   const json = await res.json();
   if (!res.ok) {
-    const error: any = new Error(json.message || 'API request failed');
+    const error: any = new Error(json.error || json.message || 'API request failed');
     error.status = res.status;
     error.data = json;
     throw error;
@@ -28,7 +41,216 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  // Catalog
+  // ── Flagship 180-Product Catalogue & Taxonomy ───────────────────────
+  getTaxonomy: () => {
+    return fetchJson<CategoryHierarchy[]>('/catalog/taxonomy');
+  },
+
+  getDetailedProducts: (params?: {
+    category?: string;
+    subcategory?: string;
+    brand?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    inStock?: boolean;
+    search?: string;
+    sort?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const query = new URLSearchParams(
+      Object.entries(params || {})
+        .filter(([_, v]) => v !== undefined && v !== null && v !== '')
+        .map(([k, v]) => [k, String(v)])
+    ).toString();
+    return fetchJson<{
+      page: number;
+      limit: number;
+      totalCount: number;
+      totalPages: number;
+      data: DetailedProduct[];
+    }>(`/catalog/products?${query}`);
+  },
+
+  getDetailedProductById: (idOrSlug: string) => {
+    return fetchJson<{
+      product: DetailedProduct;
+      reviews: ProductReview[];
+      related: DetailedProduct[];
+    }>(`/catalog/products/${idOrSlug}`);
+  },
+
+  getBentoDeals: () => {
+    return fetchJson<{
+      bento: {
+        card1Macbook: DetailedProduct;
+        card2Airpods: DetailedProduct;
+        card3ShoesPromo: DetailedProduct;
+        card4StyleDeals: DetailedProduct;
+      };
+      bestsellers: DetailedProduct[];
+      topDiscounts: DetailedProduct[];
+    }>('/catalog/deals');
+  },
+
+  // ── Strict Data Honesty Customer Reviews ─────────────────────────────
+  getProductReviews: (productId: string) => {
+    return fetchJson<ProductReview[]>(`/products/${productId}/reviews`);
+  },
+
+  submitProductReview: (productId: string, data: {
+    rating: number;
+    title?: string;
+    comment: string;
+    userName?: string;
+    userId?: string;
+  }) => {
+    return fetchJson<{
+      review: ProductReview;
+      newRating: number;
+      newCount: number;
+    }>(`/products/${productId}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // ── Active Coupons Engine ───────────────────────────────────────────
+  getActiveCoupons: () => {
+    return fetchJson<CouponItem[]>('/coupons/active');
+  },
+
+  validateCoupon: (code: string, cartTotal: number) => {
+    return fetchJson<{
+      code: string;
+      discountAmount: number;
+      finalTotal: number;
+      coupon: CouponItem;
+    }>('/coupons/validate', {
+      method: 'POST',
+      body: JSON.stringify({ code, cartTotal }),
+    });
+  },
+
+  // ── Wishlist API ────────────────────────────────────────────────────
+  getWishlist: (userId = 'usr-default-customer') => {
+    return fetchJson<DetailedProduct[]>(`/wishlist?userId=${userId}`);
+  },
+
+  toggleWishlist: (productId: string, userId = 'usr-default-customer') => {
+    return fetchJson<{
+      inWishlist: boolean;
+      totalWishlistCount: number;
+    }>('/wishlist/toggle', {
+      method: 'POST',
+      body: JSON.stringify({ productId, userId }),
+    });
+  },
+
+  // ── Saved Addresses API ─────────────────────────────────────────────
+  getAddresses: (userId = 'usr-default-customer') => {
+    return fetchJson<UserAddress[]>(`/addresses?userId=${userId}`);
+  },
+
+  saveAddress: (address: Partial<UserAddress> & { userId?: string }) => {
+    return fetchJson<UserAddress>('/addresses', {
+      method: 'POST',
+      body: JSON.stringify(address),
+    });
+  },
+
+  // ── Authentication API ──────────────────────────────────────────────
+  signIn: (credentials: { email: string; password: string }) => {
+    return fetchJson<{
+      user: { id: string; email: string; fullName: string; role: 'CUSTOMER' | 'ADMIN' };
+      token: string;
+    }>('/auth/signin', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+  },
+
+  signUp: (data: { name: string; email: string; password: string; role?: 'CUSTOMER' | 'ADMIN' }) => {
+    return fetchJson<{
+      user: { id: string; email: string; fullName: string; role: 'CUSTOMER' | 'ADMIN' };
+      token: string;
+    }>('/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  getMe: () => {
+    return fetchJson<{
+      user: { id: string; email: string; fullName: string; role: 'CUSTOMER' | 'ADMIN' };
+    }>('/auth/me');
+  },
+
+  logout: () => {
+    return fetchJson<{ status: string; message: string }>('/auth/logout', {
+      method: 'POST',
+    });
+  },
+
+  // ── Admin Panel API (Role Protected) ────────────────────────────────
+  getAdminStats: () => {
+    return fetchJson<AdminStats>('/admin/stats');
+  },
+
+  getAdminProducts: () => {
+    return fetchJson<DetailedProduct[]>('/admin/products');
+  },
+
+  updateAdminProduct: (id: string, updates: Partial<DetailedProduct>) => {
+    return fetchJson<DetailedProduct>(`/admin/products/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+  },
+
+  getAdminOrders: () => {
+    return fetchJson<any[]>('/admin/orders');
+  },
+
+  updateAdminOrderStatus: (id: string, status: string) => {
+    return fetchJson<any>(`/admin/orders/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  },
+
+  // ── AI Assistant & Discovery Routes ─────────────────────────────────
+  aiChat: (messageOrSession: string, sessionOrMsg?: string, city?: string) => {
+    const message = sessionOrMsg && !city ? sessionOrMsg : messageOrSession;
+    const session = sessionOrMsg && city ? sessionOrMsg : 'default-session';
+    return fetchJson<any>('/ai/chat', {
+      method: 'POST',
+      body: JSON.stringify({ message, sessionId: session, city: city || 'Bengaluru' }),
+    });
+  },
+
+  aiDiscover: (prompt: string, sessionId?: string, city = 'Bengaluru') => {
+    return fetchJson<any>('/ai/discover', {
+      method: 'POST',
+      body: JSON.stringify({ prompt, sessionId, city }),
+    });
+  },
+
+  aiCompare: (productIds: string[]) => {
+    return fetchJson<any>('/ai/compare', {
+      method: 'POST',
+      body: JSON.stringify({ productIds }),
+    });
+  },
+
+  aiAlternatives: (productId: string, price: number) => {
+    return fetchJson<any>('/ai/recommendations', {
+      method: 'POST',
+      body: JSON.stringify({ productId, price }),
+    });
+  },
+
+  // ── Existing Marketplace Routes (V1 / V2) ───────────────────────────
   getProducts: (params?: { category?: string; q?: string; city?: string }) => {
     const query = new URLSearchParams(params as any).toString();
     return fetchJson<Array<{ product: CanonicalProduct; minPrice: number; sellerCount: number; inStock: boolean }>>(`/products?${query}`);
@@ -43,7 +265,7 @@ export const api = {
   },
 
   getCategories: () => {
-    return fetchJson<Array<{ id: string; name: string; icon: string; count: number }>>('/categories');
+    return fetchJson<CategoryHierarchy[]>('/catalog/taxonomy');
   },
 
   getShops: () => {
@@ -59,90 +281,88 @@ export const api = {
     return fetchJson<Array<{ product: CanonicalProduct; minPrice: number; sellerCount: number; inStock: boolean }>>(`/search?${query}`);
   },
 
-  aiDiscover: (prompt: string, conversationId?: string, city = 'Bengaluru') => {
-    return fetchJson<any>('/ai/discover', {
-      method: 'POST',
-      body: JSON.stringify({ prompt, conversationId, city }),
-    });
+  // Orders & Concurrency-Safe Checkout
+  getOrders: () => {
+    return fetchJson<Order[]>('/orders');
   },
 
-  aiChat: (prompt: string, sessionId?: string, city = 'Bengaluru') => {
+  reserveStock: (data: { listingId: string; storeId: string; quantity: number }) => {
     return fetchJson<{
-      status: string;
-      sessionId: string;
-      tookMs: number;
-      intent: any;
-      message: string;
-      matches: any[];
-      suggestions: string[];
-    }>('/ai/chat', {
-      method: 'POST',
-      body: JSON.stringify({ prompt, sessionId, city }),
-    });
-  },
-
-  aiCompare: (productIds: string[]) => {
-    return fetchJson<any>('/ai/compare', {
-      method: 'POST',
-      body: JSON.stringify({ productIds }),
-    });
-  },
-
-  aiAlternatives: (productId: string, budget?: number) => {
-    return fetchJson<any>('/ai/alternatives', {
-      method: 'POST',
-      body: JSON.stringify({ productId, budget }),
-    });
-  },
-
-  aiHealth: () => {
-    return fetchJson<any>('/ai/health');
-  },
-
-  // Checkout
-  reserveCheckout: (data: {
-    listingId: string;
-    storeId: string;
-    quantity: number;
-    customerName: string;
-    customerPhone: string;
-    deliveryAddress?: string;
-  }) => {
-    return fetchJson<{ order: Order; outboxEventId: string }>('/checkout/reserve', {
+      reservationId: string;
+      listingId: string;
+      storeId: string;
+      quantity: number;
+      expiresAt: string;
+    }>('/checkout/reserve', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
-  getOrders: () => {
-    return fetchJson<Order[]>('/orders');
-  },
-
-  // Razorpay Live Payments
-  createPaymentQr: (orderId: string, amount: number, customerName?: string) => {
-    return fetchJson<{
-      qrId: string;
-      qrImageUrl: string;
-      paymentAmount: number;
-      currency: string;
-      razorpayOrderId: string;
-      keyId: string;
-      orderId: string;
-    }>('/payments/create-qr', {
+  createOrder: (orderData: {
+    items: Array<{ listingId: string; storeId: string; quantity: number }>;
+    customerName: string;
+    customerPhone: string;
+    deliveryAddress: string;
+    deliveryCity: string;
+    idempotencyKey: string;
+  }) => {
+    return fetchJson<Order>('/orders/checkout', {
       method: 'POST',
-      body: JSON.stringify({ orderId, amount, customerName }),
+      body: JSON.stringify(orderData),
     });
   },
 
-  checkPaymentStatus: (qrId: string, orderId?: string) => {
-    const query = orderId ? `?orderId=${encodeURIComponent(orderId)}` : '';
+  reserveCheckout: (data: any) => {
+    return fetchJson<any>('/checkout/reserve', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  getOrderById: (orderId: string) => {
+    return fetchJson<Order>(`/orders/${orderId}`);
+  },
+
+  // Live Razorpay Payments
+  createRazorpayQr: (data: { orderId: string; amount: number; customerPhone?: string }) => {
+    return fetchJson<{
+      qrId: string;
+      qrImageUrl: string;
+      upiIntentUrl: string;
+      amount: number;
+      keyId: string;
+    }>('/payments/create-qr', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  createPaymentQr: (orderId: string, amount: number, customerPhone?: string) => {
+    return fetchJson<{
+      qrId: string;
+      qrImageUrl: string;
+      upiIntentUrl: string;
+      amount: number;
+      paymentAmount: number;
+      razorpayOrderId: string;
+      keyId: string;
+      order?: any;
+    }>('/payments/create-qr', {
+      method: 'POST',
+      body: JSON.stringify({ orderId, amount, customerPhone }),
+    });
+  },
+
+  checkPaymentStatus: (qrId: string, _orderId?: string) => {
     return fetchJson<{
       paid: boolean;
       status: string;
       paymentId?: string;
+      amount?: number;
       amountReceived?: number;
-      order?: Order;
-    }>(`/payments/status/${qrId}${query}`);
+      order?: any;
+    }>(`/payments/status/${qrId}`);
   },
 
   verifyPayment: (data: {
@@ -203,7 +423,6 @@ export const api = {
     return fetchJson<any>('/merchant/demand-insights');
   },
 
-  // Admin
   getAdminHealth: () => {
     return fetchJson<any>('/admin/health');
   },

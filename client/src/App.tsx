@@ -12,8 +12,11 @@ import { CategoriesPage } from './pages/marketplace/CategoriesPage.js';
 import { ShopsPage } from './pages/marketplace/ShopsPage.js';
 import { ShopStorefrontPage } from './pages/marketplace/ShopStorefrontPage.js';
 import { AccountPage } from './pages/marketplace/AccountPage.js';
+import { WishlistPage } from './pages/marketplace/WishlistPage.js';
+import { AuthPage } from './pages/marketplace/AuthPage.js';
 import { PaymentPage } from './pages/marketplace/PaymentPage.js';
 import { PrivacyPolicyPage } from './pages/legal/PrivacyPolicyPage.js';
+import { ExperiencePage } from './pages/marketplace/ExperiencePage.js';
 import DemoOne from './components/ui/demo.js';
 import MetroHeroDemo from './components/ui/metro-hero-demo.js';
 import SlideTabsDemo from './components/ui/slide-tabs-demo.js';
@@ -22,15 +25,17 @@ import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const isHome = location.pathname === '/';
+  const isExperience = location.pathname === '/experience' || location.pathname === '/storefront';
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F9FC] text-[#111827]">
-      <Navbar />
-      <main className={`flex-1 ${isHome ? 'pt-0' : 'pt-16'}`}>
+      {!isExperience && <Navbar />}
+      <main className={`flex-1 ${isExperience ? 'pt-0' : 'pt-24 sm:pt-28'}`}>
         <Routes>
           {/* Marketplace Core Routes */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/experience" element={<ExperiencePage />} />
+          <Route path="/storefront" element={<ExperiencePage />} />
           <Route path="/search" element={<ProductsPage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
@@ -39,6 +44,8 @@ const AppContent: React.FC = () => {
           <Route path="/shops" element={<ShopsPage />} />
           <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/auth" element={<AuthPage />} />
           <Route path="/payment/:orderId" element={<PaymentPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />

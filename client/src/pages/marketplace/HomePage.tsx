@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mic, Check } from 'lucide-react';
-import { DoorHero } from '../../components/hero/DoorHero.js';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Mic, Check, Heart, Star, ShoppingBag, ArrowRight } from 'lucide-react';
+import { BentoGridHero } from '../../components/home/BentoGridHero.js';
+import { ShopByCategoryCarousel } from '../../components/home/ShopByCategoryCarousel.js';
 import { SellerComparisonModal } from '../../components/catalog/SellerComparisonModal.js';
 import { VoiceShoppingModal } from '../../components/voice/VoiceShoppingModal.js';
 import { useCart } from '../../context/CartContext.js';
 import { useAuth } from '../../context/AuthContext.js';
 import { api } from '../../services/api.js';
-import { CanonicalProduct, MultiSellerOffer } from '../../../../shared/types.js';
+import { CanonicalProduct, MultiSellerOffer, CategoryHierarchy, DetailedProduct } from '../../../../shared/types.js';
 
 // ── 1. CURATED CATEGORIES WITH HIGH-RES REAL PHOTOGRAPHY ────────
 const CATEGORIES_DATA = [
@@ -350,7 +351,12 @@ export interface AiSearchResultItem {
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
-  const { activeCity } = useAuth();
+  const { user, activeCity, refreshWishlistCount } = useAuth();
+
+  // Flagship 180-Product & Taxonomy state
+  const [taxonomyCategories, setTaxonomyCategories] = useState<CategoryHierarchy[]>([]);
+  const [bestsellers, setBestsellers] = useState<DetailedProduct[]>([]);
+  const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
 
   // Selected Category filter ('ALL' or categoryKey)
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
@@ -373,12 +379,49 @@ export const HomePage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>('');
   const [isToastActive, setIsToastActive] = useState<boolean>(false);
 
+  useEffect(() => {
+    api.getTaxonomy().then(cats => {
+      if (Array.isArray(cats)) setTaxonomyCategories(cats);
+    }).catch(console.error);
+
+    api.getDetailedProducts({ limit: 12, sort: 'featured' }).then(res => {
+      if (res && Array.isArray(res.data)) {
+        setBestsellers(res.data);
+      }
+    }).catch(console.error);
+
+    const uid = user?.id || 'usr-default-customer';
+    api.getWishlist(uid).then(list => {
+      if (Array.isArray(list)) {
+        setWishlistIds(new Set(list.map(p => p.id)));
+      }
+    }).catch(() => {});
+  }, [user]);
+
   const showToast = (message: string) => {
     setToastMessage(message);
     setIsToastActive(true);
     setTimeout(() => {
       setIsToastActive(false);
     }, 2400);
+  };
+
+  const handleToggleWishlist = async (product: DetailedProduct, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const uid = user?.id || 'usr-default-customer';
+    try {
+      const res = await api.toggleWishlist(product.id, uid);
+      setWishlistIds(prev => {
+        const next = new Set(prev);
+        if (res.inWishlist) next.add(product.id);
+        else next.delete(product.id);
+        return next;
+      });
+      refreshWishlistCount();
+      showToast(res.inWishlist ? 'Saved to your wishlist' : 'Removed from wishlist');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // ── 1. Backend-Powered AI Search ──
@@ -398,7 +441,7 @@ export const HomePage: React.FC = () => {
       const res = await api.aiChat(rawQuery, 'default-session', activeCity || 'Bengaluru');
 
       if (res && res.status === 'success' && Array.isArray(res.matches)) {
-        setAiResults(res.matches.map(m => ({
+        setAiResults(res.matches.map((m: any) => ({
           productId: m.productId,
           title: m.title,
           brand: m.brand || 'Verified Brand',
@@ -599,20 +642,15 @@ export const HomePage: React.FC = () => {
   return (
     <div className="w-full bg-[#F7F9FC] text-[#111827] selection:bg-[#167D73] selection:text-white font-sans">
       
-      {/* ── 1. NATIVE 3D STOREFRONT DOOR HERO ─────────────────────── */}
-      <DoorHero 
-        onSelectCategory={(catKey) => {
-          setSelectedCategory(catKey);
-          showToast(`Filtered by ${catKey}`);
-        }} 
-        onSearch={(query) => {
-          setAiQuery(query);
-          handleAiSearch(query);
-          document.getElementById('ai')?.scrollIntoView({ behavior: 'smooth' });
-        }}
-      />
+      {/* ── 1. ASYMMETRICAL BENTO GRID HERO (Reference Image 1 Alignment) ── */}
+      <BentoGridHero onShowToast={showToast} />
 
-      {/* ── 2. MAIN EVALIPIE AI DISCOVERY INTERFACE (#ai) ──────────── */}
+      {/* ── 2. SHOP BY CATEGORY CIRCULAR CAROUSEL (Reference Image 1 Alignment) ── */}
+      <div id="cats">
+        <ShopByCategoryCarousel categories={taxonomyCategories} />
+      </div>
+
+      {/* ── 3. MAIN EVALIPIE AI DISCOVERY INTERFACE (#ai) ──────────── */}
       {/* Centered, minimal, elegant, professional layout using brand palette */}
       <section className="w-full bg-[#FBF7EF] border-y border-[#E5EAF0] py-16 md:py-24" id="ai">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -772,103 +810,101 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── 3. SHOP BY CATEGORY SECTION (#cats) ──────────────────── */}
-      <section className="sec" id="cats" style={{ paddingTop: 0 }}>
-        <h2>Shop by category</h2>
-        <p className="sub">Everything your neighbourhood stores sell, in one place.</p>
-        
-        <div className="grid" id="catGrid">
-          {CATEGORIES_DATA.map((cat) => (
-            <div 
-              key={cat.id} 
-              className={`cat ${selectedCategory === cat.categoryKey ? 'active' : ''}`}
-              onClick={() => {
-                const nextCategory = selectedCategory === cat.categoryKey ? 'ALL' : cat.categoryKey;
-                setSelectedCategory(nextCategory);
-                showToast(nextCategory === 'ALL' ? 'Showing All Products' : `Filtered by ${cat.title}`);
-                document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              <div className="cat-img-box">
-                <img src={cat.imageUrl} alt={cat.title} loading="lazy" />
-              </div>
-              <div className="cat-title font-bold text-sm text-[#111827]">{cat.title}</div>
-              <div className="cat-meta text-xs text-[#687385]">{cat.itemCount} Items available</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── 4. TRENDING IN BENGALURU (#trend) ────────────────────── */}
+      {/* ── 5. TRENDING BESTSELLERS & DEALS (#trend) ────────────── */}
       <section className="sec" id="trend" style={{ paddingTop: 0 }}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h2>Trending in Bengaluru</h2>
-            <p className="sub mb-0">Sample data for prototype purposes. Stock labels reflect each seller’s listing.</p>
+            <h2>Trending & Bestsellers in Bengaluru</h2>
+            <p className="sub mb-0">Verified local inventory with same-day doorstep dispatch.</p>
           </div>
           
-          {/* Active Filter Pill & Sort */}
           <div className="flex items-center gap-3">
-            {selectedCategory !== 'ALL' && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategory('ALL');
-                  showToast('Showing All Products');
-                }}
-                className="bg-[#E9F7F3] hover:bg-[#d2f3e8] text-[#167D73] px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 cursor-pointer border border-[#A7E3D8]"
-              >
-                <span>Category: {selectedCategory}</span>
-                <span className="text-sm">✕</span>
-              </button>
-            )}
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-white border border-[#E5EAF0] text-xs font-bold text-[#111827] px-3 py-1.5 rounded-lg outline-none cursor-pointer"
+            <Link
+              to="/products"
+              className="text-xs font-semibold text-[#105B55] hover:text-[#167D73] flex items-center gap-1"
             >
-              <option value="TRENDING">Trending Deals</option>
-              <option value="PRICE_ASC">Price: Low to High</option>
-              <option value="PRICE_DESC">Price: High to Low</option>
-              <option value="RATING">Top Rated</option>
-            </select>
+              Browse All 180 Products
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 
-        {/* Product Cards Grid with Real Images */}
+        {/* Product Cards Grid */}
         <div className="grid" id="prodGrid">
-          {filteredProducts.map((x) => (
-            <article 
-              key={x.id} 
-              className="card cursor-pointer group"
-              onClick={() => handleOpenProduct(x)}
-            >
-              <div className="img">
-                <img src={x.imageUrl} alt={x.title} loading="lazy" />
-              </div>
-              <div className="cb">
-                <h3 className="line-clamp-2">{x.title}</h3>
-                <div className="shop">{x.store} · {x.locality}</div>
-                <span className={`badge ${x.stockStatus}`}>
-                  {x.stockStatus === 'in' ? 'In stock' : 'Low stock'}
-                </span>
-                <div className="price">
-                  <span>₹{x.price.toLocaleString('en-IN')}</span>
-                  {x.originalMrp > x.price && (
-                    <s>₹{x.originalMrp.toLocaleString('en-IN')}</s>
-                  )}
+          {(bestsellers.length > 0 ? bestsellers : filteredProducts).map((x: any) => {
+            const isWishlisted = wishlistIds.has(x.id);
+
+            return (
+              <article 
+                key={x.id} 
+                className="card cursor-pointer group relative"
+                onClick={() => navigate(`/products/${x.id}`)}
+              >
+                <div className="img relative overflow-hidden bg-[#FBF7EF]">
+                  <img src={x.imageUrl} alt={x.title} loading="lazy" />
+                  
+                  {/* Wishlist Heart Icon */}
+                  <button
+                    type="button"
+                    onClick={(e) => handleToggleWishlist(x, e)}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 hover:bg-white text-gray-700 flex items-center justify-center shadow-xs transition-colors cursor-pointer z-10"
+                    title={isWishlisted ? 'Saved in Wishlist' : 'Add to Wishlist'}
+                  >
+                    <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
+                  </button>
                 </div>
-                <button 
-                  type="button" 
-                  className="btn p"
-                  onClick={(e) => handleAddToCart(x, e)}
-                >
-                  Add to cart
-                </button>
-              </div>
-            </article>
-          ))}
+
+                <div className="cb">
+                  <span className="text-[10px] font-mono uppercase font-bold text-[#105B55] block mb-0.5">
+                    {x.brand || 'Verified'}
+                  </span>
+                  <h3 className="line-clamp-2">{x.title}</h3>
+                  <div className="shop">{x.categoryName || x.store || 'Central Fulfillment'} · Bengaluru</div>
+                  
+                  {/* Strict Data Honesty Rating: ONLY displayed if reviewsCount > 0 */}
+                  {x.reviewsCount > 0 ? (
+                    <div className="flex items-center gap-1 my-1 text-amber-500 text-xs">
+                      <Star className="w-3 h-3 fill-current" />
+                      <span className="font-bold text-gray-900">{x.rating}</span>
+                      <span className="text-[10px] text-gray-400">({x.reviewsCount})</span>
+                    </div>
+                  ) : (
+                    <div className="text-[10px] text-gray-400 italic my-1">Local Verified</div>
+                  )}
+
+                  <div className="price">
+                    <span>₹{x.price.toLocaleString('en-IN')}</span>
+                    {x.originalMrp > x.price && (
+                      <s>₹{x.originalMrp.toLocaleString('en-IN')}</s>
+                    )}
+                  </div>
+                  
+                  <button 
+                    type="button" 
+                    className="btn p"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addItem({
+                        listingId: `list-${x.id}`,
+                        storeId: 'store-apex-indira',
+                        productId: x.id,
+                        title: x.title,
+                        shopName: 'Evalipie Express Central',
+                        shopSlug: 'apex-audio',
+                        price: x.price,
+                        originalMrp: x.originalMrp,
+                        quantity: 1,
+                        imageUrl: x.imageUrl
+                      });
+                      showToast(`Added to cart!`);
+                    }}
+                  >
+                    Add to cart
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
