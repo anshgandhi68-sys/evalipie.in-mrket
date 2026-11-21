@@ -59,13 +59,16 @@ export const Navbar: React.FC = () => {
       {/* 2. Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2.5 font-black text-xl tracking-tighter text-[#0F1412] hover:opacity-90">
-          <span className="w-8 h-8 rounded-lg bg-[#167D73] flex items-center justify-center text-white font-black text-base shadow-sm">
-            e
-          </span>
-          <span className="uppercase text-lg font-black tracking-tight">Evalipie</span>
-          <span className="text-[10px] font-extrabold text-[#167D73] bg-[#E9F7F3] px-2 py-0.5 rounded-full uppercase tracking-wider hidden sm:inline">
-            Marketplace
+        <Link to="/" className="flex items-center gap-2.5 hover:opacity-95 transition-opacity">
+          <div className="bg-[#120B2E] px-3.5 py-1.5 rounded-xl border border-white/10 shadow-sm flex items-center">
+            <img 
+              src="/assets/evalipie-logo-transparent.png" 
+              alt="Evalipie.in" 
+              className="h-7 w-auto object-contain"
+            />
+          </div>
+          <span className="text-[10px] font-extrabold text-[#167D73] bg-[#E9F7F3] px-2.5 py-1 rounded-full uppercase tracking-wider hidden sm:inline">
+            Intelligent Marketplace
           </span>
         </Link>
 

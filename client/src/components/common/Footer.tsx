@@ -9,16 +9,19 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Col */}
           <div className="space-y-3 md:col-span-1">
-            <div className="flex items-center gap-2 font-extrabold text-xl tracking-tight text-[#111827]">
-              <span className="w-8 h-8 rounded-lg bg-[#167D73] flex items-center justify-center text-white font-bold text-base">
-                e
-              </span>
-              <span>Evalipie</span>
-            </div>
+            <Link to="/" className="inline-block hover:opacity-95 transition-opacity">
+              <div className="bg-[#120B2E] px-3.5 py-2 rounded-xl border border-white/10 shadow-sm inline-flex items-center">
+                <img 
+                  src="/assets/evalipie-logo-transparent.png" 
+                  alt="Evalipie.in" 
+                  className="h-7 w-auto object-contain" 
+                />
+              </div>
+            </Link>
             <p className="text-xs text-gray-500 leading-relaxed font-medium">
               Every Shop. One Intelligent Marketplace. Empowering neighbourhood retail stores and established retail chains with digital sovereignty.
             </p>
-            <div className="text-[11px] font-bold text-[#167D73] bg-[#E9F7F3] inline-block px-2.5 py-1 rounded-full">
+            <div className="text-[11px] font-bold text-[#167D73] bg-[#E9F7F3] inline-block px-2.5 py-1 rounded-full font-mono">
               https://evalipie.in
             </div>
           </div>
