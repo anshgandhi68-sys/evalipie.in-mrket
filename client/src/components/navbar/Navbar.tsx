@@ -22,14 +22,13 @@ export const Navbar: React.FC = () => {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-10 py-3.5 bg-white/85 backdrop-blur-md border-b border-[#E5EAF0]">
         
-        {/* Left: Brand Logo matching Image 2 */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <i className="w-7 h-7 rounded-lg bg-[#167D73] text-white flex items-center justify-center font-bold text-sm not-italic shadow-xs group-hover:bg-[#105B55] transition-colors">
-            e
-          </i>
-          <span className="font-extrabold text-xl tracking-tight text-[#111827]">
-            Evalipie
-          </span>
+        {/* Left: Brand Logo matching User Upload */}
+        <Link to="/" className="flex items-center group">
+          <img 
+            src="/assets/evalipie-logo.png" 
+            alt="Evalipie.in" 
+            className="h-8 sm:h-9 w-auto rounded-lg shadow-xs hover:opacity-95 transition-opacity" 
+          />
         </Link>
 
         {/* Right Nav Links matching Image 2 */}

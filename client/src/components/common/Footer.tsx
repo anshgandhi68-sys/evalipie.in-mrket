@@ -37,14 +37,13 @@ export const Footer: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <i className="w-6 h-6 rounded-md bg-[#167D73] text-white flex items-center justify-center font-bold text-xs not-italic">
-                  e
-                </i>
-                <span className="font-extrabold text-base tracking-tight text-[#111827]">
-                  Evalipie
-                </span>
-              </div>
+              <Link to="/" className="flex items-center">
+                <img 
+                  src="/assets/evalipie-logo.png" 
+                  alt="Evalipie.in" 
+                  className="h-8 w-auto rounded-lg shadow-xs" 
+                />
+              </Link>
               <p className="text-xs text-[#687385] leading-relaxed">
                 Hyperlocal retail intelligence connecting independent electronics stores, boutiques, authorized dealers, and local retailers directly to buyers with zero phantom stock.
               </p>
