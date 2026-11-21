@@ -12,6 +12,7 @@ import { VoiceKhataPage } from './pages/business/VoiceKhataPage.js';
 import { LedgerTransactionsPage } from './pages/business/LedgerTransactionsPage.js';
 import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
+import DemoOne from './components/ui/demo.js';
 
 export const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ export const App: React.FC = () => {
               <Routes>
                 {/* Marketplace Routes */}
                 <Route path="/" element={<HomePage />} />
+                <Route path="/demo" element={<DemoOne />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
                 <Route path="/ai" element={<HomePage />} />
