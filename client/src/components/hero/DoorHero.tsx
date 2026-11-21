@@ -24,15 +24,13 @@ export const DoorHero: React.FC<{
   scrollHint = "SCROLL TO ENTER",
 }) => {
   return (
-    <section id="hero-entry" className="relative w-full min-h-screen overflow-hidden">
+    <section id="hero-entry" className="relative w-full overflow-hidden bg-[#05070d]">
       <MetroHero
         videoSrc={videoSrc}
         title={title}
         tagline={tagline}
         scrollHint={scrollHint}
-        autoUnlock={true}
         showSkipButton={true}
-        scrubDistance={2800}
         signature={{
           name: "Evalipie Marketplace",
           url: "https://evalipie.in"

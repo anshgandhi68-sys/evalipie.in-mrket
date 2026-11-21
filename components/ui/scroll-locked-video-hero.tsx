@@ -2,59 +2,37 @@
 
 import React, { useEffect, useRef, useState } from "react"
 
-// ─────────────────────────────────────────────────────────────
-// THE CITY OPENS — locked scroll-scrub video hero
-// The page cannot move while this is active — body is pinned
-// with position:fixed (the same bulletproof technique modal
-// libraries use; plain overflow:hidden alone isn't reliable
-// across browsers). Wheel/touch input is captured and used
-// purely to drive video.currentTime, forward and backward. Once
-// the video reaches the end and the user keeps pushing forward,
-// the page unlocks and continues normally — and re-locks if they
-// scroll back up into it. No dependencies, system fonts only.
-// ─────────────────────────────────────────────────────────────
-
 export interface MetroHeroProps {
   videoSrc?: string
   title?: string
   scrollHint?: string
   tagline?: string
   signature?: { name: string; url: string } | false
-  /** Total input distance (px) needed to scrub the full video. Tune to taste. */
   scrubDistance?: number
   className?: string
   style?: React.CSSProperties
-  /** When true, automatically releases the scroll lock at completion so user scrolls into the page */
   autoUnlock?: boolean
-  /** Callback fired when the video completes opening */
   onComplete?: () => void
-  /** Optional custom button to skip or jump directly to page content */
   showSkipButton?: boolean
 }
 
-const DEFAULT_VIDEO = "https://cdn.21st.dev/assets/mirror/21/21a77eac28eacbb7e142016eefeaa0b4a766619e51113629a3bc6df6af066c0f.mp4"
-const DEFAULT_SIGNATURE = { name: "guglielmogiannattasio.exe", url: "https://www.guglielmogiannattasio.it" }
+const DEFAULT_VIDEO = "/assets/metro-hero.mp4"
+const DEFAULT_SIGNATURE = { name: "Evalipie Marketplace", url: "https://evalipie.in" }
 const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
 
 const COL_BG = "#05070d"
 const COL_TEXT = "#f2f4f8"
 
-function clamp(v: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, v))
-}
-
 export default function MetroHero({
   videoSrc = DEFAULT_VIDEO,
   title = "Welcome to Evalipie",
-  scrollHint = "SCROLL",
+  scrollHint = "SCROLL TO ENTER",
   tagline = "Every door in the city is already open.",
   signature = DEFAULT_SIGNATURE,
-  scrubDistance = 3200,
   className,
   style,
-  autoUnlock = false,
   onComplete,
-  showSkipButton = false,
+  showSkipButton = true,
 }: MetroHeroProps) {
   const sectionRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -63,251 +41,74 @@ export default function MetroHero({
   const taglineRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
-  const [unlockedState, setUnlockedState] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true)
 
   useEffect(() => {
     const video = videoRef.current
-    const section = sectionRef.current
-    if (!video || !section) return
+    if (!video) return
 
-    const reduceMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-
-    let duration = 0
-    let rafId = 0
-    let targetProgress = 0
-    let currentProgress = 0
-    let hasStartedScrolling = false
-    let isSeeking = false
-    let pendingTime: number | null = null
-    let locked = false
-    let lockedScrollY = 0
-    let touchStartY = 0
-    let isCompleted = false
-
-    const onLoadedData = () => {
-      duration = video.duration || 0
-      setReady(true)
-      if (reduceMotion) {
-        video.currentTime = duration * 0.92
-      }
-    }
-    video.addEventListener("loadeddata", onLoadedData)
-
-    // iOS Safari often won't buffer any video data — even with
-    // preload="auto" — until playback actually starts, to save mobile
-    // data. Since we only ever seek (never call play() elsewhere), the
-    // video can stay permanently blank on iPhone. Force a silent
-    // play-then-immediately-pause on mount to kick off real loading.
-    const kickstartLoad = () => {
-      const p = video.play()
-      if (p && typeof p.then === "function") {
-        p.then(() => video.pause()).catch(() => {})
-      } else {
-        video.pause()
-      }
-    }
-    kickstartLoad()
-
-    const onSeeked = () => {
-      isSeeking = false
-      if (pendingTime !== null && video) {
-        const t = pendingTime
-        pendingTime = null
-        isSeeking = true
-        video.currentTime = t
-      }
-    }
-    video.addEventListener("seeked", onSeeked)
-
-    function seekTo(t: number) {
-      if (isSeeking) {
-        pendingTime = t
-        return
-      }
-      isSeeking = true
-      if (video) {
-        video.currentTime = t
-      }
+    // Autoplay video smoothly on mount
+    video.currentTime = 0
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setReady(true)
+          setIsPlaying(true)
+        })
+        .catch(() => {
+          // Fallback if autoplay policy needs user interaction
+          setReady(true)
+        })
     }
 
-    // Locked for the entire lifetime of this component — or until
-    // autoUnlock is enabled and progress reaches 1.0. Scroll input
-    // drives video.currentTime; once the video finishes, page unlocks.
-    function engageLock() {
-      if (locked || typeof document === "undefined") return
-      locked = true
-      setUnlockedState(false)
-      lockedScrollY = window.scrollY
-      const b = document.body.style
-      b.position = "fixed"
-      b.top = `-${lockedScrollY}px`
-      b.left = "0"
-      b.right = "0"
-      b.width = "100%"
-      b.height = "100%"
-      b.overscrollBehavior = "none"
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent('hero-lock-change', { detail: { locked: true } }))
-      }
-    }
+    const onTimeUpdate = () => {
+      if (!video || !video.duration) return
+      const progress = video.currentTime / video.duration
 
-    function releaseLock(scrollToContent = false) {
-      if (!locked || typeof document === "undefined") return
-      locked = false
-      setUnlockedState(true)
-      const y = lockedScrollY
-      const b = document.body.style
-      b.position = ""
-      b.top = ""
-      b.left = ""
-      b.right = ""
-      b.width = ""
-      b.height = ""
-      b.overscrollBehavior = ""
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent('hero-lock-change', { detail: { locked: false } }))
-      }
-      if (scrollToContent && section) {
-        window.scrollTo({ top: section.offsetHeight, behavior: "smooth" })
-      } else {
-        window.scrollTo(0, y)
-      }
-    }
-
-    engageLock()
-
-    function addDelta(deltaY: number) {
-      // If locked and autoUnlock is enabled, check if reaching end
-      if (autoUnlock && targetProgress >= 0.96 && deltaY > 0) {
-        if (!isCompleted) {
-          isCompleted = true
-          onComplete?.()
-          releaseLock(true)
-          return false
-        }
-      }
-
-      const next = clamp(targetProgress + deltaY / scrubDistance, 0, 1)
-      targetProgress = next
-      if (targetProgress > 0.001) hasStartedScrolling = true
-      return true
-    }
-
-    const onWheel = (e: WheelEvent) => {
-      if (!locked) {
-        // If user scrolled back to top, re-engage lock
-        if (window.scrollY <= 10 && e.deltaY < 0) {
-          engageLock()
-          targetProgress = 0.95
-          isCompleted = false
-          e.preventDefault()
-        }
-        return
-      }
-      addDelta(e.deltaY)
-      e.preventDefault()
-    }
-
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0]?.clientY ?? 0
-    }
-    const onTouchMove = (e: TouchEvent) => {
-      if (!locked) {
-        if (window.scrollY <= 10) {
-          const y = e.touches[0]?.clientY ?? touchStartY
-          if (y > touchStartY) {
-            engageLock()
-            targetProgress = 0.95
-            isCompleted = false
-          }
-        }
-        return
-      }
-      const y = e.touches[0]?.clientY ?? touchStartY
-      const deltaY = touchStartY - y
-      touchStartY = y
-      addDelta(deltaY)
-      e.preventDefault()
-    }
-
-    window.addEventListener("wheel", onWheel, { passive: false })
-    window.addEventListener("touchstart", onTouchStart, { passive: true })
-    window.addEventListener("touchmove", onTouchMove, { passive: false })
-    section.addEventListener("touchstart", onTouchStart, { passive: true, capture: true })
-    section.addEventListener("touchmove", onTouchMove, { passive: false, capture: true })
-
-    function frame() {
-      currentProgress += (targetProgress - currentProgress) * 0.18
-
-      if (duration > 0) {
-        seekTo(currentProgress * duration)
-      }
-
-      if (videoRef.current) {
-        const scale = 1 + currentProgress * 0.06
-        videoRef.current.style.transform = `scale(${scale})`
-      }
+      // Title fades out as doors open (0.0 to 0.45)
       if (titleRef.current) {
-        const t = 1 - clamp(currentProgress / 0.35, 0, 1)
-        titleRef.current.style.opacity = String(t)
-        titleRef.current.style.transform = `translateY(${(1 - t) * -24}px) scale(${0.96 + t * 0.04})`
-        titleRef.current.style.filter = `blur(${(1 - t) * 10}px)`
+        const titleOpacity = Math.max(0, 1 - progress * 2.2)
+        const titleScale = 1 + progress * 0.15
+        titleRef.current.style.opacity = String(titleOpacity)
+        titleRef.current.style.transform = `scale(${titleScale})`
       }
-      if (hintRef.current) {
-        hintRef.current.style.opacity = hasStartedScrolling ? "0" : "1"
-      }
+
+      // Tagline reveals as doors swing fully open (0.4 to 0.85)
       if (taglineRef.current) {
-        // Mirrors the title's blur-focus treatment, timed as the payoff
-        // once the reveal is nearly complete — not a background afterthought.
-        const t = clamp((currentProgress - 0.82) / 0.18, 0, 1)
-        taglineRef.current.style.opacity = String(t)
-        taglineRef.current.style.transform = `translateY(${(1 - t) * 20}px) scale(${0.97 + t * 0.03})`
-        taglineRef.current.style.filter = `blur(${(1 - t) * 8}px)`
+        let tagOpacity = 0
+        if (progress > 0.35) {
+          tagOpacity = Math.min(1, (progress - 0.35) * 2.5)
+        }
+        taglineRef.current.style.opacity = String(tagOpacity)
       }
+
+      // Progress line
       if (progressBarRef.current) {
-        progressBarRef.current.style.transform = `scaleX(${currentProgress})`
+        progressBarRef.current.style.width = `${Math.min(100, progress * 100)}%`
       }
-
-      rafId = requestAnimationFrame(frame)
     }
 
-    if (!reduceMotion) {
-      rafId = requestAnimationFrame(frame)
+    const onEnded = () => {
+      onComplete?.()
     }
+
+    video.addEventListener("timeupdate", onTimeUpdate)
+    video.addEventListener("ended", onEnded)
 
     return () => {
-      video.removeEventListener("loadeddata", onLoadedData)
-      video.removeEventListener("seeked", onSeeked)
-      window.removeEventListener("wheel", onWheel)
-      window.removeEventListener("touchstart", onTouchStart)
-      window.removeEventListener("touchmove", onTouchMove)
-      section.removeEventListener("touchstart", onTouchStart, true)
-      section.removeEventListener("touchmove", onTouchMove, true)
-      cancelAnimationFrame(rafId)
-      releaseLock()
+      video.removeEventListener("timeupdate", onTimeUpdate)
+      video.removeEventListener("ended", onEnded)
     }
-  }, [scrubDistance, autoUnlock, onComplete])
+  }, [onComplete])
 
-  const handleSkipOrUnlock = () => {
-    if (typeof document !== "undefined") {
-      const b = document.body.style
-      b.position = ""
-      b.top = ""
-      b.left = ""
-      b.right = ""
-      b.width = ""
-      b.height = ""
-      b.overscrollBehavior = ""
-      setUnlockedState(true)
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent('hero-lock-change', { detail: { locked: false } }))
-      }
-      onComplete?.()
-      if (sectionRef.current) {
-        window.scrollTo({ top: sectionRef.current.offsetHeight, behavior: "smooth" })
-      }
+  const scrollToMarketplace = () => {
+    onComplete?.()
+    const feed = document.getElementById("marketplace-feed")
+    if (feed) {
+      feed.scrollIntoView({ behavior: "smooth" })
+    } else if (sectionRef.current) {
+      window.scrollTo({ top: sectionRef.current.offsetHeight, behavior: "smooth" })
     }
   }
 
@@ -316,27 +117,23 @@ export default function MetroHero({
       ref={sectionRef}
       className={className}
       style={{
-        position: unlockedState ? "relative" : "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: unlockedState ? 1 : 100,
-        height: "100vh",
-        width: "100vw",
+        position: "relative",
+        height: "clamp(550px, 85vh, 850px)",
+        width: "100%",
         overflow: "hidden",
         background: COL_BG,
-        touchAction: "none",
-        transition: "opacity 0.5s ease",
         ...style,
       }}
     >
+      {/* Background Video */}
       <video
         ref={videoRef}
         src={videoSrc}
         muted
         playsInline
+        autoPlay
         preload="auto"
+        loop
         style={{
           position: "absolute",
           inset: 0,
@@ -345,22 +142,80 @@ export default function MetroHero({
           objectFit: "cover",
           opacity: ready ? 1 : 0,
           transformOrigin: "center center",
-          willChange: "transform",
           transition: "opacity 0.6s ease",
-          touchAction: "none",
           pointerEvents: "none",
         }}
       />
 
+      {/* Atmospheric Vignette Gradient */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(180deg, rgba(5,7,13,0.35), rgba(5,7,13,0) 30%, rgba(5,7,13,0.15) 70%, rgba(5,7,13,0.55))",
+          background: "linear-gradient(180deg, rgba(5,7,13,0.45) 0%, rgba(5,7,13,0.1) 40%, rgba(5,7,13,0.2) 70%, rgba(5,7,13,0.65) 100%)",
           pointerEvents: "none",
         }}
       />
 
+      {/* Top Left Brand Pill */}
+      <div
+        style={{
+          position: "absolute",
+          top: "clamp(16px, 3vh, 32px)",
+          left: "clamp(16px, 3vw, 32px)",
+          zIndex: 30,
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          background: "rgba(18, 11, 46, 0.8)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.18)",
+          padding: "6px 14px",
+          borderRadius: "9999px",
+        }}
+      >
+        <img src="/assets/evalipie-favicon.png" alt="Evalipie" style={{ height: "18px", width: "18px", borderRadius: "4px" }} />
+        <span style={{ color: "#E6E9E4", fontSize: "11px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: SANS }}>
+          Evalipie
+        </span>
+      </div>
+
+      {/* Top Right Skip / Enter marketplace button */}
+      {showSkipButton && (
+        <button
+          onClick={scrollToMarketplace}
+          type="button"
+          style={{
+            position: "absolute",
+            top: "clamp(16px, 3vh, 32px)",
+            right: "clamp(16px, 3vw, 32px)",
+            zIndex: 30,
+            background: "rgba(255,255,255,0.15)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            color: "#ffffff",
+            padding: "8px 18px",
+            borderRadius: "9999px",
+            fontSize: "12px",
+            fontWeight: 700,
+            letterSpacing: "0.05em",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.28)"
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.15)"
+          }}
+        >
+          Explore Marketplace ↓
+        </button>
+      )}
+
+      {/* Center Title ("Welcome to Evalipie") */}
       <div
         ref={titleRef}
         style={{
@@ -372,25 +227,26 @@ export default function MetroHero({
           padding: "0 6%",
           textAlign: "center",
           pointerEvents: "none",
+          transition: "opacity 0.2s ease, transform 0.2s ease",
         }}
       >
         <span
           style={{
             fontFamily: SANS,
             fontWeight: 800,
-            fontSize: "clamp(30px, 7vw, 96px)",
-            lineHeight: 1,
+            fontSize: "clamp(32px, 6.5vw, 92px)",
+            lineHeight: 1.05,
             letterSpacing: "-0.02em",
             color: COL_TEXT,
-            textShadow: "0 4px 30px rgba(0,0,0,0.5)",
+            textShadow: "0 4px 30px rgba(0,0,0,0.6)",
             display: "inline-block",
-            willChange: "transform, filter, opacity",
           }}
         >
           {title}
         </span>
       </div>
 
+      {/* Tagline ("Every door in the city is already open.") */}
       {tagline && (
         <div
           ref={taglineRef}
@@ -404,17 +260,19 @@ export default function MetroHero({
             textAlign: "center",
             opacity: 0,
             pointerEvents: "none",
+            transition: "opacity 0.4s ease",
           }}
         >
           <span
             style={{
               fontFamily: SANS,
               fontWeight: 700,
-              fontSize: "clamp(20px, 3.4vw, 40px)",
+              fontSize: "clamp(20px, 3.2vw, 42px)",
               lineHeight: 1.2,
               letterSpacing: "-0.01em",
               color: COL_TEXT,
-              textShadow: "0 4px 24px rgba(0,0,0,0.5)",
+              textShadow: "0 2px 20px rgba(0,0,0,0.6)",
+              display: "inline-block",
             }}
           >
             {tagline}
@@ -422,84 +280,30 @@ export default function MetroHero({
         </div>
       )}
 
-      {/* Brand Pill (Top Left) */}
-      <div
-        style={{
-          position: "absolute",
-          top: "clamp(16px, 3vh, 32px)",
-          left: "clamp(16px, 3vw, 32px)",
-          zIndex: 30,
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "rgba(18, 11, 46, 0.75)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          border: "1px solid rgba(255,255,255,0.18)",
-          padding: "6px 14px",
-          borderRadius: "9999px",
-        }}
-      >
-        <img src="/assets/evalipie-favicon.png" alt="Evalipie" style={{ height: "18px", width: "18px", borderRadius: "4px" }} />
-        <span style={{ color: "#E6E9E4", fontSize: "11px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: SANS }}>Evalipie</span>
-      </div>
-
-      {/* Skip / Enter marketplace button */}
-      {(showSkipButton || autoUnlock) && (
-        <button
-          onClick={handleSkipOrUnlock}
-          type="button"
-          style={{
-            position: "absolute",
-            top: "clamp(16px, 3vh, 32px)",
-            right: "clamp(16px, 3vw, 32px)",
-            zIndex: 30,
-            background: "rgba(255,255,255,0.12)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            border: "1px solid rgba(255,255,255,0.25)",
-            color: "#ffffff",
-            padding: "8px 16px",
-            borderRadius: "9999px",
-            fontSize: "12px",
-            fontWeight: 600,
-            letterSpacing: "0.05em",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.25)"
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.12)"
-          }}
-        >
-          Explore Marketplace ↓
-        </button>
-      )}
-
+      {/* Bottom Scroll Indicator */}
       <div
         ref={hintRef}
+        onClick={scrollToMarketplace}
         style={{
           position: "absolute",
           left: "50%",
-          bottom: "clamp(20px, 6vh, 48px)",
+          bottom: "clamp(20px, 5vh, 40px)",
           transform: "translateX(-50%)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: 8,
-          color: "rgba(240,244,248,0.75)",
+          gap: 6,
+          color: "rgba(240,244,248,0.8)",
           fontFamily: SANS,
-          fontSize: "clamp(10px, 1.4vw, 12px)",
-          fontWeight: 600,
-          letterSpacing: "0.3em",
-          transition: "opacity 0.4s ease",
-          pointerEvents: "none",
+          fontSize: "11px",
+          fontWeight: 700,
+          letterSpacing: "0.25em",
+          cursor: "pointer",
+          zIndex: 30,
         }}
       >
         <span>{scrollHint}</span>
-        <svg width="14" height="18" viewBox="0 0 14 18" style={{ animation: "metro-hero-bounce 1.6s ease-in-out infinite" }}>
+        <svg width="14" height="18" viewBox="0 0 14 18" style={{ animation: "metro-hero-bounce 1.5s ease-in-out infinite" }}>
           <style>{`
             @keyframes metro-hero-bounce {
               0%, 100% { transform: translateY(0); opacity: 0.5; }
@@ -510,7 +314,7 @@ export default function MetroHero({
         </svg>
       </div>
 
-      {/* Thin progress line — fills as the video advances. */}
+      {/* Thin Progress Bar */}
       <div
         style={{
           position: "absolute",
@@ -525,49 +329,12 @@ export default function MetroHero({
           ref={progressBarRef}
           style={{
             height: "100%",
-            width: "100%",
-            background: "linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.95))",
-            transform: "scaleX(0)",
-            transformOrigin: "left center",
+            width: "0%",
+            background: "#167D73",
+            transition: "width 0.2s linear",
           }}
         />
       </div>
-
-      {signature && (
-        <span
-          style={{
-            position: "absolute",
-            right: "clamp(12px, 2.5vw, 24px)",
-            bottom: "clamp(10px, 2vw, 18px)",
-            fontFamily: SANS,
-            fontWeight: 500,
-            fontSize: "clamp(11px, 1.4vw, 13px)",
-            letterSpacing: "0.01em",
-            color: "rgba(220,224,232,0.6)",
-            zIndex: 2,
-          }}
-        >
-          by{" "}
-          <a
-            href={signature.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: "rgba(220,224,232,0.6)",
-              textDecoration: "none",
-              transition: "color 0.2s ease",
-            }}
-            onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
-              e.currentTarget.style.color = COL_TEXT
-            }}
-            onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
-              e.currentTarget.style.color = "rgba(220,224,232,0.6)"
-            }}
-          >
-            {signature.name}
-          </a>
-        </span>
-      )}
     </div>
   )
 }

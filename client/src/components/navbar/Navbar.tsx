@@ -11,23 +11,6 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const isHomePage = location.pathname === '/' || location.pathname === '/demo/video';
-  const [isHeroLocked, setIsHeroLocked] = useState(isHomePage);
-
-  useEffect(() => {
-    if (!isHomePage) {
-      setIsHeroLocked(false);
-      return;
-    }
-
-    const handleLockChange = (e: any) => {
-      setIsHeroLocked(e.detail?.locked ?? false);
-    };
-
-    window.addEventListener('hero-lock-change', handleLockChange);
-    return () => window.removeEventListener('hero-lock-change', handleLockChange);
-  }, [isHomePage]);
-
   const navItems: SlideTabItem[] = [
     { label: "Discover", href: "/" },
     { label: "Catalog", href: "/products" },
@@ -50,9 +33,7 @@ export const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E5EAF0] transition-all duration-500 ease-out ${
-      isHomePage && isHeroLocked ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100 pointer-events-auto'
-    }`}>
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E5EAF0]">
       {/* 1. Editorial Announcement Ticker Bar */}
       <div className="bg-[#0F1412] text-[#E6E9E4] text-[11px] font-semibold py-1.5 px-4 overflow-hidden border-b border-white/10">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
