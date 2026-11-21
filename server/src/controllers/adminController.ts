@@ -11,7 +11,7 @@ export const adminController = {
         aivenPostgreSql: { status: 'ONLINE', latencyMs: 14, mode: 'ACID Transactional Source of Truth' },
         aivenApacheKafka: { status: 'ONLINE', latencyMs: 22, topics: ['evalipie.order.placed', 'evalipie.inventory.changed'] },
         aivenOpenSearch: { status: 'ONLINE', latencyMs: 18, indexedDocs: db.products.size },
-        gnaniVoiceApi: { status: 'ONLINE', latencyMs: 110, engines: ['Prisma v3.0 STT', 'Timbre v3.0 TTS'] }
+        redisCache: { status: 'ONLINE', latencyMs: 2, mode: 'Sub-millisecond Session & Catalog Cache' }
       },
       timestamp: new Date().toISOString()
     });

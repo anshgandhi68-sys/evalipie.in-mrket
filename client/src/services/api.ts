@@ -3,10 +3,7 @@ import {
   MultiSellerOffer,
   Shop,
   Order,
-  LedgerCustomer,
-  LedgerEntry,
-  AiDiscoveryResult,
-  VoiceSessionState
+  AiDiscoveryResult
 } from '../../../shared/types.js';
 
 const BASE_URL = '/api/v1';
@@ -121,51 +118,6 @@ export const api = {
 
   getDemandInsights: () => {
     return fetchJson<any>('/merchant/demand-insights');
-  },
-
-  // Voice Khata
-  getLedgerCustomers: (orgId = 'org-sharma') => {
-    return fetchJson<LedgerCustomer[]>(`/ledger/customers?orgId=${orgId}`);
-  },
-
-  getLedgerEntries: (orgId = 'org-sharma', customerId?: string) => {
-    const q = customerId ? `&customerId=${customerId}` : '';
-    return fetchJson<LedgerEntry[]>(`/ledger/entries?orgId=${orgId}${q}`);
-  },
-
-  getLedgerSummary: (orgId = 'org-sharma') => {
-    return fetchJson<any>(`/ledger/summary?orgId=${orgId}`);
-  },
-
-  processVoiceText: (text: string, sessionId?: string, orgId = 'org-sharma') => {
-    return fetchJson<VoiceSessionState>('/voice/process-text', {
-      method: 'POST',
-      body: JSON.stringify({ text, sessionId, orgId }),
-    });
-  },
-
-  processVoiceAudio: (audioBlob: Blob, sessionId?: string, languageCode = 'indic-auto', orgId = 'org-sharma') => {
-    return new Promise<any>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          const base64 = (reader.result as string).split(',')[1];
-          const res = await fetchJson<any>('/voice/process-audio', {
-            method: 'POST',
-            body: JSON.stringify({ audioBase64: base64, sessionId, languageCode, orgId }),
-          });
-          resolve(res);
-        } catch (err) {
-          reject(err);
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(audioBlob);
-    });
-  },
-
-  getTtsStreamUrl: (text: string, voice = 'Nalini', language = 'hi-IN') => {
-    return `/api/v1/voice/tts-stream?text=${encodeURIComponent(text)}&voice=${voice}&language=${language}`;
   },
 
   // Admin

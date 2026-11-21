@@ -16,7 +16,6 @@ export const Navbar: React.FC = () => {
     { label: "Catalog", href: "/products" },
     { label: "Local Rail", href: "/demo/rail" },
     { label: "AI Search", href: "/ai" },
-    { label: "Voice Khata", href: "/business/voice-khata", badge: "Gnani" },
     { label: "Merchant OS", href: "/business/dashboard" },
     { label: "Admin", href: "/admin" },
   ];
@@ -42,7 +41,7 @@ export const Navbar: React.FC = () => {
               Evalipie Platform
             </span>
             <span className="text-gray-300 font-medium truncate">
-              Connecting Every Local Shop ✦ Real-Time Inventory Truth ✦ Voice Khata Powered ✦ Zero-Overselling Guaranteed
+              Connecting Every Local Shop ✦ Real-Time Inventory Truth ✦ Instant 30-Min Delivery ✦ Zero-Overselling Guaranteed
             </span>
           </div>
 

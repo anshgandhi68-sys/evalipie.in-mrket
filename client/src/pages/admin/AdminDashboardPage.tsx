@@ -57,7 +57,7 @@ export const AdminDashboardPage: React.FC = () => {
                   All Systems Online
                 </span>
               </div>
-              <p className="text-xs text-gray-500 font-medium">Real-time observability of Aiven PostgreSQL, Kafka, OpenSearch, and Gnani Voice</p>
+              <p className="text-xs text-gray-500 font-medium">Real-time observability of Aiven PostgreSQL, Kafka, OpenSearch, and Redis Cache</p>
             </div>
           </div>
 
@@ -111,13 +111,13 @@ export const AdminDashboardPage: React.FC = () => {
 
             <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm space-y-2">
               <div className="flex justify-between items-center">
-                <span className="font-extrabold text-sm text-gray-900">Gnani API Platform</span>
+                <span className="font-extrabold text-sm text-gray-900">Redis In-Memory Cache</span>
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               </div>
-              <div className="text-xs text-gray-500">Prisma v3.0 STT & Timbre v3.0 TTS</div>
+              <div className="text-xs text-gray-500">Sub-millisecond Session & Catalog Cache</div>
               <div className="text-xs font-bold text-[#167D73] pt-1 flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Streaming Ready: {health.services.gnaniVoiceApi.latencyMs}ms</span>
+                <span>Cache Latency: {health.services.redisCache?.latencyMs ?? 2}ms</span>
               </div>
             </div>
           </div>

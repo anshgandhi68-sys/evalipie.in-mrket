@@ -6,7 +6,7 @@ import {
   Sparkles, Store, MapPin, ArrowRight, ShieldCheck, CheckCircle2,
   Star, Headphones, Laptop, Smartphone, Utensils, Shirt, ShoppingBag, 
   Trophy, Layers, Clock, Zap, Flame, Filter, ChevronRight, SlidersHorizontal,
-  BadgePercent, Truck, HeartHandshake, Mic
+  BadgePercent, Truck, HeartHandshake
 } from 'lucide-react';
 import { DoorHero } from '../../components/hero/DoorHero.js';
 import { ProductCard } from '../../components/catalog/ProductCard.js';
@@ -934,11 +934,11 @@ export const HomePage: React.FC = () => {
 
               <div className="space-y-2 p-4 rounded-2xl bg-gray-50/70 border border-gray-100">
                 <span className="p-2.5 bg-purple-100 text-purple-800 rounded-xl inline-block">
-                  <Mic className="w-5 h-5" />
+                  <ShieldCheck className="w-5 h-5" />
                 </span>
-                <h4 className="font-extrabold text-sm text-gray-900">Voice Khata Powered</h4>
+                <h4 className="font-extrabold text-sm text-gray-900">Direct Verified Kirana Truth</h4>
                 <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                  Shopkeepers record daily credit and sales naturally using Hindi, Kannada, and English speech technology.
+                  Every product price and stock count is directly synced with verified neighborhood retailers with zero phantom listings.
                 </p>
               </div>
             </div>

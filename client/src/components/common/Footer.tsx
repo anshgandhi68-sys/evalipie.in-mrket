@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Sparkles, Mic, Store, Heart } from 'lucide-react';
+import { Shield, Sparkles, Store, Heart } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -41,8 +41,8 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="font-bold text-[#111827] text-xs uppercase tracking-wider mb-3">Merchant & Retail OS</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/business/voice-khata" className="hover:text-[#167D73] transition-colors flex items-center gap-1 font-semibold text-[#167D73]"><Mic className="w-3 h-3" /> Voice Khata (Gnani PS2)</Link></li>
-              <li><Link to="/business/voice-khata/ledger" className="hover:text-[#167D73] transition-colors">Customer Credit/Debit Ledger</Link></li>
+              <li><Link to="/business/dashboard" className="hover:text-[#167D73] transition-colors">Merchant OS Dashboard</Link></li>
+              <li><Link to="/business/listings" className="hover:text-[#167D73] transition-colors">Unified Catalog Manager</Link></li>
               <li><Link to="/shop/sharma-electronics" className="hover:text-[#167D73] transition-colors">Sharma Electronics Storefront</Link></li>
               <li><Link to="/business/branches" className="hover:text-[#167D73] transition-colors">Retail Chain 3-Branch Manager</Link></li>
             </ul>
@@ -56,7 +56,7 @@ export const Footer: React.FC = () => {
               <li><span className="text-gray-500">Aiven PostgreSQL (ACID Concurrency)</span></li>
               <li><span className="text-gray-500">Aiven Kafka (Transactional Outbox)</span></li>
               <li><span className="text-gray-500">Aiven OpenSearch (Fuzzy Match)</span></li>
-              <li><span className="text-gray-500">Gnani Prisma STT & Timbre TTS</span></li>
+              <li><span className="text-gray-500">Real-Time Inventory Sync</span></li>
             </ul>
           </div>
         </div>

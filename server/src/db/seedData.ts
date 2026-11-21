@@ -599,7 +599,7 @@ export const initialInventory: StoreInventory[] = [
   }
 ];
 
-// Initial Ledger Customers for Sharma Electronics (Pillar 4: Voice Khata)
+// Initial Store Customers for Sharma Electronics
 export const initialLedgerCustomers: LedgerCustomer[] = [
   {
     id: 'cust-ramesh-ind',

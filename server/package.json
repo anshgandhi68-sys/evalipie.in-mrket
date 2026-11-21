@@ -7,8 +7,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test:concurrency": "tsx src/tests/concurrencyTest.ts",
-    "test:voice": "tsx src/tests/voiceKhataBenchmark.ts"
+    "test:concurrency": "tsx src/tests/concurrencyTest.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",

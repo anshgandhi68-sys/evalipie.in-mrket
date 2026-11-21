@@ -153,7 +153,7 @@ export interface Order {
   storeName?: string;
 }
 
-// Voice Khata Domain Models
+// Merchant Ledger Domain Models
 export interface LedgerCustomer {
   id: string;
   organizationId: string;
@@ -174,29 +174,7 @@ export interface LedgerEntry {
   amount: number;
   balanceAfter: number;
   notes?: string;
-  voiceSessionId?: string;
   createdAt: string;
-}
-
-export interface VoiceSessionState {
-  sessionId: string;
-  stage: 'IDLE' | 'LISTENING' | 'PROCESSING' | 'AWAITING_CONFIRMATION' | 'DISAMBIGUATING' | 'SPEAKING' | 'COMPLETED' | 'ERROR';
-  partialTranscript?: string;
-  finalTranscript?: string;
-  detectedIntent?: string;
-  pendingTransaction?: {
-    customerId?: string;
-    customerName: string;
-    amount: number;
-    type: LedgerEntryType;
-    disambiguationOptions?: string[];
-  };
-  spokenResponse?: string;
-  error?: string;
-  firstTurnDisclosed: boolean;
-  latencyMs?: number;
-  audioBase64?: string;
-  committedEntry?: LedgerEntry;
 }
 
 // Transactional Outbox & Kafka Models

@@ -15,14 +15,6 @@ export const config = {
   geminiApiKey: process.env.GEMINI_API_KEY || '',
   openAiApiKey: process.env.OPENAI_API_KEY || '',
   
-  // Gnani Voice Platform (Vachana / Prisma v3.0 / Timbre)
-  gnaniApiKey: process.env.GNANI_API_KEY || '',
-  gnaniToken: process.env.GNANI_TOKEN || '',
-  gnaniSttRestUrl: process.env.GNANI_STT_REST_URL || 'https://api.vachana.ai/stt/v3',
-  gnaniSttWsUrl: process.env.GNANI_STT_WS_URL || 'wss://api.vachana.ai/stt/v3/stream',
-  gnaniTtsUrl: process.env.GNANI_TTS_URL || 'https://api.vachana.ai/api/v1/tts/inference',
-  gnaniTtsWsUrl: process.env.GNANI_TTS_WS_URL || 'wss://api.vachana.ai/api/v1/tts',
-  
   // Fallback dev mode when external credentials are not set
   isDevFallback: !process.env.AIVEN_PG_URL
 };

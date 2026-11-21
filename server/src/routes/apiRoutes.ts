@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { catalogController } from '../controllers/catalogController.js';
 import { checkoutController } from '../controllers/checkoutController.js';
 import { merchantController } from '../controllers/merchantController.js';
-import { voiceKhataController } from '../controllers/voiceKhataController.js';
 import { adminController } from '../controllers/adminController.js';
 
 export const apiRouter = Router();
@@ -31,15 +30,7 @@ apiRouter.get('/merchant/orders', merchantController.getOrders);
 apiRouter.put('/merchant/orders/:id/status', merchantController.updateOrderStatus);
 apiRouter.get('/merchant/demand-insights', merchantController.getDemandInsights);
 
-// 4. Voice Khata (Gnani Hackathon PS2 - Real Prisma STT & Timbre TTS)
-apiRouter.get('/ledger/customers', voiceKhataController.getCustomers);
-apiRouter.get('/ledger/entries', voiceKhataController.getEntries);
-apiRouter.get('/ledger/summary', voiceKhataController.getSummary);
-apiRouter.post('/voice/process-text', voiceKhataController.processVoiceText);
-apiRouter.post('/voice/process-audio', voiceKhataController.processVoiceAudio);
-apiRouter.get('/voice/tts-stream', voiceKhataController.streamTts);
-
-// 5. Platform Admin & Concurrency Verification
+// 4. Platform Admin & Concurrency Verification
 apiRouter.get('/admin/health', adminController.getHealth);
 apiRouter.get('/admin/outbox', adminController.getOutboxTelemetry);
 apiRouter.post('/admin/concurrency-test', adminController.runConcurrencySimulation);

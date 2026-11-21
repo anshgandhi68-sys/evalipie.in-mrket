@@ -8,8 +8,6 @@ import { CartDrawer } from './components/cart/CartDrawer.js';
 import { HomePage } from './pages/marketplace/HomePage.js';
 import { ProductsPage } from './pages/marketplace/ProductsPage.js';
 import { ShopStorefrontPage } from './pages/marketplace/ShopStorefrontPage.js';
-import { VoiceKhataPage } from './pages/business/VoiceKhataPage.js';
-import { LedgerTransactionsPage } from './pages/business/LedgerTransactionsPage.js';
 import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 import DemoOne from './components/ui/demo.js';
@@ -35,14 +33,12 @@ export const App: React.FC = () => {
                 <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
                 <Route path="/ai" element={<HomePage />} />
 
-                {/* Business & Voice Khata Routes */}
+                {/* Business Routes */}
                 <Route path="/business" element={<BusinessDashboardPage />} />
                 <Route path="/business/dashboard" element={<BusinessDashboardPage />} />
                 <Route path="/business/branches" element={<BusinessDashboardPage />} />
                 <Route path="/business/listings" element={<BusinessDashboardPage />} />
                 <Route path="/business/orders" element={<BusinessDashboardPage />} />
-                <Route path="/business/voice-khata" element={<VoiceKhataPage />} />
-                <Route path="/business/voice-khata/ledger" element={<LedgerTransactionsPage />} />
 
                 {/* Platform Admin */}
                 <Route path="/admin" element={<AdminDashboardPage />} />

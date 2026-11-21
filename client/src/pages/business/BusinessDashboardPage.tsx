@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Store, ShoppingBag, Package, AlertTriangle, TrendingUp, CheckCircle, Clock, ChevronRight, Mic } from 'lucide-react';
+import { Store, ShoppingBag, Package, AlertTriangle, TrendingUp, CheckCircle, Clock, ChevronRight } from 'lucide-react';
 import { api } from '../../services/api.js';
 import { useAuth } from '../../context/AuthContext.js';
 
@@ -105,11 +105,11 @@ export const BusinessDashboardPage: React.FC = () => {
             </Link>
 
             <Link
-              to="/business/voice-khata"
+              to="/business/listings"
               className="bg-[#167D73] hover:bg-[#105B55] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm flex items-center gap-1.5 transition-all"
             >
-              <Mic className="w-4 h-4" />
-              <span>Open Voice Khata</span>
+              <Package className="w-4 h-4" />
+              <span>Manage Inventory</span>
             </Link>
           </div>
         </div>
