@@ -24,6 +24,12 @@ export interface MetroHeroProps {
   scrubDistance?: number
   className?: string
   style?: React.CSSProperties
+  /** When true, automatically releases the scroll lock at completion so user scrolls into the page */
+  autoUnlock?: boolean
+  /** Callback fired when the video completes opening */
+  onComplete?: () => void
+  /** Optional custom button to skip or jump directly to page content */
+  showSkipButton?: boolean
 }
 
 const DEFAULT_VIDEO = "https://cdn.21st.dev/assets/mirror/21/21a77eac28eacbb7e142016eefeaa0b4a766619e51113629a3bc6df6af066c0f.mp4"
@@ -46,6 +52,9 @@ export default function MetroHero({
   scrubDistance = 3200,
   className,
   style,
+  autoUnlock = false,
+  onComplete,
+  showSkipButton = false,
 }: MetroHeroProps) {
   const sectionRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -54,6 +63,7 @@ export default function MetroHero({
   const taglineRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
+  const [unlockedState, setUnlockedState] = useState(false)
 
   useEffect(() => {
     const video = videoRef.current
@@ -74,6 +84,7 @@ export default function MetroHero({
     let locked = false
     let lockedScrollY = 0
     let touchStartY = 0
+    let isCompleted = false
 
     const onLoadedData = () => {
       duration = video.duration || 0
@@ -101,11 +112,11 @@ export default function MetroHero({
 
     const onSeeked = () => {
       isSeeking = false
-      if (pendingTime !== null) {
+      if (pendingTime !== null && video) {
         const t = pendingTime
         pendingTime = null
         isSeeking = true
-        if (video) video.currentTime = t
+        video.currentTime = t
       }
     }
     video.addEventListener("seeked", onSeeked)
@@ -116,15 +127,18 @@ export default function MetroHero({
         return
       }
       isSeeking = true
-      if (video) video.currentTime = t
+      if (video) {
+        video.currentTime = t
+      }
     }
 
-    // Locked for the entire lifetime of this component — there is no
-    // release valve in either direction. Scroll input only ever moves
-    // the video back and forth; the page itself never moves.
+    // Locked for the entire lifetime of this component — or until
+    // autoUnlock is enabled and progress reaches 1.0. Scroll input
+    // drives video.currentTime; once the video finishes, page unlocks.
     function engageLock() {
       if (locked || typeof document === "undefined") return
       locked = true
+      setUnlockedState(false)
       lockedScrollY = window.scrollY
       const b = document.body.style
       b.position = "fixed"
@@ -136,9 +150,10 @@ export default function MetroHero({
       b.overscrollBehavior = "none"
     }
 
-    function releaseLock() {
+    function releaseLock(scrollToContent = false) {
       if (!locked || typeof document === "undefined") return
       locked = false
+      setUnlockedState(true)
       const y = lockedScrollY
       const b = document.body.style
       b.position = ""
@@ -148,12 +163,26 @@ export default function MetroHero({
       b.width = ""
       b.height = ""
       b.overscrollBehavior = ""
-      window.scrollTo(0, y)
+      if (scrollToContent && section) {
+        window.scrollTo({ top: section.offsetHeight, behavior: "smooth" })
+      } else {
+        window.scrollTo(0, y)
+      }
     }
 
     engageLock()
 
     function addDelta(deltaY: number) {
+      // If locked and autoUnlock is enabled, check if reaching end
+      if (autoUnlock && targetProgress >= 0.96 && deltaY > 0) {
+        if (!isCompleted) {
+          isCompleted = true
+          onComplete?.()
+          releaseLock(true)
+          return false
+        }
+      }
+
       const next = clamp(targetProgress + deltaY / scrubDistance, 0, 1)
       targetProgress = next
       if (targetProgress > 0.001) hasStartedScrolling = true
@@ -161,6 +190,16 @@ export default function MetroHero({
     }
 
     const onWheel = (e: WheelEvent) => {
+      if (!locked) {
+        // If user scrolled back to top, re-engage lock
+        if (window.scrollY <= 10 && e.deltaY < 0) {
+          engageLock()
+          targetProgress = 0.95
+          isCompleted = false
+          e.preventDefault()
+        }
+        return
+      }
       addDelta(e.deltaY)
       e.preventDefault()
     }
@@ -169,6 +208,17 @@ export default function MetroHero({
       touchStartY = e.touches[0]?.clientY ?? 0
     }
     const onTouchMove = (e: TouchEvent) => {
+      if (!locked) {
+        if (window.scrollY <= 10) {
+          const y = e.touches[0]?.clientY ?? touchStartY
+          if (y > touchStartY) {
+            engageLock()
+            targetProgress = 0.95
+            isCompleted = false
+          }
+        }
+        return
+      }
       const y = e.touches[0]?.clientY ?? touchStartY
       const deltaY = touchStartY - y
       touchStartY = y
@@ -179,9 +229,6 @@ export default function MetroHero({
     window.addEventListener("wheel", onWheel, { passive: false })
     window.addEventListener("touchstart", onTouchStart, { passive: true })
     window.addEventListener("touchmove", onTouchMove, { passive: false })
-    // Also bind directly on the element itself, with capture — on some
-    // iOS versions a window-level listener alone can lose the race
-    // against the browser's own native scroll handling.
     section.addEventListener("touchstart", onTouchStart, { passive: true, capture: true })
     section.addEventListener("touchmove", onTouchMove, { passive: false, capture: true })
 
@@ -235,7 +282,25 @@ export default function MetroHero({
       cancelAnimationFrame(rafId)
       releaseLock()
     }
-  }, [scrubDistance])
+  }, [scrubDistance, autoUnlock, onComplete])
+
+  const handleSkipOrUnlock = () => {
+    if (typeof document !== "undefined") {
+      const b = document.body.style
+      b.position = ""
+      b.top = ""
+      b.left = ""
+      b.right = ""
+      b.width = ""
+      b.height = ""
+      b.overscrollBehavior = ""
+      setUnlockedState(true)
+      onComplete?.()
+      if (sectionRef.current) {
+        window.scrollTo({ top: sectionRef.current.offsetHeight, behavior: "smooth" })
+      }
+    }
+  }
 
   return (
     <div
@@ -340,6 +405,40 @@ export default function MetroHero({
             {tagline}
           </span>
         </div>
+      )}
+
+      {/* Skip / Enter marketplace button */}
+      {(showSkipButton || autoUnlock) && (
+        <button
+          onClick={handleSkipOrUnlock}
+          type="button"
+          style={{
+            position: "absolute",
+            top: "clamp(16px, 3vh, 32px)",
+            right: "clamp(16px, 3vw, 32px)",
+            zIndex: 30,
+            background: "rgba(255,255,255,0.12)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(255,255,255,0.25)",
+            color: "#ffffff",
+            padding: "8px 16px",
+            borderRadius: "9999px",
+            fontSize: "12px",
+            fontWeight: 600,
+            letterSpacing: "0.05em",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.25)"
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.12)"
+          }}
+        >
+          Explore Marketplace ↓
+        </button>
       )}
 
       <div
