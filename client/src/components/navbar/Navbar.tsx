@@ -310,7 +310,7 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <div className="ml-auto hidden xl:flex items-center gap-2 text-[11px] text-gray-300 font-semibold bg-white/5 px-2.5 py-0.5 rounded border border-white/10">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
             <span>142 Bengaluru Local Hubs Active</span>
           </div>
         </div>

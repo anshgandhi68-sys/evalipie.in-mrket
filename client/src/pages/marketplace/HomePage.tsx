@@ -272,16 +272,7 @@ export const HomePage: React.FC = () => {
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2">
             
             {/* Main Feature Banner (8 cols) */}
-            <div className="lg:col-span-8 bg-gradient-to-br from-[#0F1412] via-[#142320] to-[#0A1614] rounded-3xl p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden shadow-xl border border-white/10 group min-h-[380px]">
-              {/* Subtle ambient grid backdrop */}
-              <div 
-                className="absolute inset-0 opacity-15 pointer-events-none"
-                style={{
-                  backgroundImage: `radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)`,
-                  backgroundSize: '24px 24px'
-                }}
-              />
-              <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 bg-[#167D73]/30 rounded-full blur-3xl pointer-events-none" />
+            <div className="lg:col-span-8 bg-gradient-to-br from-[#111827] via-[#132224] to-[#0D1C1A] rounded-3xl p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden shadow-xl border border-white/10 group min-h-[380px]">
 
               <div className="space-y-4 relative z-10 max-w-xl">
                 <div className="inline-flex items-center gap-2 bg-[#167D73] text-white px-3 py-1 rounded-full text-[11px] font-extrabold tracking-widest uppercase">
@@ -861,7 +852,7 @@ export const HomePage: React.FC = () => {
           <section className="bg-white rounded-3xl border border-gray-200/90 p-6 sm:p-8 shadow-sm space-y-5">
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-gray-100 pb-4">
               <div className="flex items-center gap-3">
-                <span className="p-2.5 bg-red-100 text-red-600 rounded-2xl animate-pulse">
+                <span className="p-2.5 bg-red-100 text-red-600 rounded-2xl">
                   <Flame className="w-5 h-5 fill-red-500 text-red-500" />
                 </span>
                 <div>

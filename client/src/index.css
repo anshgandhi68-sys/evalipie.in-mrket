@@ -40,14 +40,3 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
-
-/* Ambient Pulse Animation */
-@keyframes pulse-ring {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 0.3; }
-  100% { transform: scale(0.95); opacity: 0.8; }
-}
-
-.animate-pulse-ring {
-  animation: pulse-ring 2s infinite ease-in-out;
-}
