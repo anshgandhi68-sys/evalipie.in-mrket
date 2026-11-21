@@ -4,6 +4,8 @@ import { Sparkles, Store, MapPin, ArrowRight, ShieldCheck, CheckCircle2 } from '
 import { DoorHero } from '../../components/hero/DoorHero.js';
 import { ProductCard } from '../../components/catalog/ProductCard.js';
 import { SellerComparisonModal } from '../../components/catalog/SellerComparisonModal.js';
+import ClothingRailHero from '../../components/ui/product-rail-gallery.js';
+import { RAIL_DEMO_ITEMS } from '../../components/ui/clothing-rail-demo.js';
 import { api } from '../../services/api.js';
 import { CanonicalProduct, MultiSellerOffer, Shop } from '../../../../shared/types.js';
 
@@ -182,6 +184,35 @@ export const HomePage: React.FC = () => {
               </Link>
             ))}
           </div>
+        </section>
+
+        {/* 3.5. Interactive Merchant Clothing Rail (Local Boutique Edit) */}
+        <section className="bg-white rounded-3xl border border-gray-200 p-6 sm:p-10 shadow-lg space-y-4">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-2 pb-2">
+            <div>
+              <span className="text-[11px] font-bold text-[#167D73] uppercase tracking-wider">Tactile 3D Rail · Local Boutique Edit</span>
+              <h2 className="text-2xl font-black text-gray-900">Interactive Merchant Rail</h2>
+              <p className="text-xs text-gray-500">Brush along the rail, slide a hanger, or lift any piece to inspect front and back details before purchasing.</p>
+            </div>
+            <Link to="/products?category=Apparel" className="text-xs font-bold text-[#167D73] hover:underline flex items-center gap-1 self-start sm:self-auto">
+              <span>View All Apparel</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <ClothingRailHero
+            items={RAIL_DEMO_ITEMS}
+            hanger="none"
+            autoplay={true}
+            action={
+              <Link
+                to="/products?category=Apparel"
+                className="inline-flex items-center gap-2 rounded-full bg-[#167D73] px-6 py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#105B55] transition-all"
+              >
+                <span>Shop This Boutique Edit</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            }
+          />
         </section>
 
         {/* 4. Trending in Bengaluru (Multi-Seller Catalog Feed) */}
