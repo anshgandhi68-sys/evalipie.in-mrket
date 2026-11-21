@@ -1,18 +1,42 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import './DoorHero.css';
 
 // ─────────────────────────────────────────────────────────────
-// EVALIPIE ARCHITECTURAL 3D DOOR SCROLL HERO
-// Exactly matching prototype reference in media_1795265028299_796ce432.html & Screenshot 5
+// EVALIPIE ARCHITECTURAL 3D DOOR SCROLL HERO & DISCOVERY PORTAL
+// Exactly matching prototype reference with 100% functional search,
+// real interactive city dropdown, categories, and prompt chips.
 // ─────────────────────────────────────────────────────────────
 
 export interface DoorHeroProps {
   onSelectCategory?: (catKey: string) => void;
+  onSearch?: (query: string) => void;
 }
 
-export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
+const CITIES = ['Bengaluru', 'Mumbai', 'Delhi', 'Hyderabad', 'Chennai', 'Pune'];
+
+const QUICK_CATS = [
+  { key: 'AUDIO', name: 'Electronics & Audio', icon: '🎧' },
+  { key: 'LAPTOPS', name: 'Computers & Laptops', icon: '💻' },
+  { key: 'MOBILES', name: 'Mobiles & Gadgets', icon: '📱' },
+  { key: 'HOME & KITCHEN', name: 'Home & Kitchen', icon: '🍳' },
+  { key: 'FOOTWEAR', name: 'Lifestyle & Footwear', icon: '👟' },
+];
+
+const PROMPT_CHIPS = [
+  'Clear audio for online meetings under ₹3,000',
+  'Laptop for programming under ₹60,000',
+  'Compact kitchen appliance for apartment',
+  'Wireless keyboard for work',
+];
+
+export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }) => {
+  const { activeCity, setActiveCity } = useAuth();
+  const [searchInput, setSearchInput] = useState('');
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+
   const heroRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
@@ -25,6 +49,8 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
   const c1Ref = useRef<HTMLElement>(null);
   const c2Ref = useRef<HTMLElement>(null);
   const c3Ref = useRef<HTMLElement>(null);
+  const insideRef = useRef<HTMLDivElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const hero = heroRef.current;
@@ -39,6 +65,8 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
     const c1 = c1Ref.current;
     const c2 = c2Ref.current;
     const c3 = c3Ref.current;
+    const inside = insideRef.current;
+    const portal = portalRef.current;
 
     if (!hero || !stage || !world || !frame || !dl || !dr) return;
 
@@ -90,19 +118,35 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
         intro.style.pointerEvents = introOpacity < 0.5 ? 'none' : 'auto';
       }
 
-      // 4. Hint button fade
+      // 4. Miniature interior preview fade out as camera approaches doorway (0.32 -> 0.48)
+      if (inside) {
+        const insideOpacity = 1 - clamp((p - 0.32) / 0.16, 0, 1);
+        inside.style.opacity = String(insideOpacity);
+      }
+
+      // 5. Full-bleed interactive portal fade in as camera crosses threshold (0.46 -> 0.72)
+      if (portal) {
+        const pStart = 0.46;
+        const pFull = 0.72;
+        const portalOpacity = clamp((p - pStart) / (pFull - pStart), 0, 1);
+        portal.style.opacity = String(portalOpacity);
+        portal.style.pointerEvents = portalOpacity > 0.4 ? 'auto' : 'none';
+        portal.style.transform = `translateY(${(1 - portalOpacity) * 20}px)`;
+      }
+
+      // 5. Hint button fade
       if (hint) {
         const hintOpacity = 1 - clamp(p * 10, 0, 1);
         hint.style.opacity = String(hintOpacity);
         hint.style.pointerEvents = p > 0.08 ? 'none' : 'auto';
       }
 
-      // 5. Progress bar
+      // 6. Progress bar
       if (bar) {
         bar.style.transform = `scaleX(${p})`;
       }
 
-      // 6. Parallax clouds
+      // 7. Parallax clouds
       if (c1) c1.style.marginLeft = `${-p * 60}px`;
       if (c2) c2.style.marginLeft = `${-p * 100}px`;
       if (c3) c3.style.marginLeft = `${-p * 140}px`;
@@ -137,6 +181,18 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
         top: heroRef.current.offsetHeight,
         behavior: 'smooth'
       });
+    }
+  };
+
+  const handleSubmitSearch = (overrideQuery?: string) => {
+    const q = (overrideQuery !== undefined ? overrideQuery : searchInput).trim();
+    if (!q) return;
+    onSearch?.(q);
+    const aiSec = document.getElementById('ai');
+    if (aiSec) {
+      aiSec.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -190,12 +246,12 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
               <small>HOME</small>
             </div>
 
-            {/* Frame and Interior */}
+            {/* Frame and Interior Preview */}
             <div className="frame" id="frame" ref={frameRef}>
-              <div className="inside">
+              <div className="inside" ref={insideRef}>
                 <div className="in-hd">
                   <b>Evalipie</b>
-                  <span>Bengaluru ▾</span>
+                  <span>{activeCity} ▾</span>
                 </div>
                 <h2>Find exactly what you need.</h2>
                 <p>From every shop.</p>
@@ -214,6 +270,135 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
               <div className="door dl" id="dl" ref={dlRef} />
               <div className="door dr" id="dr" ref={drRef} />
             </div>
+          </div>
+        </div>
+
+        {/* Full-bleed, Crisp, High-Resolution Interactive Discovery Portal */}
+        {/* Smoothly fades in at p >= 0.38 as the user enters through the doors */}
+        <div 
+          className="portal-interior" 
+          id="portalInterior" 
+          ref={portalRef}
+          style={{ opacity: 0, pointerEvents: 'none' }}
+        >
+          <div className="portal-container">
+            {/* Top Bar with City Selector & Live Indicator */}
+            <div className="portal-topbar">
+              <div className="portal-brand">
+                <span className="brand-badge">EVALIPIE AI</span>
+                <div className="relative inline-block text-left">
+                  <button 
+                    type="button" 
+                    className="city-btn"
+                    onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
+                    title="Change Delivery City"
+                  >
+                    <span>📍 {activeCity}</span>
+                    <span className="text-[10px] ml-1">▾</span>
+                  </button>
+                  {isCityDropdownOpen && (
+                    <div className="city-dropdown-menu">
+                      {CITIES.map(c => (
+                        <button
+                          key={c}
+                          type="button"
+                          className={`city-dropdown-item ${c === activeCity ? 'active' : ''}`}
+                          onClick={() => {
+                            setActiveCity(c);
+                            setIsCityDropdownOpen(false);
+                          }}
+                        >
+                          <span>{c}</span>
+                          {c === activeCity && <span className="text-xs text-[#167D73] font-bold">✓</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="portal-status">
+                <span className="status-dot"></span>
+                <span>4 Verified Stores Online · Real-Time Stock</span>
+              </div>
+            </div>
+
+            {/* Headline */}
+            <div className="portal-header">
+              <h2>Find exactly what you need.</h2>
+              <p>One intelligent search across every neighborhood shop.</p>
+            </div>
+
+            {/* Real Interactive Search Bar */}
+            <form 
+              className="portal-search-form" 
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmitSearch();
+              }}
+            >
+              <div className="portal-search-box">
+                <span className="search-icon">🔍</span>
+                <input 
+                  type="text"
+                  className="portal-input"
+                  placeholder="Describe what you need… (e.g. wireless headphones under ₹2,000)"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+                <button type="submit" className="portal-submit-btn">
+                  <span>✦ Ask AI</span>
+                </button>
+              </div>
+            </form>
+
+            {/* Quick Interactive Category Pills */}
+            <div className="portal-categories">
+              <span className="cat-label">POPULAR:</span>
+              {QUICK_CATS.map(cat => (
+                <button
+                  key={cat.key}
+                  type="button"
+                  className="portal-cat-btn"
+                  onClick={() => {
+                    onSelectCategory?.(cat.key);
+                    document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  <span>{cat.icon}</span>
+                  <span>{cat.name}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Interactive Prompt Chips */}
+            <div className="portal-chips">
+              {PROMPT_CHIPS.map((chip, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className="portal-chip-btn"
+                  onClick={() => {
+                    setSearchInput(chip);
+                    handleSubmitSearch(chip);
+                  }}
+                >
+                  {chip}
+                </button>
+              ))}
+            </div>
+
+            {/* Bottom Navigation CTA */}
+            <button 
+              type="button" 
+              className="portal-scroll-cta"
+              onClick={() => {
+                document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              <span>Explore verified local inventory below</span>
+              <span>↓</span>
+            </button>
           </div>
         </div>
 
@@ -238,3 +423,4 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
 };
 
 export default DoorHero;
+

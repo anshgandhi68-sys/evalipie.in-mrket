@@ -18,7 +18,7 @@
 
 /* HERO — scroll-driven door */
 #hero {
-  height: 480vh;
+  height: 320vh;
   position: relative;
 }
 
@@ -230,13 +230,12 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(120% 70% at 50% 0%, var(--mint), var(--bg) 70%);
-  container-type: size;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3cqw;
-  padding: 6cqw;
+  gap: 10px;
+  padding: 16px;
   text-align: center;
   overflow: hidden;
 }
@@ -248,8 +247,8 @@
   right: 0;
   display: flex;
   justify-content: space-between;
-  padding: 3.5cqw 5cqw;
-  font-size: 4cqw;
+  padding: 8px 12px;
+  font-size: 11px;
   background: #fff;
   border-bottom: 1px solid var(--bd);
 }
@@ -259,31 +258,32 @@
 
 .inside h2 {
   margin: 0;
-  font-size: 9.5cqw;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-size: 17px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   color: var(--navy);
+  font-weight: 800;
 }
 
 .inside p {
   margin: 0;
-  font-size: 4.6cqw;
+  font-size: 11px;
   color: var(--teal);
   font-weight: 700;
 }
 
 .in-search {
-  width: 100%;
+  width: 90%;
   background: #fff;
   border: 1px solid var(--bd);
   border-radius: 999px;
-  padding: 2.6cqw 3cqw 2.6cqw 4cqw;
+  padding: 6px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 3.8cqw;
+  font-size: 10px;
   color: var(--mut);
-  box-shadow: 0 4px 16px rgba(17, 24, 39, 0.06);
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06);
 }
 
 .in-search u {
@@ -291,24 +291,25 @@
   background: var(--ai);
   color: #fff;
   border-radius: 999px;
-  padding: 1.2cqw 3cqw;
+  padding: 2px 8px;
   font-weight: 700;
+  font-size: 9px;
 }
 
 .in-row {
   display: flex;
-  gap: 3cqw;
+  gap: 8px;
 }
 
 .in-row span {
-  width: 19cqw;
-  height: 19cqw;
-  border-radius: 4cqw;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   background: #fff;
   border: 1px solid var(--bd);
   display: grid;
   place-items: center;
-  font-size: 9cqw;
+  font-size: 14px;
 }
 
 .door {
@@ -415,6 +416,306 @@
   background: var(--teal);
   transform: scaleX(0);
   transform-origin: left;
+}
+
+/* PORTAL INTERIOR — Full-bleed High-Resolution Interactive Discovery Terminal */
+.portal-interior {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  background: radial-gradient(120% 85% at 50% 10%, #E8F6F2 0%, #F4FAF7 45%, #F7F9FC 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(20px, 4vw, 48px);
+  box-sizing: border-box;
+  will-change: opacity, transform;
+}
+
+.portal-container {
+  width: min(92vw, 760px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(14px, 2.2vh, 22px);
+}
+
+.portal-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--bd);
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+.portal-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-badge {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--deep);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.city-btn {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.city-btn:hover {
+  background: var(--mint);
+  color: var(--teal);
+}
+
+.city-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: #fff;
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(17, 24, 39, 0.12);
+  padding: 6px;
+  z-index: 50;
+  min-width: 160px;
+  text-align: left;
+}
+
+.city-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.city-dropdown-item:hover {
+  background: var(--mint);
+  color: var(--teal);
+}
+
+.city-dropdown-item.active {
+  background: var(--mint);
+  color: var(--deep);
+  font-weight: 700;
+}
+
+.portal-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--deep);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16A34A;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+}
+
+.portal-header h2 {
+  margin: 0;
+  font-size: clamp(28px, 4.2vw, 44px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.portal-header p {
+  margin: 6px 0 0;
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.portal-search-form {
+  width: 100%;
+}
+
+.portal-search-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 2px solid rgba(22, 125, 115, 0.35);
+  border-radius: 999px;
+  padding: 6px 8px 6px 20px;
+  box-shadow: 0 8px 28px rgba(16, 91, 85, 0.12);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.portal-search-box:focus-within {
+  border-color: var(--teal);
+  box-shadow: 0 10px 32px rgba(22, 125, 115, 0.22);
+}
+
+.search-icon {
+  font-size: 16px;
+  margin-right: 10px;
+  opacity: 0.6;
+}
+
+.portal-input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  font-size: clamp(14px, 1.6vw, 16px);
+  font-weight: 500;
+  color: var(--navy);
+  background: transparent;
+  min-width: 0;
+}
+
+.portal-input::placeholder {
+  color: var(--mut);
+}
+
+.portal-submit-btn {
+  background: linear-gradient(135deg, #7657E8 0%, #5E3ACF 100%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(118, 87, 232, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.portal-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(118, 87, 232, 0.45);
+}
+
+.portal-categories {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.cat-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--mut);
+  margin-right: 4px;
+}
+
+.portal-cat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--bd);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 6px rgba(17, 24, 39, 0.04);
+}
+
+.portal-cat-btn:hover {
+  background: var(--mint);
+  border-color: var(--teal);
+  color: var(--deep);
+  transform: translateY(-1px);
+}
+
+.portal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.portal-chip-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed rgba(22, 125, 115, 0.4);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--deep);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.portal-chip-btn:hover {
+  background: #fff;
+  border-style: solid;
+  border-color: var(--teal);
+  color: var(--navy);
+}
+
+.portal-scroll-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  color: var(--deep);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 999px;
+  transition: all 0.15s;
+}
+
+.portal-scroll-cta:hover {
+  background: rgba(22, 125, 115, 0.08);
+  color: var(--navy);
 }
 
 /* GENERAL MARKETPLACE SECTIONS */

@@ -464,10 +464,16 @@ export const HomePage: React.FC = () => {
     <div className="w-full bg-[#F7F9FC] text-[#111827] selection:bg-[#167D73] selection:text-white font-sans">
       
       {/* ── 1. NATIVE 3D STOREFRONT DOOR HERO ─────────────────────── */}
-      <DoorHero onSelectCategory={(catKey) => {
-        setSelectedCategory(catKey);
-        showToast(`Filtered by ${catKey}`);
-      }} />
+      <DoorHero 
+        onSelectCategory={(catKey) => {
+          setSelectedCategory(catKey);
+          showToast(`Filtered by ${catKey}`);
+        }} 
+        onSearch={(query) => {
+          handleAiSearch(query);
+          showToast(`Searching verified local inventory for "${query}"`);
+        }}
+      />
 
       {/* ── 2. EVALIPIE AI DISCOVERY SECTION (#ai) ────────────────── */}
       <section className="sec" id="ai">
