@@ -7,26 +7,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        lichen: '#E6E9E4',
-        ink: '#0F1412',
-        mid: '#5D6661',
-        signal: '#FF5A1F',
-        navy: {
-          900: '#111827',
-          800: '#1f2937',
-        },
-        teal: {
-          DEFAULT: '#167D73',
-          dark: '#105B55',
-          light: '#E9F7F3',
-        },
-        ai: {
-          DEFAULT: '#7657E8',
-          light: '#F0ECFD',
+        alabaster: '#F6F5F0',
+        obsidian: '#111111',
+        gridline: '#E4E2DA',
+        'slate-muted': '#5A5852',
+        terracotta: {
+          DEFAULT: '#B84A27',
+          dark: '#933B1F',
+          light: '#F8EDE8'
         }
       },
       fontFamily: {
-        sans: ['Archivo', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Space Grotesk"', 'Inter', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+      },
+      boxShadow: {
+        'architectural': '0 1px 3px rgba(17, 17, 17, 0.05), 0 10px 24px -4px rgba(17, 17, 17, 0.06)',
+        'architectural-hover': '0 20px 35px -8px rgba(17, 17, 17, 0.12), 0 2px 6px rgba(17, 17, 17, 0.04)',
+        'crisp': '0 0 0 1px #E4E2DA',
+        'crisp-terracotta': '0 0 0 1px #B84A27'
       }
     },
   },

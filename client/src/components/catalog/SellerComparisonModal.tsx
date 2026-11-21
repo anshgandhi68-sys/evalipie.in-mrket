@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Store, MapPin, CheckCircle2, AlertTriangle, ShoppingCart, Star } from 'lucide-react';
+import { X, Store, MapPin, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { CanonicalProduct, MultiSellerOffer } from '../../../../shared/types.js';
 import { useCart } from '../../context/CartContext.js';
 
@@ -21,108 +21,92 @@ export const SellerComparisonModal: React.FC<SellerComparisonModalProps> = ({
   if (!isOpen || !product) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-gray-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111111]/70 backdrop-blur-xs">
+      <div className="bg-[#FFFFFF] border border-[#111111] shadow-architectural max-w-2xl w-full max-h-[90vh] flex flex-col rounded-[0px]">
+        
         {/* Modal Header */}
-        <div className="p-5 border-b border-gray-100 flex items-start justify-between bg-gradient-to-r from-gray-50 to-white">
+        <div className="p-5 border-b border-[#E4E2DA] flex items-start justify-between bg-[#F6F5F0]">
           <div className="flex gap-4">
             <img 
               src={product.imageUrl} 
               alt={product.title} 
-              className="w-16 h-16 rounded-xl object-cover border border-gray-200 bg-white"
+              className="w-16 h-16 object-cover border border-[#E4E2DA] rounded-[0px] bg-white shrink-0"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&auto=format&fit=crop&q=80';
+              }}
             />
-            <div>
-              <span className="text-[11px] font-bold text-[#167D73] bg-[#E9F7F3] px-2 py-0.5 rounded-full uppercase">
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono font-bold text-[#111111] bg-[#FFFFFF] border border-[#111111] px-2 py-0.5 rounded-[0px] uppercase">
                 {product.category}
               </span>
-              <h3 className="font-extrabold text-gray-900 text-lg leading-tight mt-1">{product.title}</h3>
-              <p className="text-xs text-gray-500 font-medium">Brand: {product.brand} · Compare local Bengaluru stores</p>
+              <h3 className="font-display font-bold text-base sm:text-lg text-[#111111] leading-snug">
+                {product.title}
+              </h3>
+              <p className="text-xs font-mono text-[#5A5852]">
+                BRAND: {product.brand.toUpperCase()} : VERIFIED LOCAL STOCK
+              </p>
             </div>
           </div>
           <button 
+            type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+            className="text-[#5A5852] hover:text-[#111111] p-1 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 stroke-[1.5]" />
           </button>
         </div>
 
         {/* Offers List */}
         <div className="p-5 overflow-y-auto space-y-4 flex-1">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-            {offers.length} Participating Sellers in Bengaluru
+          <div className="text-[10px] font-mono font-bold text-[#5A5852] uppercase tracking-wider">
+            {offers.length} PARTICIPATING STORE OFFERS
           </div>
 
           {offers.length === 0 ? (
-            <p className="text-sm text-gray-500 py-6 text-center">No active merchant offers in this city.</p>
+            <div className="p-8 text-center text-xs font-mono text-[#5A5852]">
+              No active merchant offers listed in this city.
+            </div>
           ) : (
             offers.map((offer, idx) => (
               <div 
-                key={offer.listingId} 
-                className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                  idx === 0 
-                    ? 'border-[#167D73] bg-[#E9F7F3]/40 shadow-sm' 
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
-                }`}
+                key={offer.listingId || idx}
+                className="p-4 border border-[#E4E2DA] hover:border-[#111111] bg-[#FFFFFF] flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors rounded-[0px]"
               >
-                {/* Store Details */}
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-gray-900 text-base flex items-center gap-1.5">
-                      <Store className="w-4 h-4 text-[#167D73]" />
+                    <Store className="w-4 h-4 text-[#111111] stroke-[1.5]" />
+                    <span className="font-mono text-xs font-bold text-[#111111] uppercase">
                       {offer.merchant.shopName}
                     </span>
-                    {idx === 0 && (
-                      <span className="bg-[#167D73] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
-                        Lowest Price
-                      </span>
-                    )}
+                    <span className="text-[9px] font-mono bg-[#F6F5F0] border border-[#E4E2DA] px-1.5 py-0.5 text-[#5A5852]">
+                      VERIFIED MERCHANT
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                  <div className="flex items-center gap-3 text-xs font-mono text-[#5A5852]">
                     <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                      {offer.store.name} ({offer.store.distanceKm} km away)
-                    </span>
-                    <span className="flex items-center gap-1 font-semibold text-amber-600">
-                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                      {offer.merchant.rating}
+                      <MapPin className="w-3 h-3 text-[#B84A27] stroke-[1.5]" />
+                      <span>{offer.store.address}, {offer.store.city}</span>
                     </span>
                   </div>
 
-                  {/* Stock Indicator */}
-                  <div className="pt-1">
-                    {offer.availableQuantity > 2 ? (
-                      <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1 w-max">
-                        <CheckCircle2 className="w-3 h-3" /> In Stock ({offer.availableQuantity} units)
-                      </span>
-                    ) : offer.availableQuantity > 0 ? (
-                      <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full flex items-center gap-1 w-max">
-                        <AlertTriangle className="w-3 h-3" /> Only {offer.availableQuantity} remaining!
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full w-max">
-                        Out of Stock
-                      </span>
-                    )}
+                  <div className="text-[11px] font-mono text-[#111111]">
+                    SHELF STOCK: <b>{offer.availableQuantity} UNITS AVAILABLE</b>
                   </div>
                 </div>
 
-                {/* Price & Action */}
-                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 border-t sm:border-t-0 pt-3 sm:pt-0">
-                  <div className="text-right">
-                    <div className="text-xl font-extrabold text-[#111827]">
-                      ₹{offer.sellingPrice.toLocaleString('en-IN')}
-                    </div>
-                    {offer.originalMrp && (
-                      <div className="text-xs text-gray-400 line-through">
-                        ₹{offer.originalMrp.toLocaleString('en-IN')}
-                      </div>
-                    )}
+                <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[#E4E2DA]">
+                  <div className="text-right font-mono">
+                    <span className="text-base font-bold text-[#111111] block">
+                      INR {offer.sellingPrice.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[10px] text-[#5A5852]">
+                      INC. TAXES
+                    </span>
                   </div>
 
                   <button
-                    disabled={offer.availableQuantity <= 0}
+                    type="button"
                     onClick={() => {
                       addItem({
                         listingId: offer.listingId,
@@ -132,20 +116,16 @@ export const SellerComparisonModal: React.FC<SellerComparisonModalProps> = ({
                         shopName: offer.merchant.shopName,
                         shopSlug: offer.merchant.shopSlug,
                         price: offer.sellingPrice,
-                        originalMrp: offer.originalMrp,
                         quantity: 1,
                         imageUrl: product.imageUrl
                       });
+                      window.dispatchEvent(new CustomEvent('order-placed-event'));
                       onClose();
                     }}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 ${
-                      offer.availableQuantity > 0 
-                        ? 'bg-[#167D73] hover:bg-[#105B55] text-white shadow-sm'
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    }`}
+                    className="h-10 px-4 bg-[#111111] hover:bg-[#B84A27] text-white text-xs font-mono font-bold uppercase tracking-wider transition-colors rounded-[0px] flex items-center gap-1.5 cursor-pointer"
                   >
-                    <ShoppingCart className="w-3.5 h-3.5" />
-                    <span>Select Seller</span>
+                    <ShoppingBag className="w-3.5 h-3.5 stroke-[1.5]" />
+                    <span>SELECT</span>
                   </button>
                 </div>
               </div>
@@ -154,11 +134,19 @@ export const SellerComparisonModal: React.FC<SellerComparisonModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
-          <span>PostgreSQL protects atomic checkout across all participating merchants.</span>
-          <button onClick={onClose} className="font-bold text-gray-700 hover:text-black">Close</button>
+        <div className="p-4 border-t border-[#E4E2DA] bg-[#F6F5F0] flex justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2 bg-[#111111] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-[0px] hover:bg-[#B84A27] transition-colors"
+          >
+            CLOSE
+          </button>
         </div>
+
       </div>
     </div>
   );
 };
+
+export default SellerComparisonModal;

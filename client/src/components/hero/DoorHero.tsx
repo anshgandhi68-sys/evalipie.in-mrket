@@ -98,7 +98,7 @@ export const DoorHero: React.FC = () => {
         bar.style.transform = `scaleX(${p})`;
       }
 
-      // 6. Clouds parallax
+      // 6. Parallax clouds
       if (c1) c1.style.marginLeft = `${-p * 60}px`;
       if (c2) c2.style.marginLeft = `${-p * 100}px`;
       if (c3) c3.style.marginLeft = `${-p * 140}px`;
@@ -125,12 +125,15 @@ export const DoorHero: React.FC = () => {
   }, []);
 
   const handleOpenDoors = () => {
-    if (!heroRef.current) return;
-    const heroTop = heroRef.current.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({
-      top: heroTop + (heroRef.current.offsetHeight * 0.45),
-      behavior: 'smooth'
-    });
+    const aiSection = document.getElementById('ai');
+    if (aiSection) {
+      aiSection.scrollIntoView({ behavior: 'smooth' });
+    } else if (heroRef.current) {
+      window.scrollTo({
+        top: heroRef.current.offsetHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   return (

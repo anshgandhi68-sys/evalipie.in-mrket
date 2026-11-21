@@ -19,7 +19,7 @@ export const CartDrawer: React.FC = () => {
     setIsSubmitting(true);
     setConcurrencyError(null);
 
-    const primaryItem = items[0]; // Initial phase supports 1 merchant checkout
+    const primaryItem = items[0];
 
     try {
       const res = await api.reserveCheckout({
@@ -32,10 +32,12 @@ export const CartDrawer: React.FC = () => {
       });
 
       setOrderResult(res.order);
+      // Trigger pipeline pulse
+      window.dispatchEvent(new CustomEvent('order-placed-event'));
       clearCart();
     } catch (err: any) {
       if (err.status === 409 || err.data?.code === 'STOCK_EXHAUSTED') {
-        setConcurrencyError(err.data || { message: 'Stock was just claimed by another buyer.' });
+        setConcurrencyError(err.data || { message: 'HTTP 409 Conflict: Stock was just claimed by a concurrent buyer.' });
       } else {
         alert(err.message || 'Checkout failed');
       }
@@ -45,192 +47,227 @@ export const CartDrawer: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className="absolute inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
-          {/* Header */}
-          <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#167D73]" />
-              <h2 className="font-extrabold text-gray-900 text-lg">Your Cart</h2>
-              <span className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full font-bold">
-                {items.length}
-              </span>
-            </div>
-            <button 
-              onClick={() => { closeCart(); setOrderResult(null); setConcurrencyError(null); }}
-              className="text-gray-400 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-200 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+    <div className="fixed inset-0 z-50 overflow-hidden bg-[#111111]/70 backdrop-blur-xs flex justify-end">
+      
+      {/* Crisp Architectural Drawer */}
+      <div className="w-full max-w-md bg-[#FFFFFF] border-l border-[#111111] shadow-architectural h-full flex flex-col justify-between rounded-[0px] animate-in slide-in-from-right duration-250">
+        
+        {/* Header */}
+        <div className="p-4 border-b border-[#E4E2DA] bg-[#F6F5F0] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="w-4 h-4 text-[#111111] stroke-[1.5]" />
+            <h2 className="font-display font-bold text-sm tracking-wider uppercase text-[#111111]">
+              SHOPPING CART
+            </h2>
+            <span className="text-[10px] bg-[#111111] text-white px-1.5 py-0.5 font-mono">
+              {items.length} ITEMS
+            </span>
           </div>
+          <button 
+            type="button"
+            onClick={() => { closeCart(); setOrderResult(null); setConcurrencyError(null); }}
+            className="text-[#5A5852] hover:text-[#111111] p-1 transition-colors"
+          >
+            <X className="w-5 h-5 stroke-[1.5]" />
+          </button>
+        </div>
 
-          {/* Body */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-5">
-            {orderResult ? (
-              /* Success Screen */
-              <div className="py-8 text-center space-y-4">
-                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-                  <CheckCircle2 className="w-10 h-10" />
-                </div>
-                <h3 className="text-2xl font-black text-gray-900">Order Confirmed!</h3>
-                <p className="text-sm text-gray-500 max-w-xs mx-auto">
-                  Stock was atomically reserved in PostgreSQL and event published to Aiven Kafka.
-                </p>
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 text-left text-xs space-y-1.5">
-                  <div><b>Order Number:</b> {orderResult.orderNumber}</div>
-                  <div><b>Merchant:</b> {orderResult.shopName}</div>
-                  <div><b>Total Amount:</b> ₹{orderResult.totalAmount.toLocaleString('en-IN')}</div>
-                  <div><b>Status:</b> <span className="text-emerald-700 font-bold uppercase">{orderResult.status}</span></div>
-                </div>
-                <button
-                  onClick={() => { closeCart(); setOrderResult(null); }}
-                  className="w-full bg-[#167D73] text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-[#105B55] transition-all"
-                >
-                  Continue Shopping
-                </button>
+        {/* Drawer Body */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {orderResult ? (
+            /* Order Confirmed Screen */
+            <div className="py-8 text-center space-y-4 font-mono">
+              <div className="w-12 h-12 bg-[#F6F5F0] border border-[#111111] text-[#111111] flex items-center justify-center mx-auto rounded-[0px]">
+                <CheckCircle2 className="w-6 h-6 stroke-[1.5]" />
               </div>
-            ) : concurrencyError ? (
-              /* Concurrency Collision 409 Screen */
-              <div className="py-6 text-center space-y-4">
-                <div className="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
-                  <AlertCircle className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-black text-gray-900">Stock Exhausted!</h3>
-                <p className="text-xs text-red-600 font-medium bg-red-50 p-3 rounded-xl border border-red-100">
-                  {concurrencyError.message || 'The last remaining unit of this item was just claimed by another customer.'}
-                </p>
-                <div className="text-left text-xs text-gray-600 space-y-2">
-                  <p className="font-bold text-gray-800">Alternative Sellers with Stock in Bengaluru:</p>
-                  {(concurrencyError.alternativeSellers || []).map((alt: any) => (
-                    <div key={alt.listingId} className="p-3 bg-gray-50 border border-gray-200 rounded-lg flex justify-between items-center">
-                      <div>
-                        <div className="font-bold text-gray-900">{alt.merchant.shopName}</div>
-                        <div className="text-[11px] text-gray-400">{alt.store.name} ({alt.store.distanceKm} km away)</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-extrabold text-[#111827]">₹{alt.sellingPrice}</div>
-                        <span className="text-[10px] text-emerald-700 font-bold">{alt.availableQuantity} in stock</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setConcurrencyError(null)}
-                  className="w-full bg-gray-800 text-white py-2.5 rounded-xl font-bold text-xs"
-                >
-                  Back to Cart
-                </button>
-              </div>
-            ) : items.length === 0 ? (
-              <div className="py-16 text-center space-y-3 text-gray-400">
-                <ShoppingBag className="w-12 h-12 mx-auto stroke-1" />
-                <p className="text-sm font-semibold">Your shopping cart is empty.</p>
-              </div>
-            ) : (
-              /* Cart Items List */
-              <>
-                <div className="space-y-3">
-                  {items.map(item => (
-                    <div key={item.listingId} className="p-3 bg-gray-50 rounded-xl border border-gray-200 flex gap-3 items-center">
-                      {item.imageUrl && (
-                        <img src={item.imageUrl} alt={item.title} className="w-14 h-14 object-cover rounded-lg border bg-white" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[11px] font-bold text-[#167D73] uppercase">{item.shopName}</div>
-                        <h4 className="text-xs font-bold text-gray-900 truncate">{item.title}</h4>
-                        <div className="text-xs font-extrabold text-gray-900 mt-1">₹{item.price.toLocaleString('en-IN')}</div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden text-xs">
-                          <button 
-                            onClick={() => updateQuantity(item.listingId, item.quantity - 1)}
-                            className="px-2 py-1 hover:bg-gray-100 font-bold"
-                          >-</button>
-                          <span className="px-2 font-bold">{item.quantity}</span>
-                          <button 
-                            onClick={() => updateQuantity(item.listingId, item.quantity + 1)}
-                            className="px-2 py-1 hover:bg-gray-100 font-bold"
-                          >+</button>
-                        </div>
-                        <button 
-                          onClick={() => removeItem(item.listingId)}
-                          className="text-gray-400 hover:text-red-500 p-1"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Delivery Information Form */}
-                <div className="pt-4 border-t border-gray-200 space-y-3 text-xs">
-                  <h4 className="font-bold text-gray-900 uppercase tracking-wider text-[11px]">Delivery Coordinates (Bengaluru)</h4>
-                  <div>
-                    <label className="block text-gray-500 font-medium mb-1">Customer Full Name</label>
-                    <input 
-                      type="text" 
-                      value={customerName} 
-                      onChange={e => setCustomerName(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg p-2 text-xs font-semibold outline-none focus:border-[#167D73]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-500 font-medium mb-1">Phone Number</label>
-                    <input 
-                      type="text" 
-                      value={customerPhone} 
-                      onChange={e => setCustomerPhone(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg p-2 text-xs font-semibold outline-none focus:border-[#167D73]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-500 font-medium mb-1">Delivery Address</label>
-                    <textarea 
-                      rows={2}
-                      value={deliveryAddress} 
-                      onChange={e => setDeliveryAddress(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg p-2 text-xs font-semibold outline-none focus:border-[#167D73]"
-                    />
-                  </div>
-                </div>
-
-                <div className="bg-[#E9F7F3] p-3 rounded-xl border border-[#167D73]/20 flex items-center gap-2 text-[11px] text-[#105B55] font-semibold">
-                  <ShieldCheck className="w-4 h-4 text-[#167D73] shrink-0" />
-                  <span>Protected by PostgreSQL atomic row lock (`SELECT FOR UPDATE`). Zero overselling guaranteed.</span>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Footer & Order Button */}
-          {!orderResult && items.length > 0 && (
-            <div className="p-5 border-t border-gray-100 bg-gray-50 space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500 font-semibold">Order Subtotal</span>
-                <span className="text-xl font-black text-gray-900">₹{totalAmount.toLocaleString('en-IN')}</span>
+              <h3 className="font-display font-bold text-xl text-[#111111] uppercase tracking-wide">
+                ORDER RESERVED
+              </h3>
+              <p className="text-xs text-[#5A5852] max-w-xs mx-auto font-sans leading-relaxed">
+                Stock atomically locked in PostgreSQL and order published to Aiven Kafka event log.
+              </p>
+              
+              <div className="bg-[#F6F5F0] p-4 border border-[#E4E2DA] text-left text-xs space-y-2 rounded-[0px]">
+                <div><span className="text-[#5A5852]">ORDER NO:</span> <b>{orderResult.orderNumber}</b></div>
+                <div><span className="text-[#5A5852]">MERCHANT:</span> <b>{orderResult.shopName || 'Central Hub'}</b></div>
+                <div><span className="text-[#5A5852]">TOTAL:</span> <b>INR {orderResult.totalAmount.toLocaleString('en-IN')}</b></div>
+                <div><span className="text-[#5A5852]">STATUS:</span> <span className="text-[#111111] font-bold uppercase">{orderResult.status}</span></div>
               </div>
 
               <button
-                disabled={isSubmitting}
-                onClick={handleCheckout}
-                className="w-full bg-[#167D73] hover:bg-[#105B55] disabled:bg-gray-400 text-white py-3.5 rounded-xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 active:scale-95"
+                type="button"
+                onClick={() => { closeCart(); setOrderResult(null); }}
+                className="w-full bg-[#111111] hover:bg-[#B84A27] text-white py-3 rounded-[0px] font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
-                {isSubmitting ? (
-                  <span>Reserving Stock in PostgreSQL...</span>
-                ) : (
-                  <>
-                    <span>Confirm Order (Reserve Stock)</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
+                RETURN TO CATALOG
               </button>
+            </div>
+          ) : concurrencyError ? (
+            /* Stock Exhaustion 409 Collision Screen */
+            <div className="py-6 text-center space-y-4 font-mono">
+              <div className="w-12 h-12 bg-[#F8EDE8] border border-[#B84A27] text-[#B84A27] flex items-center justify-center mx-auto rounded-[0px]">
+                <AlertCircle className="w-6 h-6 stroke-[1.5]" />
+              </div>
+              <h3 className="font-display font-bold text-lg text-[#B84A27] uppercase tracking-wide">
+                HTTP 409: STOCK EXHAUSTED
+              </h3>
+              <div className="p-3 bg-[#F8EDE8] border border-[#B84A27] text-left text-xs text-[#933B1F] space-y-1 rounded-[0px]">
+                <p className="font-bold uppercase">CONCURRENCY CONFLICT DETECTED</p>
+                <p className="font-sans text-[11px] leading-relaxed">
+                  Another shopper reserved the final unit milliseconds before this transaction. PostgreSQL FOR UPDATE locked the row and rolled back this order to prevent overselling.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setConcurrencyError(null)}
+                className="w-full bg-[#111111] hover:bg-[#B84A27] text-white py-2.5 rounded-[0px] font-mono text-xs uppercase tracking-wider transition-colors"
+              >
+                TRY ALTERNATIVE STORE
+              </button>
+            </div>
+          ) : items.length === 0 ? (
+            <div className="py-16 text-center space-y-3 font-mono">
+              <ShoppingBag className="w-8 h-8 text-[#5A5852] mx-auto stroke-[1.5]" />
+              <p className="text-xs uppercase text-[#5A5852] tracking-wider">YOUR CART IS CURRENTLY EMPTY</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Item Cards */}
+              <div className="divide-y divide-[#E4E2DA]">
+                {items.map((item) => (
+                  <div key={item.listingId} className="py-3 flex gap-3">
+                    <img 
+                      src={item.imageUrl} 
+                      alt={item.title} 
+                      className="w-16 h-16 object-cover border border-[#E4E2DA] rounded-[0px] shrink-0"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&auto=format&fit=crop&q=80';
+                      }}
+                    />
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <h4 className="text-xs font-semibold text-[#111111] line-clamp-2 font-sans">
+                          {item.title}
+                        </h4>
+                        <button
+                          type="button"
+                          onClick={() => removeItem(item.listingId)}
+                          className="text-[#5A5852] hover:text-[#B84A27] p-0.5"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 stroke-[1.5]" />
+                        </button>
+                      </div>
+
+                      <p className="text-[10px] font-mono text-[#5A5852] uppercase">
+                        STORE: {item.shopName}
+                      </p>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="font-mono text-xs font-bold text-[#111111]">
+                          INR {(item.price * item.quantity).toLocaleString('en-IN')}
+                        </span>
+
+                        {/* Quantity Controls */}
+                        <div className="flex items-center border border-[#E4E2DA] rounded-[0px]">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.listingId, Math.max(1, item.quantity - 1))}
+                            className="px-2 py-0.5 text-xs font-mono text-[#5A5852] hover:text-[#111111] hover:bg-[#F6F5F0]"
+                          >
+                            -
+                          </button>
+                          <span className="px-2 text-xs font-mono font-bold text-[#111111]">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.listingId, item.quantity + 1)}
+                            className="px-2 py-0.5 text-xs font-mono text-[#5A5852] hover:text-[#111111] hover:bg-[#F6F5F0]"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Delivery Details Form */}
+              <div className="p-3 bg-[#F6F5F0] border border-[#E4E2DA] space-y-2 rounded-[0px] text-xs font-mono">
+                <span className="font-bold text-[#111111] text-[10px] uppercase block tracking-wider">
+                  DISPATCH RECIPIENT DETAILS
+                </span>
+                <div>
+                  <input
+                    type="text"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    placeholder="Recipient Full Name"
+                    className="w-full bg-[#FFFFFF] border border-[#E4E2DA] p-2 text-xs font-mono rounded-[0px] outline-none"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    placeholder="Mobile Phone"
+                    className="w-full bg-[#FFFFFF] border border-[#E4E2DA] p-2 text-xs font-mono rounded-[0px] outline-none"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    placeholder="Delivery Street Address"
+                    className="w-full bg-[#FFFFFF] border border-[#E4E2DA] p-2 text-xs font-mono rounded-[0px] outline-none"
+                  />
+                </div>
+              </div>
             </div>
           )}
         </div>
+
+        {/* Footer with Checkout CTA */}
+        {items.length > 0 && !orderResult && !concurrencyError && (
+          <div className="p-4 border-t border-[#E4E2DA] bg-[#F6F5F0] space-y-3 font-mono">
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between text-[#5A5852]">
+                <span>SUBTOTAL:</span>
+                <span>INR {totalAmount.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="flex justify-between text-[#5A5852]">
+                <span>LOCAL DISPATCH:</span>
+                <span className="text-[#111111] font-bold">COMPLIMENTARY</span>
+              </div>
+              <div className="flex justify-between text-[#111111] text-sm font-bold pt-1 border-t border-[#E4E2DA]">
+                <span>TOTAL PAYABLE:</span>
+                <span>INR {totalAmount.toLocaleString('en-IN')}</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCheckout}
+              disabled={isSubmitting}
+              className="w-full h-12 bg-[#111111] hover:bg-[#B84A27] text-white text-xs font-mono font-bold tracking-widest uppercase flex items-center justify-center gap-2 rounded-[0px] transition-colors shadow-architectural cursor-pointer disabled:opacity-50"
+            >
+              <span>{isSubmitting ? 'ACID LOCKING ROW...' : 'ATOMIC CHECKOUT'}</span>
+              <ArrowRight className="w-3.5 h-3.5 stroke-[1.5]" />
+            </button>
+
+            <div className="flex items-center justify-center gap-1.5 text-[10px] text-[#5A5852]">
+              <ShieldCheck className="w-3 h-3 text-[#111111] stroke-[1.5]" />
+              <span>AIVEN POSTGRESQL FOR UPDATE ROW-LEVEL LOCK PROTECTED</span>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
 };
+
+export default CartDrawer;

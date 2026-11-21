@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.js';
 import { CartProvider } from './context/CartContext.js';
 import { Navbar } from './components/navbar/Navbar.js';
@@ -19,52 +19,61 @@ import DemoOne from './components/ui/demo.js';
 import MetroHeroDemo from './components/ui/metro-hero-demo.js';
 import SlideTabsDemo from './components/ui/slide-tabs-demo.js';
 
+const AppContent: React.FC = () => {
+  const location = useLocation();
+  const isHome = location.pathname === '/' || location.pathname === '/ai';
+
+  return (
+    <div className="min-h-screen flex flex-col bg-[#F7F9FC] text-[#111827]">
+      <Navbar />
+      <main className={`flex-1 ${isHome ? 'pt-0' : 'pt-16'}`}>
+        <Routes>
+          {/* Marketplace Core Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/search" element={<ProductsPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/shops" element={<ShopsPage />} />
+          <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
+          <Route path="/account" element={<AccountPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/ai" element={<HomePage />} />
+
+          {/* Demos */}
+          <Route path="/demo" element={<DemoOne />} />
+          <Route path="/demo/rail" element={<DemoOne />} />
+          <Route path="/demo/video" element={<MetroHeroDemo />} />
+          <Route path="/demo/tabs" element={<SlideTabsDemo />} />
+
+          {/* Business / Merchant Routes */}
+          <Route path="/business" element={<BusinessDashboardPage />} />
+          <Route path="/business/dashboard" element={<BusinessDashboardPage />} />
+          <Route path="/business/branches" element={<BusinessDashboardPage />} />
+          <Route path="/business/listings" element={<BusinessDashboardPage />} />
+          <Route path="/business/orders" element={<BusinessDashboardPage />} />
+
+          {/* Platform Admin */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/*" element={<AdminDashboardPage />} />
+
+          {/* Catch-all redirect to Home */}
+          <Route path="*" element={<HomePage />} />
+        </Routes>
+      </main>
+      <Footer />
+      <CartDrawer />
+    </div>
+  );
+};
+
 export const App: React.FC = () => {
   return (
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col bg-[#F7F9FC]">
-            <Navbar />
-            <div className="flex-1">
-              <Routes>
-                {/* Marketplace Core Routes */}
-                <Route path="/" element={<HomePage />} />
-                <Route path="/search" element={<ProductsPage />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/products/:id" element={<ProductDetailPage />} />
-                <Route path="/product/:id" element={<ProductDetailPage />} />
-                <Route path="/categories" element={<CategoriesPage />} />
-                <Route path="/shops" element={<ShopsPage />} />
-                <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
-                <Route path="/account" element={<AccountPage />} />
-                <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                <Route path="/ai" element={<HomePage />} />
-
-                {/* Demos */}
-                <Route path="/demo" element={<DemoOne />} />
-                <Route path="/demo/rail" element={<DemoOne />} />
-                <Route path="/demo/video" element={<MetroHeroDemo />} />
-                <Route path="/demo/tabs" element={<SlideTabsDemo />} />
-
-                {/* Business / Merchant Routes */}
-                <Route path="/business" element={<BusinessDashboardPage />} />
-                <Route path="/business/dashboard" element={<BusinessDashboardPage />} />
-                <Route path="/business/branches" element={<BusinessDashboardPage />} />
-                <Route path="/business/listings" element={<BusinessDashboardPage />} />
-                <Route path="/business/orders" element={<BusinessDashboardPage />} />
-
-                {/* Platform Admin */}
-                <Route path="/admin" element={<AdminDashboardPage />} />
-                <Route path="/admin/*" element={<AdminDashboardPage />} />
-
-                {/* Catch-all redirect to Home */}
-                <Route path="*" element={<HomePage />} />
-              </Routes>
-            </div>
-            <Footer />
-            <CartDrawer />
-          </div>
+          <AppContent />
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>
