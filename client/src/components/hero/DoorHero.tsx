@@ -19,7 +19,7 @@ export const DoorHero: React.FC<{
   scrollHint?: string;
 }> = ({
   videoSrc = "/assets/metro-hero.mp4",
-  title = "THE CITY OPENS",
+  title = "Welcome to Evalipie",
   tagline = "Every door in the city is already open.",
   scrollHint = "SCROLL TO ENTER",
 }) => {

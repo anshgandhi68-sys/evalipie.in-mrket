@@ -103,7 +103,7 @@ export const HomePage: React.FC = () => {
       <div className="absolute top-[80vh] left-1/2 -translate-x-1/2 w-[90vw] max-w-7xl h-[600px] bg-gradient-to-b from-[#14B8A6]/5 to-transparent rounded-full blur-3xl pointer-events-none -z-0" />
 
       {/* 1. Signature 3D Door Hero (Daytime Entrance) */}
-      <DoorHero />
+      <DoorHero title="Welcome to Evalipie" />
 
       {/* Main Marketplace Feed - Single Page Continuous Experience */}
       <main id="marketplace-feed" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16 relative z-10">

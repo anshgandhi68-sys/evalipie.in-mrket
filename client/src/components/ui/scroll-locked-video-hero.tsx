@@ -45,7 +45,7 @@ function clamp(v: number, min: number, max: number) {
 
 export default function MetroHero({
   videoSrc = DEFAULT_VIDEO,
-  title = "THE CITY OPENS",
+  title = "Welcome to Evalipie",
   scrollHint = "SCROLL",
   tagline = "Every door in the city is already open.",
   signature = DEFAULT_SIGNATURE,
