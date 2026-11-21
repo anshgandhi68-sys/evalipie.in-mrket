@@ -14,7 +14,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
+app.use(express.raw({ type: 'audio/*', limit: '25mb' }));
 
 // API Routes
 app.use('/api/v1', apiRouter);

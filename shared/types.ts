@@ -195,6 +195,8 @@ export interface VoiceSessionState {
   error?: string;
   firstTurnDisclosed: boolean;
   latencyMs?: number;
+  audioBase64?: string;
+  committedEntry?: LedgerEntry;
 }
 
 // Transactional Outbox & Kafka Models

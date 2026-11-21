@@ -212,6 +212,16 @@ export class VoiceKhataStateMachine {
         );
 
         if (matchingCustomers.length > 1) {
+          const directMatch = matchingCustomers.find(c => 
+            c.disambiguationTag && clean.includes(c.disambiguationTag.toLowerCase())
+          );
+          if (directMatch) {
+            state.stage = 'COMPLETED';
+            state.spokenResponse = `${directMatch.name} (${directMatch.disambiguationTag}) ka total baaki udhaar ₹${directMatch.currentBalance.toLocaleString('en-IN')} hai.`;
+            state.latencyMs = Date.now() - startLatency;
+            return { ...state };
+          }
+
           state.stage = 'DISAMBIGUATING';
           state.pendingTransaction = {
             customerName: cust.name,
@@ -281,6 +291,7 @@ export class VoiceKhataStateMachine {
     db.ledgerEntries.unshift(newEntry);
 
     state.stage = 'COMPLETED';
+    state.committedEntry = newEntry;
     state.pendingTransaction = undefined;
     const actionWord = tx.type === 'CREDIT' ? 'udhaar add ho gaya' : 'payment jama ho gayi';
     state.spokenResponse = `Entry save ho gayi hai. ${customer.name} ka total balance ab ₹${customer.currentBalance.toLocaleString('en-IN')} hai.`;

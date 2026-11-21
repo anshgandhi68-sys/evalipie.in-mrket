@@ -31,11 +31,13 @@ apiRouter.get('/merchant/orders', merchantController.getOrders);
 apiRouter.put('/merchant/orders/:id/status', merchantController.updateOrderStatus);
 apiRouter.get('/merchant/demand-insights', merchantController.getDemandInsights);
 
-// 4. Voice Khata (Gnani Hackathon PS2)
+// 4. Voice Khata (Gnani Hackathon PS2 - Real Prisma STT & Timbre TTS)
 apiRouter.get('/ledger/customers', voiceKhataController.getCustomers);
 apiRouter.get('/ledger/entries', voiceKhataController.getEntries);
 apiRouter.get('/ledger/summary', voiceKhataController.getSummary);
 apiRouter.post('/voice/process-text', voiceKhataController.processVoiceText);
+apiRouter.post('/voice/process-audio', voiceKhataController.processVoiceAudio);
+apiRouter.get('/voice/tts-stream', voiceKhataController.streamTts);
 
 // 5. Platform Admin & Concurrency Verification
 apiRouter.get('/admin/health', adminController.getHealth);

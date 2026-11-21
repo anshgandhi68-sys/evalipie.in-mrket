@@ -144,6 +144,30 @@ export const api = {
     });
   },
 
+  processVoiceAudio: (audioBlob: Blob, sessionId?: string, languageCode = 'indic-auto', orgId = 'org-sharma') => {
+    return new Promise<any>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const base64 = (reader.result as string).split(',')[1];
+          const res = await fetchJson<any>('/voice/process-audio', {
+            method: 'POST',
+            body: JSON.stringify({ audioBase64: base64, sessionId, languageCode, orgId }),
+          });
+          resolve(res);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(audioBlob);
+    });
+  },
+
+  getTtsStreamUrl: (text: string, voice = 'Nalini', language = 'hi-IN') => {
+    return `/api/v1/voice/tts-stream?text=${encodeURIComponent(text)}&voice=${voice}&language=${language}`;
+  },
+
   // Admin
   getAdminHealth: () => {
     return fetchJson<any>('/admin/health');
