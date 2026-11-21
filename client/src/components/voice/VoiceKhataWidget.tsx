@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Volume2, Sparkles, Check, X, RotateCcw, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Mic, MicOff, Volume2, Sparkles, Check, X, RotateCcw, ArrowRight, ShieldCheck, Zap, ChevronRight } from 'lucide-react';
 import { api } from '../../services/api.js';
 import { VoiceSessionState } from '../../../../shared/types.js';
 
@@ -140,7 +140,10 @@ export const VoiceKhataWidget: React.FC<{ onEntrySaved?: () => void }> = ({ onEn
         {latencyMs !== null && (
           <div className="bg-[#E9F7F3] border border-[#167D73]/30 px-3 py-1.5 rounded-2xl flex items-center gap-2 self-start sm:self-auto">
             <Sparkles className="w-3.5 h-3.5 text-[#167D73]" />
-            <span className="text-xs font-bold text-[#105B55]">⚡ Latency: {latencyMs}ms (Target: &lt;2.0s)</span>
+            <span className="text-xs font-bold text-[#105B55] flex items-center gap-1">
+              <Zap className="w-3.5 h-3.5" />
+              <span>Latency: {latencyMs}ms (Target: &lt;2.0s)</span>
+            </span>
           </div>
         )}
       </div>
@@ -242,9 +245,10 @@ export const VoiceKhataWidget: React.FC<{ onEntrySaved?: () => void }> = ({ onEn
                   <button
                     key={tag}
                     onClick={() => sendVoiceInput(`${tag} wale`)}
-                    className="bg-[#7657E8] text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-[#6342db] transition-all"
+                    className="bg-[#7657E8] text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-[#6342db] transition-all flex items-center gap-1.5"
                   >
-                    👉 {tag} wale
+                    <ChevronRight className="w-3.5 h-3.5" />
+                    <span>{tag} wale</span>
                   </button>
                 ))}
               </div>

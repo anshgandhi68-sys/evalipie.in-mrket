@@ -24,12 +24,12 @@ export const Navbar: React.FC = () => {
           <select 
             value={persona} 
             onChange={(e) => setPersona(e.target.value as UserPersona)}
-            className="bg-gray-800 text-white text-xs border border-gray-700 rounded px-2 py-0.5 outline-none cursor-pointer"
+            className="bg-gray-800 text-white text-xs border border-gray-700 rounded px-2.5 py-1 outline-none cursor-pointer font-medium"
           >
-            <option value="CUSTOMER">👤 Customer (Shopper)</option>
-            <option value="MERCHANT_INDEPENDENT">🏪 Sharma Electronics (Shopkeeper)</option>
-            <option value="MERCHANT_CHAIN">🏢 City Supermarket (Retail Chain)</option>
-            <option value="ADMIN">🛡️ Platform Admin & Kafka Monitor</option>
+            <option value="CUSTOMER">Customer (Shopper)</option>
+            <option value="MERCHANT_INDEPENDENT">Sharma Electronics (Shopkeeper)</option>
+            <option value="MERCHANT_CHAIN">City Supermarket (Retail Chain)</option>
+            <option value="ADMIN">Platform Admin & Kafka Monitor</option>
           </select>
         </div>
       </div>

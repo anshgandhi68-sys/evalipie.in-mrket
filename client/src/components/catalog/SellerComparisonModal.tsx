@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Store, MapPin, CheckCircle2, AlertTriangle, ShoppingCart } from 'lucide-react';
+import { X, Store, MapPin, CheckCircle2, AlertTriangle, ShoppingCart, Star } from 'lucide-react';
 import { CanonicalProduct, MultiSellerOffer } from '../../../../shared/types.js';
 import { useCart } from '../../context/CartContext.js';
 
@@ -84,7 +84,10 @@ export const SellerComparisonModal: React.FC<SellerComparisonModalProps> = ({
                       <MapPin className="w-3.5 h-3.5 text-gray-400" />
                       {offer.store.name} ({offer.store.distanceKm} km away)
                     </span>
-                    <span>★ {offer.merchant.rating}</span>
+                    <span className="flex items-center gap-1 font-semibold text-amber-600">
+                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      {offer.merchant.rating}
+                    </span>
                   </div>
 
                   {/* Stock Indicator */}

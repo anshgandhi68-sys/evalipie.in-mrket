@@ -1,189 +1,758 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ArrowDown, Sparkles } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { ArrowDown, Sparkles, ShieldCheck, Headphones, Store, Laptop, ShoppingBag } from 'lucide-react';
+
+// ─────────────────────────────────────────────────────────────
+// EVALIPIE DOOR HERO — Scroll-locked 3D door entry animation
+//
+// Inspired by the 21st.dev "The City Opens" scroll-scrub hero.
+// The page is PINNED (body position:fixed) while this hero is
+// active. Wheel/touch input is captured and drives the animation
+// progress from 0→1. The doors swing open, the camera dollies
+// forward through the entrance, and once the animation completes
+// the page unlocks and normal scrolling resumes. If the user
+// scrolls back up into the hero, it re-locks.
+//
+// Architecture:
+//   Phase 0.00–0.05: Intro text visible, hint bouncing
+//   Phase 0.05–0.30: Intro text fades out + moves up
+//   Phase 0.10–0.55: Doors swing open (rotateY 0→110°)
+//   Phase 0.30–0.90: Camera dolly zoom into the doorway
+//   Phase 0.70–0.90: Interior content fades in
+//   Phase 0.92+:     Auto-release scroll lock → page continues
+// ─────────────────────────────────────────────────────────────
+
+function clamp(v: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, v));
+}
+
+// Smooth easeInOutCubic
+function ease(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
 
 export const DoorHero: React.FC = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
   const leftDoorRef = useRef<HTMLDivElement>(null);
   const rightDoorRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLDivElement>(null);
+  const interiorRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
-  const [doorProgress, setDoorProgress] = useState(0);
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    let animationFrameId: number = 0;
+    const section = sectionRef.current;
+    const viewport = viewportRef.current;
+    if (!section || !viewport) return;
 
-    const handleScroll = () => {
-      if (!heroRef.current || !leftDoorRef.current || !rightDoorRef.current) return;
-      const hero = heroRef.current;
-      const total = hero.offsetHeight - window.innerHeight;
-      if (total <= 0) return;
+    const SCRUB_DISTANCE = 2800; // px of scroll input to complete animation
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let rafId = 0;
+    let locked = false;
+    let lockedScrollY = 0;
+    let touchStartY = 0;
+    let hasStartedScrolling = false;
+    let hasCompleted = false;
 
-      const top = hero.getBoundingClientRect().top;
-      const p = Math.min(1, Math.max(0, -top / total));
-      setDoorProgress(p);
+    // ── Scroll Lock (body pinned) ──────────────────────────
+    function engageLock() {
+      if (locked || typeof document === 'undefined') return;
+      locked = true;
+      lockedScrollY = window.scrollY;
+      const b = document.body.style;
+      b.position = 'fixed';
+      b.top = `-${lockedScrollY}px`;
+      b.left = '0';
+      b.right = '0';
+      b.width = '100%';
+      b.overscrollBehavior = 'none';
+    }
 
-      // Ease function
-      const ease = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
-      const doorAngle = ease(Math.min(1, Math.max(0, p / 0.35))) * 110;
+    function releaseLock() {
+      if (!locked || typeof document === 'undefined') return;
+      locked = false;
+      const y = lockedScrollY;
+      const b = document.body.style;
+      b.position = '';
+      b.top = '';
+      b.left = '';
+      b.right = '';
+      b.width = '';
+      b.overscrollBehavior = '';
+      window.scrollTo(0, y);
+    }
 
-      leftDoorRef.current.style.transform = `rotateY(${doorAngle}deg)`;
-      rightDoorRef.current.style.transform = `rotateY(${-doorAngle}deg)`;
-
-      if (worldRef.current && frameRef.current) {
-        const zoomProgress = ease(Math.min(1, Math.max(0, (p - 0.28) / 0.65)));
-        const scale = 1 + zoomProgress * 3.2;
-        worldRef.current.style.transform = `scale(${scale})`;
+    // ── Re-lock on scroll back up ──────────────────────────
+    function checkReenter() {
+      if (locked || hasCompleted || !section) return;
+      const rect = section.getBoundingClientRect();
+      // If the hero section top is near the viewport top, re-engage
+      if (rect.top >= -10 && rect.top <= 50) {
+        targetProgress = 0;
+        engageLock();
       }
+    }
 
-      if (introRef.current) {
-        introRef.current.style.opacity = `${Math.max(0, 1 - p * 3.5)}`;
-        introRef.current.style.transform = `translateY(-${p * 80}px)`;
-      }
+    // Start locked
+    engageLock();
 
-      if (hintRef.current) {
-        hintRef.current.style.opacity = `${Math.max(0, 1 - p * 8)}`;
-      }
+    // ── Input handlers ─────────────────────────────────────
+    function addDelta(deltaY: number) {
+      targetProgress = clamp(targetProgress + deltaY / SCRUB_DISTANCE, 0, 1);
+      if (targetProgress > 0.005) hasStartedScrolling = true;
+    }
 
-      if (barRef.current) {
-        barRef.current.style.transform = `scaleX(${p})`;
+    const onWheel = (e: WheelEvent) => {
+      if (!locked) {
+        checkReenter();
+        return;
       }
+      addDelta(e.deltaY);
+      e.preventDefault();
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0]?.clientY ?? 0;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!locked) {
+        checkReenter();
+        return;
+      }
+      const y = e.touches[0]?.clientY ?? touchStartY;
+      const deltaY = touchStartY - y;
+      touchStartY = y;
+      addDelta(deltaY);
+      e.preventDefault();
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+
+    // ── Animation frame loop ───────────────────────────────
+    function frame() {
+      // Smooth interpolation (like the reference: 0.18 lerp factor)
+      currentProgress += (targetProgress - currentProgress) * 0.12;
+
+      const p = currentProgress;
+
+      // 1. Intro headline: fade out between 0.05–0.30
+      if (introRef.current) {
+        const introT = 1 - clamp((p - 0.03) / 0.22, 0, 1);
+        introRef.current.style.opacity = String(introT);
+        introRef.current.style.transform = `translateY(${(1 - introT) * -40}px) scale(${0.95 + introT * 0.05})`;
+        introRef.current.style.filter = `blur(${(1 - introT) * 6}px)`;
+      }
+
+      // 2. Scroll hint: fade out as soon as scrolling starts
+      if (hintRef.current) {
+        hintRef.current.style.opacity = hasStartedScrolling ? '0' : '1';
+      }
+
+      // 3. Doors swing open: 0.10–0.55
+      const doorFactor = ease(clamp((p - 0.10) / 0.45, 0, 1));
+      const doorAngle = doorFactor * 110;
+      if (leftDoorRef.current) {
+        leftDoorRef.current.style.transform = `rotateY(${doorAngle}deg)`;
+      }
+      if (rightDoorRef.current) {
+        rightDoorRef.current.style.transform = `rotateY(${-doorAngle}deg)`;
+      }
+
+      // 4. Camera dolly zoom: 0.25–0.92
+      //    Scale the world container and translate up to simulate flying into the doorway
+      if (worldRef.current) {
+        const zoomFactor = ease(clamp((p - 0.25) / 0.67, 0, 1));
+        const scale = 1 + zoomFactor * 4.5;
+        // The focal point should be the door center, so we translate the world
+        // so the door area (at ~65% from top of viewport) moves toward center
+        const translateY = zoomFactor * -18; // move world UP as we zoom in
+        worldRef.current.style.transform = `scale(${scale}) translateY(${translateY}%)`;
+      }
+
+      // 5. Interior glow: fades in 0.35–0.70
+      if (interiorRef.current) {
+        const interiorT = clamp((p - 0.35) / 0.35, 0, 1);
+        interiorRef.current.style.opacity = String(interiorT);
+      }
+
+      // 6. White overlay fade in at the very end (0.80–0.95) to mask the transition
+      if (overlayRef.current) {
+        const overlayT = clamp((p - 0.80) / 0.15, 0, 1);
+        overlayRef.current.style.opacity = String(overlayT);
+      }
+
+      // 7. Progress bar
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${p})`;
+      }
+
+      // 8. Release at ~0.95 and auto-scroll to marketplace
+      if (p >= 0.93 && !hasCompleted) {
+        hasCompleted = true;
+        setCompleted(true);
+        releaseLock();
+        // Smooth scroll into marketplace content
+        requestAnimationFrame(() => {
+          const feed = document.getElementById('marketplace-feed');
+          if (feed) {
+            feed.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      rafId = requestAnimationFrame(frame);
+    }
+
+    rafId = requestAnimationFrame(frame);
+
+    // Also listen for normal scroll to potentially re-engage
+    window.addEventListener('scroll', checkReenter, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('scroll', checkReenter);
+      cancelAnimationFrame(rafId);
+      releaseLock();
     };
   }, []);
 
-  const scrollToMarketplace = () => {
-    const el = document.getElementById('marketplace-feed');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <section ref={heroRef} className="relative h-[280vh] w-full bg-[#F7F9FC]">
-      {/* Sticky Viewport Stage */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-gradient-to-b from-[#BFE6F7] via-[#E3F4FA] to-[#F7F9FC]">
-        {/* Sky, Sun & Clouds */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute right-[12%] top-[14%] w-24 h-24 rounded-full bg-gradient-to-br from-[#FFF4C2] to-[#FFE08A] shadow-[0_0_90px_30px_rgba(255,224,138,0.55)]" />
-          <div className="absolute left-[8%] top-[22%] w-32 h-8 rounded-full bg-white/80 blur-[0.5px]" />
-          <div className="absolute left-[58%] top-[12%] w-28 h-7 rounded-full bg-white/70 blur-[0.5px]" />
-          <div className="absolute left-[30%] top-[34%] w-24 h-6 rounded-full bg-white/60 blur-[0.5px]" />
+    <section
+      ref={sectionRef}
+      className="relative w-full"
+      style={{ height: completed ? '100vh' : '100dvh' }}
+    >
+      {/* Sticky full-screen viewport */}
+      <div
+        ref={viewportRef}
+        className="relative w-full overflow-hidden"
+        style={{
+          height: '100dvh',
+          touchAction: 'none',
+          background: 'linear-gradient(180deg, #E0F7FA 0%, #F0F9FF 35%, #F8FAFC 100%)',
+        }}
+      >
+        {/* ── Daytime sky background ──────────────────────── */}
+        {/* Dot matrix subtle pattern */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            opacity: 0.25,
+            backgroundImage: 'radial-gradient(circle at 1px 1px, #0F766E 0.8px, transparent 0)',
+            backgroundSize: '32px 32px',
+          }}
+        />
+
+        {/* Sun */}
+        <div className="absolute pointer-events-none" style={{ right: '12%', top: '8%' }}>
+          <div
+            className="rounded-full"
+            style={{
+              width: 120,
+              height: 120,
+              background: 'radial-gradient(circle, #FEF08A 30%, #FDE047 70%, transparent 100%)',
+              boxShadow: '0 0 100px 40px rgba(253,224,71,0.35)',
+            }}
+          />
         </div>
 
-        {/* Intro Headline */}
-        <div ref={introRef} className="absolute top-[16vh] inset-x-0 text-center px-4 z-10 transition-transform">
-          <span className="inline-block text-[11px] font-bold tracking-[0.18em] uppercase text-[#105B55] bg-white/80 px-3 py-1 rounded-full mb-3 shadow-sm border border-white/60">
-            evalipie.in
-          </span>
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-[#111827] leading-[1.05]">
+        {/* Soft clouds */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            left: '8%', top: '18%',
+            width: 200, height: 40,
+            background: 'rgba(255,255,255,0.7)',
+            filter: 'blur(2px)',
+          }}
+        />
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            left: '58%', top: '12%',
+            width: 240, height: 48,
+            background: 'rgba(255,255,255,0.6)',
+            filter: 'blur(3px)',
+          }}
+        />
+
+        {/* ── Intro headline (z-30, above everything) ───── */}
+        <div
+          ref={introRef}
+          className="absolute inset-x-0 flex flex-col items-center text-center px-6 pointer-events-none"
+          style={{ top: '10%', zIndex: 30 }}
+        >
+          <div
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5"
+            style={{
+              fontSize: 11,
+              fontWeight: 800,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase' as const,
+              color: '#0F766E',
+              background: 'rgba(255,255,255,0.92)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(16,185,129,0.15)',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+            }}
+          >
+            <span
+              style={{
+                width: 7, height: 7, borderRadius: '50%',
+                background: '#0F766E',
+                display: 'inline-block',
+                animation: 'pulse 2s ease-in-out infinite',
+              }}
+            />
+            <span>evalipie.in &middot; Flagship Storefront</span>
+          </div>
+          <h1
+            style={{
+              fontSize: 'clamp(32px, 6.5vw, 80px)',
+              fontWeight: 900,
+              lineHeight: 1.05,
+              letterSpacing: '-0.025em',
+              color: '#0F172A',
+              margin: 0,
+            }}
+          >
             Every Shop.<br />
-            <span className="text-[#167D73]">One Intelligent Marketplace.</span>
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #0F766E 0%, #14B8A6 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              One Intelligent Marketplace.
+            </span>
           </h1>
+          <p
+            style={{
+              marginTop: 14,
+              fontSize: 'clamp(13px, 1.6vw, 16px)',
+              fontWeight: 600,
+              color: '#64748B',
+              maxWidth: 480,
+            }}
+          >
+            Discover real local inventories, verified shopkeepers, and AI product matching.
+          </p>
         </div>
 
-        {/* The 3D World Container */}
-        <div ref={worldRef} className="absolute inset-0 origin-center transition-transform will-change-transform">
-          {/* Shop Façade Wall */}
-          <div className="absolute left-1/2 bottom-[8vh] -translate-x-1/2 w-[min(94vw,860px)] h-[min(60vh,600px)] bg-gradient-to-b from-[#1b9285] to-[#167D73] rounded-t-[24px] shadow-[0_30px_60px_rgba(16,91,85,0.25)] border-t-4 border-[#105B55]">
-            {/* Wall Brick Lines */}
-            <div className="absolute inset-0 rounded-t-[24px] opacity-10 bg-[repeating-linear-gradient(0deg,#fff_0_2px,transparent_2px_36px)] pointer-events-none" />
+        {/* ── The 3D World Container (facade + doors) ──── */}
+        <div
+          ref={worldRef}
+          className="absolute inset-0 will-change-transform"
+          style={{
+            transformOrigin: '50% 62%', // focal point = door center area
+          }}
+        >
+          {/* ── Sidewalk floor ─────────────────────────── */}
+          <div
+            className="absolute left-0 right-0 bottom-0 pointer-events-none"
+            style={{
+              height: '8vh',
+              background: 'linear-gradient(180deg, #E2E8F0, #CBD5E1)',
+              borderTop: '3px solid rgba(255,255,255,0.8)',
+            }}
+          />
 
-            {/* Shop Sign */}
-            <div className="absolute top-5 left-1/2 -translate-x-1/2 bg-white text-[#105B55] font-extrabold text-base sm:text-xl tracking-tight px-6 py-1.5 rounded-xl shadow-md border border-gray-100 flex items-center gap-2">
-              <span className="w-5 h-5 rounded bg-[#167D73] text-white flex items-center justify-center text-xs">e</span>
-              <span>Evalipie Store</span>
-            </div>
-
-            {/* Side Windows */}
-            <div className="absolute bottom-[10%] left-[6%] w-[20%] h-[34%] bg-gradient-to-br from-[#D9F1F8] to-white border-4 border-[#105B55] rounded-xl flex flex-col items-center justify-center shadow-inner">
-              <span className="text-3xl">🎧</span>
-              <small className="text-[10px] font-bold text-[#105B55] tracking-wider mt-1 uppercase">Electronics</small>
-            </div>
-            <div className="absolute bottom-[10%] right-[6%] w-[20%] h-[34%] bg-gradient-to-br from-[#D9F1F8] to-white border-4 border-[#105B55] rounded-xl flex flex-col items-center justify-center shadow-inner">
-              <span className="text-3xl">🏠</span>
-              <small className="text-[10px] font-bold text-[#105B55] tracking-wider mt-1 uppercase">Home</small>
-            </div>
-
-            {/* Door Frame with 3D Perspective */}
+          {/* ── Shop Façade ────────────────────────────── */}
+          <div
+            className="absolute"
+            style={{
+              left: '50%',
+              bottom: '8vh',
+              transform: 'translateX(-50%)',
+              width: 'min(88vw, 780px)',
+              height: 'min(54vh, 500px)',
+              background: 'linear-gradient(180deg, #115E59, #0F766E 50%, #042F2E)',
+              borderRadius: '24px 24px 0 0',
+              boxShadow: '0 30px 70px rgba(15,118,110,0.25), 0 0 0 3px rgba(19,78,74,0.3)',
+            }}
+          >
+            {/* Brick texture */}
             <div
-              ref={frameRef}
-              className="absolute left-1/2 bottom-0 -translate-x-1/2 h-[78%] aspect-[0.64] bg-[#0c3d39] border-8 border-[#105B55] border-b-0 rounded-t-2xl [perspective:1100px] overflow-hidden shadow-2xl"
-            >
-              {/* Awning Strip on top */}
-              <div className="absolute -left-[15%] -right-[15%] -top-7 h-7 rounded-t-lg bg-[repeating-linear-gradient(90deg,#fff_0_20px,#E9F7F3_20px_40px)] shadow-[0_5px_0_#105B55] z-20" />
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                borderRadius: '24px 24px 0 0',
+                opacity: 0.1,
+                background: 'repeating-linear-gradient(0deg, #fff 0 1.5px, transparent 1.5px 36px)',
+              }}
+            />
 
-              {/* Inside Store Reveal (Visible as doors open) */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#E9F7F3] via-white to-[#F7F9FC] flex flex-col items-center justify-center p-6 text-center">
-                <div className="absolute top-0 inset-x-0 flex justify-between p-3.5 bg-white border-b border-gray-200 text-xs font-bold text-[#105B55]">
-                  <span>Evalipie</span>
-                  <span className="text-gray-500 font-medium">Bengaluru ▾</span>
+            {/* Shop Signboard */}
+            <div
+              className="absolute flex items-center gap-2.5"
+              style={{
+                top: 18,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'white',
+                color: '#0F766E',
+                fontWeight: 900,
+                fontSize: 'clamp(12px, 1.6vw, 18px)',
+                padding: '8px 20px',
+                borderRadius: 16,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                border: '1px solid rgba(241,245,249,0.8)',
+                zIndex: 25,
+                whiteSpace: 'nowrap' as const,
+              }}
+            >
+              <span
+                style={{
+                  width: 24, height: 24, borderRadius: 8,
+                  background: '#0F766E', color: 'white',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 12, fontWeight: 700,
+                }}
+              >
+                e
+              </span>
+              <span style={{ textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0F172A' }}>
+                Evalipie Store
+              </span>
+              <span
+                style={{
+                  fontSize: 10, fontWeight: 700, color: '#0F766E',
+                  background: '#ECFDF5', padding: '2px 8px', borderRadius: 20,
+                }}
+              >
+                Bengaluru
+              </span>
+            </div>
+
+            {/* Left showcase window */}
+            <div
+              className="absolute flex flex-col items-center justify-center"
+              style={{
+                left: '4%', bottom: '12%',
+                width: '20%', height: '34%',
+                background: 'linear-gradient(135deg, rgba(224,242,254,0.9), rgba(255,255,255,0.95))',
+                border: '3px solid #134E4A',
+                borderRadius: 16,
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: 'rgba(15,118,110,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  marginBottom: 6,
+                }}
+              >
+                <Headphones className="w-5 h-5 text-[#0F766E]" />
+              </div>
+              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1E293B' }}>
+                Electronics
+              </span>
+              <span style={{ fontSize: 9, fontWeight: 600, color: '#94A3B8', marginTop: 2 }}>
+                Sharma Digital
+              </span>
+            </div>
+
+            {/* Right showcase window */}
+            <div
+              className="absolute flex flex-col items-center justify-center"
+              style={{
+                right: '4%', bottom: '12%',
+                width: '20%', height: '34%',
+                background: 'linear-gradient(135deg, rgba(224,242,254,0.9), rgba(255,255,255,0.95))',
+                border: '3px solid #134E4A',
+                borderRadius: 16,
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: 'rgba(15,118,110,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  marginBottom: 6,
+                }}
+              >
+                <Store className="w-5 h-5 text-[#0F766E]" />
+              </div>
+              <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1E293B' }}>
+                Retail Chain
+              </span>
+              <span style={{ fontSize: 9, fontWeight: 600, color: '#94A3B8', marginTop: 2 }}>
+                City Supermarket
+              </span>
+            </div>
+
+            {/* ── Door Frame (3D perspective stage) ──── */}
+            <div
+              className="absolute overflow-hidden"
+              style={{
+                left: '50%',
+                bottom: 0,
+                transform: 'translateX(-50%)',
+                height: '78%',
+                aspectRatio: '0.62',
+                background: '#022c22',
+                border: '6px solid #134E4A',
+                borderBottom: 'none',
+                borderRadius: '20px 20px 0 0',
+                perspective: '1200px',
+                zIndex: 20,
+              }}
+            >
+              {/* Striped awning */}
+              <div
+                className="absolute"
+                style={{
+                  left: '-12%', right: '-12%', top: -24, height: 24,
+                  borderRadius: '8px 8px 0 0',
+                  background: 'repeating-linear-gradient(90deg, #fff 0 20px, #0F766E 20px 40px)',
+                  boxShadow: '0 4px 0 #134E4A',
+                  zIndex: 20,
+                }}
+              />
+
+              {/* Interior (behind doors, visible as they open) */}
+              <div
+                ref={interiorRef}
+                className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center"
+                style={{
+                  background: 'linear-gradient(180deg, #F0FDFA, white 60%, #F8FAFC)',
+                  opacity: 0,
+                }}
+              >
+                <div
+                  className="absolute flex justify-between items-center"
+                  style={{
+                    top: 0, left: 0, right: 0,
+                    padding: '10px 14px',
+                    background: 'white',
+                    borderBottom: '1px solid #F1F5F9',
+                    fontSize: 11, fontWeight: 700, color: '#0F766E',
+                  }}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Verified Merchants</span>
+                  </span>
+                  <span style={{ color: '#94A3B8', fontWeight: 600 }}>Live Karnataka Network</span>
                 </div>
-                <h2 className="text-xl font-extrabold text-[#111827] mb-1">Find exactly what you need.</h2>
-                <p className="text-xs text-[#167D73] font-bold mb-3">From every local shop.</p>
-                <div className="w-full bg-white border border-gray-200 rounded-full py-2 px-3 flex justify-between items-center text-xs text-gray-400 shadow-sm">
-                  <span>Describe what you need…</span>
-                  <span className="bg-[#7657E8] text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+
+                <div style={{ marginTop: 16 }}>
+                  <h2 style={{ fontSize: 'clamp(16px, 2.2vw, 24px)', fontWeight: 900, color: '#0F172A', letterSpacing: '-0.02em', margin: 0 }}>
+                    Welcome to Evalipie.
+                  </h2>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: '#0F766E', margin: '4px 0 0' }}>
+                    Every shopkeeper. One intelligent platform.
+                  </p>
+                </div>
+
+                <div
+                  className="flex items-center justify-between"
+                  style={{
+                    width: '100%', maxWidth: 220,
+                    marginTop: 14,
+                    background: 'white',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: 20,
+                    padding: '8px 14px',
+                    fontSize: 11, color: '#94A3B8',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  <span>Describe what you need...</span>
+                  <span
+                    style={{
+                      background: '#7657E8', color: 'white',
+                      fontSize: 10, fontWeight: 700,
+                      padding: '2px 8px', borderRadius: 12,
+                      display: 'flex', alignItems: 'center', gap: 3,
+                    }}
+                  >
                     <Sparkles className="w-3 h-3" /> AI
                   </span>
                 </div>
-                <div className="flex gap-2 mt-4 text-xl">
-                  <span>🎧</span><span>🎙️</span><span>⌨️</span><span>🍳</span>
+
+                <div className="flex gap-2" style={{ marginTop: 14 }}>
+                  {[Headphones, Laptop, ShoppingBag, Store].map((Icon, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        width: 28, height: 28, borderRadius: '50%',
+                        background: '#F1F5F9',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: '#475569',
+                      }}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* 3D Left Door */}
+              {/* ── Left Door ─────────────────────────── */}
               <div
                 ref={leftDoorRef}
-                className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-[#105B55] to-[#1a8479] border-r-2 border-[#0c3d39] origin-left transition-transform will-change-transform z-10 [backface-visibility:visible]"
+                className="absolute top-0 bottom-0 left-0 will-change-transform"
+                style={{
+                  width: '50%',
+                  background: 'linear-gradient(90deg, #0F766E, #134E4A)',
+                  borderRight: '2px solid #042F2E',
+                  transformOrigin: 'left center',
+                  backfaceVisibility: 'visible',
+                  zIndex: 10,
+                }}
               >
-                {/* Door Glass Inset */}
-                <div className="absolute inset-x-[14%] top-[10%] bottom-[42%] bg-gradient-to-br from-[#D9F1F8] via-white to-[#BFE6F7] rounded-md border-4 border-[#0c3d39]" />
-                {/* Gold Door Handle */}
-                <div className="absolute right-2 top-[56%] w-2.5 h-[20%] rounded-full bg-[#F3D27A] shadow-[0_2px_6px_rgba(0,0,0,0.3)]" />
+                {/* Glass panel */}
+                <div
+                  className="absolute overflow-hidden"
+                  style={{
+                    left: '14%', right: '14%', top: '10%', bottom: '40%',
+                    background: 'linear-gradient(135deg, rgba(224,242,254,0.8), rgba(255,255,255,0.7), rgba(186,230,253,0.8))',
+                    borderRadius: 12,
+                    border: '3px solid #042F2E',
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'linear-gradient(45deg, transparent 44%, rgba(255,255,255,0.65) 50%, transparent 56%)' }}
+                  />
+                </div>
+                {/* Handle */}
+                <div
+                  className="absolute"
+                  style={{
+                    right: 8, top: '50%', transform: 'translateY(-50%)',
+                    width: 8, height: '20%', borderRadius: 6,
+                    background: 'linear-gradient(90deg, #FDE047, #FACC15, #CA8A04)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                  }}
+                />
               </div>
 
-              {/* 3D Right Door */}
+              {/* ── Right Door ────────────────────────── */}
               <div
                 ref={rightDoorRef}
-                className="absolute top-0 bottom-0 right-0 w-1/2 bg-gradient-to-l from-[#105B55] to-[#1a8479] border-l-2 border-[#0c3d39] origin-right transition-transform will-change-transform z-10 [backface-visibility:visible]"
+                className="absolute top-0 bottom-0 right-0 will-change-transform"
+                style={{
+                  width: '50%',
+                  background: 'linear-gradient(270deg, #0F766E, #134E4A)',
+                  borderLeft: '2px solid #042F2E',
+                  transformOrigin: 'right center',
+                  backfaceVisibility: 'visible',
+                  zIndex: 10,
+                }}
               >
-                {/* Door Glass Inset */}
-                <div className="absolute inset-x-[14%] top-[10%] bottom-[42%] bg-gradient-to-br from-[#D9F1F8] via-white to-[#BFE6F7] rounded-md border-4 border-[#0c3d39]" />
-                {/* Gold Door Handle */}
-                <div className="absolute left-2 top-[56%] w-2.5 h-[20%] rounded-full bg-[#F3D27A] shadow-[0_2px_6px_rgba(0,0,0,0.3)]" />
+                {/* Glass panel */}
+                <div
+                  className="absolute overflow-hidden"
+                  style={{
+                    left: '14%', right: '14%', top: '10%', bottom: '40%',
+                    background: 'linear-gradient(135deg, rgba(224,242,254,0.8), rgba(255,255,255,0.7), rgba(186,230,253,0.8))',
+                    borderRadius: 12,
+                    border: '3px solid #042F2E',
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'linear-gradient(45deg, transparent 44%, rgba(255,255,255,0.65) 50%, transparent 56%)' }}
+                  />
+                </div>
+                {/* Handle */}
+                <div
+                  className="absolute"
+                  style={{
+                    left: 8, top: '50%', transform: 'translateY(-50%)',
+                    width: 8, height: '20%', borderRadius: 6,
+                    background: 'linear-gradient(90deg, #CA8A04, #FACC15, #FDE047)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                  }}
+                />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Ground Floor */}
-        <div className="absolute left-0 right-0 bottom-0 h-[8vh] bg-gradient-to-b from-[#D8DEE6] to-[#C7CFDA] border-t-4 border-white pointer-events-none" />
+        {/* ── White crossfade overlay (masks transition to content) ── */}
+        <div
+          ref={overlayRef}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: '#F8FAFC',
+            opacity: 0,
+            zIndex: 40,
+          }}
+        />
 
-        {/* Scroll Instruction Hint / Shortcut Button */}
-        <div ref={hintRef} className="absolute bottom-[10vh] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
-          <button
-            onClick={scrollToMarketplace}
-            className="bg-[#111827] text-white text-xs font-bold tracking-wider uppercase px-5 py-2.5 rounded-full shadow-lg hover:bg-black transition-all flex items-center gap-2 animate-bounce"
+        {/* ── Scroll hint CTA ────────────────────────────── */}
+        <div
+          ref={hintRef}
+          className="absolute flex flex-col items-center gap-2 pointer-events-none"
+          style={{
+            left: '50%', bottom: 'clamp(20px, 6vh, 48px)',
+            transform: 'translateX(-50%)',
+            zIndex: 35,
+            transition: 'opacity 0.4s ease',
+          }}
+        >
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase' as const,
+              color: 'rgba(15,23,42,0.5)',
+            }}
           >
-            <span>Scroll or Click to Enter Marketplace</span>
-            <ArrowDown className="w-3.5 h-3.5" />
-          </button>
+            SCROLL TO ENTER
+          </span>
+          <svg
+            width="14" height="18" viewBox="0 0 14 18"
+            style={{ animation: 'evalipie-bounce 1.6s ease-in-out infinite' }}
+          >
+            <style>{`
+              @keyframes evalipie-bounce {
+                0%, 100% { transform: translateY(0); opacity: 0.4; }
+                50% { transform: translateY(5px); opacity: 1; }
+              }
+            `}</style>
+            <path
+              d="M7 1 L7 17 M2 12 L7 17 L12 12"
+              stroke="rgba(15,23,42,0.4)"
+              strokeWidth="1.5"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
 
-        {/* Progress Bar */}
-        <div className="absolute inset-x-0 bottom-0 h-1 bg-black/10 z-30">
-          <div ref={barRef} className="h-full bg-[#167D73] origin-left transition-transform scale-x-0" />
+        {/* ── Progress bar ────────────────────────────────── */}
+        <div
+          className="absolute left-0 right-0 bottom-0"
+          style={{ height: 2, background: 'rgba(0,0,0,0.06)', zIndex: 50 }}
+        >
+          <div
+            ref={progressBarRef}
+            style={{
+              height: '100%', width: '100%',
+              background: 'linear-gradient(90deg, #0F766E, #14B8A6)',
+              transform: 'scaleX(0)',
+              transformOrigin: 'left center',
+            }}
+          />
         </div>
       </div>
     </section>

@@ -59,7 +59,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400">
-          <p>© 2026 Evalipie · Official Domain: evalipie.in · Built with Passion for Local Retailers</p>
+          <p>2026 Evalipie · Official Domain: evalipie.in · Multi-Merchant Intelligent Commerce</p>
           <div className="flex items-center gap-1">
             <span>Every Shop Gets a Digital Identity</span>
           </div>

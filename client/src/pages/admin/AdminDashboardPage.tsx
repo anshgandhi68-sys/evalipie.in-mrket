@@ -225,11 +225,11 @@ export const AdminDashboardPage: React.FC = () => {
                     <td className="py-3 px-4">
                       {ev.dispatchedAt ? (
                         <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold text-[10px]">
-                          ✓ Dispatched
+                          Dispatched
                         </span>
                       ) : (
                         <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-bold text-[10px]">
-                          ⏳ Pending Outbox
+                          Pending Outbox
                         </span>
                       )}
                     </td>
