@@ -7,6 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        lichen: '#E6E9E4',
+        ink: '#0F1412',
+        mid: '#5D6661',
+        signal: '#FF5A1F',
         navy: {
           900: '#111827',
           800: '#1f2937',
@@ -22,7 +26,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['Archivo', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       }
     },
   },
