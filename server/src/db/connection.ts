@@ -55,7 +55,7 @@ class DatabaseStore {
     initialLedgerCustomers.forEach(c => this.ledgerCustomers.set(c.id, { ...c }));
     this.ledgerEntries = [...initialLedgerEntries];
 
-    // Merge full 180-product catalogue
+    // Merge full 195-product catalogue
     PRODUCTS_SEED.forEach(p => {
       if (!this.products.has(p.id)) {
         this.products.set(p.id, {
@@ -70,6 +70,8 @@ class DatabaseStore {
           tags: p.tags
         });
       }
+      this.products.set(p.sku, this.products.get(p.id)!);
+      this.products.set(p.sku.toLowerCase(), this.products.get(p.id)!);
       const listingId = `list-${p.id}`;
       if (!this.listings.has(listingId)) {
         this.listings.set(listingId, {

@@ -16,7 +16,7 @@ export const CITIES = ['Bengaluru', 'Mumbai', 'Delhi', 'Hyderabad', 'Chennai', '
 
 export async function runAivenSeed(): Promise<void> {
   console.log('\n========================================================');
-  console.log('🚀 SEEDING 180-PRODUCT PRODUCTION CATALOGUE INTO DB & ACID BUFFER...');
+  console.log('🚀 SEEDING 195-PRODUCT PRODUCTION CATALOGUE INTO DB & ACID BUFFER...');
   console.log(`Mode: ${aivenPg.isConnected ? 'Aiven PostgreSQL Cloud' : 'High-Performance ACID In-Memory'}`);
   console.log('========================================================');
 
@@ -50,11 +50,13 @@ export async function runAivenSeed(): Promise<void> {
     memoryPg.subcategories.set(sub.slug, sub);
   }
 
-  // Seed All 180 Detailed Products into memoryPg and Postgres
+  // Seed All 195 Detailed Products into memoryPg and Postgres
   for (const p of PRODUCTS_SEED) {
-    // Keep detailed product copy
+    // Keep detailed product copy & SKU lookup
     memoryPg.detailedProducts.set(p.id, p);
     memoryPg.detailedProducts.set(p.slug, p);
+    memoryPg.detailedProducts.set(p.sku, p);
+    memoryPg.detailedProducts.set(p.sku.toLowerCase(), p);
 
     // Standard product row for search compatibility
     const prodRow: ProductRow = {
@@ -103,16 +105,17 @@ export async function runAivenSeed(): Promise<void> {
       );
     }
     memoryPg.products.set(p.id, prodRow);
+    memoryPg.products.set(p.sku, prodRow);
+    memoryPg.products.set(p.sku.toLowerCase(), prodRow);
 
-    // Seed Multi-City Local Inventory
+    // Seed Multi-City Local Inventory matching real recording data
     for (const city of CITIES) {
       const invId = `inv-${p.id}-${city.toLowerCase()}`;
-      const isBengaluru = city === 'Bengaluru';
       
-      // Stock logic: default to realistic stock; keep 2 key test items low-stock for concurrency test
-      let availableStock = Math.max(5, p.stockQuantity);
-      if (p.id === 'prod-audio-boat-550' && isBengaluru) availableStock = 1;
-      if (p.id === 'prod-elec-iphone16-pro' && isBengaluru) availableStock = 2;
+      // Stock logic: use exact city stock from catalogue recording if available
+      let availableStock = (p.stockByCity && (p.stockByCity as any)[city] !== undefined)
+        ? (p.stockByCity as any)[city]
+        : Math.max(5, Math.floor(p.stockQuantity / 6));
 
       const store = {
         name: `Evalipie Express Fulfillment (${city})`,
@@ -159,7 +162,33 @@ export async function runAivenSeed(): Promise<void> {
     }
   }
 
-  console.log(`✅ Successfully seeded 180 products, 10 categories, 59 subcategories & ${180 * CITIES.length} multi-city inventory records!`);
+  // Register Bento Hero card aliases so hero buttons seamlessly open live products
+  const lap006 = memoryPg.detailedProducts.get('prod-lap-006');
+  if (lap006) {
+    memoryPg.detailedProducts.set('prod-hero-macbook-m4-pro', lap006);
+    const lapProd = memoryPg.products.get(lap006.id);
+    if (lapProd) memoryPg.products.set('prod-hero-macbook-m4-pro', lapProd);
+  }
+  const aud017 = memoryPg.detailedProducts.get('prod-aud-017');
+  if (aud017) {
+    memoryPg.detailedProducts.set('prod-hero-airpods-max', aud017);
+    const audProd = memoryPg.products.get(aud017.id);
+    if (audProd) memoryPg.products.set('prod-hero-airpods-max', audProd);
+  }
+  const ftw016 = memoryPg.detailedProducts.get('prod-ftw-016');
+  if (ftw016) {
+    memoryPg.detailedProducts.set('prod-hero-flat20-shoes', ftw016);
+    const ftwProd = memoryPg.products.get(ftw016.id);
+    if (ftwProd) memoryPg.products.set('prod-hero-flat20-shoes', ftwProd);
+  }
+  const fas010 = memoryPg.detailedProducts.get('prod-fas-010');
+  if (fas010) {
+    memoryPg.detailedProducts.set('prod-fash-zara-linen-shirt', fas010);
+    const fasProd = memoryPg.products.get(fas010.id);
+    if (fasProd) memoryPg.products.set('prod-fash-zara-linen-shirt', fasProd);
+  }
+
+  console.log(`✅ Successfully seeded 195 products, 6 categories, 18 subcategories & ${PRODUCTS_SEED.length * CITIES.length} multi-city inventory records!`);
   console.log(`✅ Default Admin Seeded: admin@evalipie.in / Admin@123456`);
   console.log(`✅ Default Customer Seeded: customer@evalipie.in / Customer@123`);
   console.log('========================================================\n');

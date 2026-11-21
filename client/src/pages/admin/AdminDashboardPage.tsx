@@ -224,7 +224,7 @@ export const AdminDashboardPage: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-0.5 font-medium">
-                Live management of 180-product catalogue, real-time orders, Razorpay payments, and concurrency engine
+                Live management of 195-product catalogue, real-time orders, Razorpay payments, and concurrency engine
               </p>
             </div>
           </div>
@@ -322,9 +322,9 @@ export const AdminDashboardPage: React.FC = () => {
                   <Package className="w-4 h-4 text-[#105B55]" />
                 </div>
                 <div className="text-2xl font-bold font-mono text-gray-900">
-                  {products.length || 180}
+                  {products.length || 195}
                 </div>
-                <span className="text-[11px] text-[#105B55] font-semibold">10 Departments · 59 Subcats</span>
+                <span className="text-[11px] text-[#105B55] font-semibold">6 Departments · 18 Subcats</span>
               </div>
 
               <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs space-y-1">
@@ -410,7 +410,7 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100">
               <div>
                 <h3 className="text-base font-bold text-gray-900">Live Inventory & Price Control</h3>
-                <p className="text-xs text-gray-500">Edit real-time prices and stock counts across all 180 catalogue products.</p>
+                <p className="text-xs text-gray-500">Edit real-time prices and stock counts across all 195 catalogue products.</p>
               </div>
 
               {/* Product Search */}

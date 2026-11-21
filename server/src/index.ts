@@ -37,6 +37,12 @@ app.get('/health', (_req, res) => {
   });
 });
 
+// Serve products static images from recording
+const publicProducts = path.resolve(__dirname, '../../client/public/products');
+const serverProducts = path.resolve(__dirname, '../public/products');
+app.use('/products', express.static(publicProducts));
+app.use('/products', express.static(serverProducts));
+
 // Serve frontend static build if exists
 const clientDist = path.resolve(__dirname, '../../client/dist');
 app.use(express.static(clientDist));

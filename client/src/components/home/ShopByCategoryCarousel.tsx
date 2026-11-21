@@ -7,47 +7,75 @@ interface ShopByCategoryCarouselProps {
   categories?: CategoryHierarchy[];
 }
 
-// Curated visuals matching Reference Image 1 exactly
+// Curated visuals matching Reference Image 1 & 195-Product Catalogue
 const CATEGORY_VISUALS: Record<string, { title: string; image: string }> = {
+  'cat-laptops': {
+    title: 'Laptops',
+    image: '/products/LAP-006.jpg'
+  },
+  'laptops': {
+    title: 'Laptops',
+    image: '/products/LAP-006.jpg'
+  },
+  'cat-mobiles': {
+    title: 'Mobiles',
+    image: '/products/MOB-008.jpg'
+  },
+  'mobiles': {
+    title: 'Mobiles',
+    image: '/products/MOB-008.jpg'
+  },
+  'cat-audio': {
+    title: 'Audio',
+    image: '/products/AUD-017.jpg'
+  },
+  'audio': {
+    title: 'Audio',
+    image: '/products/AUD-017.jpg'
+  },
+  'cat-footwear': {
+    title: 'Footwear',
+    image: '/products/FTW-013.jpg'
+  },
+  'footwear': {
+    title: 'Footwear',
+    image: '/products/FTW-013.jpg'
+  },
+  'cat-fashion': {
+    title: 'Fashion',
+    image: '/products/FAS-010.jpg'
+  },
+  'fashion': {
+    title: 'Fashion',
+    image: '/products/FAS-010.jpg'
+  },
+  'cat-home': {
+    title: 'Home & Kitchen',
+    image: '/products/HOM-008.jpg'
+  },
+  'home': {
+    title: 'Home & Kitchen',
+    image: '/products/HOM-008.jpg'
+  },
   'cat-electronics': {
     title: 'Electronics',
     image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&auto=format&fit=crop&q=80' // Wireless earbuds in case
   },
   'cat-beauty': {
     title: 'Beauty Products',
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&auto=format&fit=crop&q=80' // Beauty skincare dropper & cream
+    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&auto=format&fit=crop&q=80' // Skincare dropper
   },
   'cat-computers': {
-    title: 'Smart Watches & Tech',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80' // Smartwatch
-  },
-  'cat-home': {
-    title: 'Home Decor',
-    image: 'https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?w=400&auto=format&fit=crop&q=80' // Clean flower vase aesthetic
+    title: 'Smart Watches',
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80'
   },
   'cat-kitchen': {
     title: 'Kitchen Appliances',
-    image: 'https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&auto=format&fit=crop&q=80' // Kitchen blender / mixer
+    image: 'https://images.unsplash.com/photo-1570222094114-d054a817e56b?w=400&auto=format&fit=crop&q=80'
   },
   'cat-toys': {
     title: 'Toys & Games',
-    image: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=400&auto=format&fit=crop&q=80' // Toy scooter / Lego brick
-  },
-  'cat-fashion': {
-    title: 'Fashion & Style',
-    image: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=400&auto=format&fit=crop&q=80'
-  },
-  'cat-sports': {
-    title: 'Sports & Fitness',
-    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=80'
-  },
-  'cat-books': {
-    title: 'Books & Stationery',
-    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&auto=format&fit=crop&q=80'
-  },
-  'cat-automotive': {
-    title: 'Automotive & Tools',
-    image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=400&auto=format&fit=crop&q=80'
+    image: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=400&auto=format&fit=crop&q=80'
   }
 };
 
@@ -84,7 +112,7 @@ export const ShopByCategoryCarousel: React.FC<ShopByCategoryCarouselProps> = ({ 
             Shop by Category
           </h2>
           <p className="text-xs sm:text-sm text-[#687385] mt-1">
-            Explore 10 curated departments across 180 verified local products
+            Explore 6 curated departments across 195 verified local products
           </p>
         </div>
 

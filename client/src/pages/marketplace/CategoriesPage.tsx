@@ -10,68 +10,58 @@ import { api } from '../../services/api.js';
 
 const CATEGORIES_DATA = [
   {
-    id: 'Smart Wearables',
-    name: 'Smart Wearables & Tech',
-    tagline: 'Apple Watch Series 10, AMOLED fitness bands, smart rings & GPS sports watches',
-    count: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80',
-    icon: <ShoppingBag className="w-5 h-5 text-emerald-600" />
-  },
-  {
-    id: 'Electronics',
-    name: 'Audio & Electronics',
-    tagline: 'Bluetooth ANC headphones, condenser mics, fast chargers & fitness watches',
-    count: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80',
-    icon: <Headphones className="w-5 h-5 text-purple-600" />
-  },
-  {
-    id: 'Mobiles & Accessories',
-    name: 'Smartphones & Mobile Tech',
-    tagline: 'Apple iPhone 16, Samsung Galaxy S24 AI, 65W GaN wall adapters',
-    count: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&auto=format&fit=crop&q=80',
-    icon: <Smartphone className="w-5 h-5 text-blue-600" />
-  },
-  {
-    id: 'Computers & Laptops',
-    name: 'Computers & Workspaces',
-    tagline: 'ThinkPad laptops under 60k, wireless mechanical keyboards, gaming mice',
-    count: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&auto=format&fit=crop&q=80',
+    id: 'cat-laptops',
+    slug: 'laptops',
+    name: 'Laptops & Workstations',
+    tagline: 'Apple MacBook Pro M3/M4, Acer Swift AI OLED, ASUS ROG Gaming & Dell XPS',
+    count: 32,
+    imageUrl: '/products/LAP-006.jpg',
     icon: <Laptop className="w-5 h-5 text-indigo-600" />
   },
   {
-    id: 'Home & Kitchen',
-    name: 'Home, Furniture & Appliances',
-    tagline: 'Ergonomic mesh office chairs, digital air fryers, desk organizers',
-    count: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1580481077195-c228c3b7f290?w=400&auto=format&fit=crop&q=80',
-    icon: <Utensils className="w-5 h-5 text-amber-600" />
+    id: 'cat-mobiles',
+    slug: 'mobiles',
+    name: 'Mobiles & Tablets',
+    tagline: 'Apple iPhone 15 Pro Max, iPad Air M2, Samsung Galaxy S24 AI & Pixel 8 Pro',
+    count: 32,
+    imageUrl: '/products/MOB-008.jpg',
+    icon: <Smartphone className="w-5 h-5 text-blue-600" />
   },
   {
-    id: 'Boutique Apparel',
-    name: 'Boutique Apparel & Textiles',
-    tagline: 'Organic cotton black tees, Japanese raw selvedge denim, merino knitwear',
-    count: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=400&auto=format&fit=crop&q=80',
+    id: 'cat-audio',
+    slug: 'audio',
+    name: 'Audio & Sound',
+    tagline: 'Apple AirPods Max, Bose QuietComfort, Sony WH-1000XM5, Marshall & boAt',
+    count: 32,
+    imageUrl: '/products/AUD-017.jpg',
+    icon: <Headphones className="w-5 h-5 text-purple-600" />
+  },
+  {
+    id: 'cat-footwear',
+    slug: 'footwear',
+    name: 'Footwear & Sneakers',
+    tagline: 'Adidas Samba OG, Nike Air Jordan, ASICS Gel-Kayano, Puma Softride & Crocs',
+    count: 33,
+    imageUrl: '/products/FTW-013.jpg',
+    icon: <ShoppingBag className="w-5 h-5 text-emerald-600" />
+  },
+  {
+    id: 'cat-fashion',
+    slug: 'fashion',
+    name: 'Fashion & Apparel',
+    tagline: 'Ray-Ban Aviators, Allen Solly formal shirts, Louis Philippe blazers & Biba sarees',
+    count: 33,
+    imageUrl: '/products/FAS-010.jpg',
     icon: <Shirt className="w-5 h-5 text-rose-600" />
   },
   {
-    id: 'Fashion',
-    name: 'Fashion & Footwear',
-    tagline: "Woodland handcrafted leather men's shoes, accessories & essentials",
-    count: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=400&auto=format&fit=crop&q=80',
-    icon: <Shirt className="w-5 h-5 text-teal-600" />
-  },
-  {
-    id: 'Sports & Fitness',
-    name: 'Sports & Fitness Gear',
-    tagline: 'Nike Air Zoom road running shoes, AMOLED fitness trackers, gear',
-    count: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop&q=80',
-    icon: <Trophy className="w-5 h-5 text-orange-600" />
+    id: 'cat-home',
+    slug: 'home',
+    name: 'Home & Kitchen',
+    tagline: "De'Longhi Espresso machines, Dyson Airwrap, Borosil appliances & Prestige cookware",
+    count: 33,
+    imageUrl: '/products/HOM-008.jpg',
+    icon: <Utensils className="w-5 h-5 text-amber-600" />
   }
 ];
 
@@ -121,7 +111,7 @@ export const CategoriesPage: React.FC = () => {
           {filtered.map(cat => (
             <div
               key={cat.id}
-              onClick={() => navigate(`/search?category=${encodeURIComponent(cat.id)}`)}
+              onClick={() => navigate(`/products?category=${encodeURIComponent(cat.slug || cat.id)}`)}
               className="bg-white rounded-2xl border border-gray-200/90 hover:border-[#167D73] shadow-xs hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer flex flex-col group"
             >
               <div className="relative aspect-16/10 bg-gray-100 overflow-hidden">

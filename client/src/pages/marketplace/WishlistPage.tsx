@@ -114,7 +114,7 @@ export const WishlistPage: React.FC = () => {
             </div>
             <h2 className="text-xl font-bold text-gray-900">Your wishlist is empty</h2>
             <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-              Explore our 180-product multi-category catalogue and tap the heart icon on any card to save your favorites.
+              Explore our 195-product multi-category catalogue and tap the heart icon on any card to save your favorites.
             </p>
             <Link
               to="/products"

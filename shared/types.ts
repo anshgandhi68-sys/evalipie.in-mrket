@@ -277,6 +277,8 @@ export interface DetailedProduct {
   imageUrl: string;
   images: string[];
   stockQuantity: number;
+  stockByCity?: Record<string, number>;
+  color?: string;
   rating: number;
   reviewsCount: number;
   tags: string[];

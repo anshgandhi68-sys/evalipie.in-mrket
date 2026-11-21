@@ -15,8 +15,13 @@ export class FlagshipCatalogueController {
   // GET /api/v1/catalog/taxonomy
   getTaxonomy(req: Request, res: Response) {
     try {
-      // Refresh live counts from memoryPg.detailedProducts
-      const allProducts = Array.from(memoryPg.detailedProducts.values()) as DetailedProduct[];
+      // Refresh live counts from memoryPg.detailedProducts (deduplicated by ID)
+      const seenIds = new Set<string>();
+      const allProducts = (Array.from(memoryPg.detailedProducts.values()) as DetailedProduct[]).filter(p => {
+        if (seenIds.has(p.id)) return false;
+        seenIds.add(p.id);
+        return true;
+      });
       
       const categories = CATEGORIES_SEED.map(cat => {
         const catProds = allProducts.filter(p => p.categoryId === cat.id);
@@ -70,21 +75,28 @@ export class FlagshipCatalogueController {
         return true;
       });
 
-      // Filter by Category (id or slug)
+      // Filter by Category (id or slug or normalized name)
       if (category && category !== 'all') {
         const catVal = String(category).toLowerCase();
+        const normCatVal = catVal.replace(/^cat-/, '');
         list = list.filter(p => 
           p.categoryId.toLowerCase() === catVal || 
+          p.categoryId.toLowerCase().replace(/^cat-/, '') === normCatVal ||
           p.categoryName.toLowerCase().replace(/\s+/g, '-') === catVal ||
-          p.categoryName.toLowerCase() === catVal
+          p.categoryName.toLowerCase() === catVal ||
+          (normCatVal === 'home' && p.categoryId === 'cat-home') ||
+          (normCatVal === 'laptops' && (p.categoryId === 'cat-laptops' || p.categoryId === 'cat-computers')) ||
+          (normCatVal === 'mobiles' && (p.categoryId === 'cat-mobiles' || p.categoryId === 'cat-electronics'))
         );
       }
 
       // Filter by Subcategory (id or slug)
       if (subcategory && subcategory !== 'all') {
         const subVal = String(subcategory).toLowerCase();
+        const normSubVal = subVal.replace(/^sub-/, '');
         list = list.filter(p => 
           p.subcategoryId.toLowerCase() === subVal || 
+          p.subcategoryId.toLowerCase().replace(/^sub-/, '') === normSubVal ||
           p.subcategoryName.toLowerCase().replace(/\s+/g, '-') === subVal ||
           p.subcategoryName.toLowerCase() === subVal
         );

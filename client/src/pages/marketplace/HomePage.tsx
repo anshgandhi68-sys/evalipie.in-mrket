@@ -840,7 +840,7 @@ export const HomePage: React.FC = () => {
               to="/products"
               className="text-xs font-semibold text-[#105B55] hover:text-[#167D73] flex items-center gap-1"
             >
-              Browse All 180 Products
+              Browse All 195 Products
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

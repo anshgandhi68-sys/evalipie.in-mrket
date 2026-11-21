@@ -499,7 +499,7 @@ export const ProductsPage: React.FC = () => {
             {loading ? (
               <div className="py-24 text-center">
                 <div className="w-8 h-8 border-2 border-[#105B55] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-xs text-gray-500 font-mono">Filtering 180 products...</p>
+                <p className="text-xs text-gray-500 font-mono">Filtering 195 products...</p>
               </div>
             ) : products.length === 0 ? (
               <div className="py-20 text-center bg-white rounded-2xl border border-gray-200 p-8">

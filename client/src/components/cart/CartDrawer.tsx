@@ -209,7 +209,7 @@ export const CartDrawer: React.FC = () => {
             <div className="py-20 text-center space-y-3">
               <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto stroke-[1.2]" />
               <p className="text-sm font-semibold text-gray-700">Your cart is empty</p>
-              <p className="text-xs text-gray-400">Discover items from our 180-product catalogue.</p>
+              <p className="text-xs text-gray-400">Discover items from our 195-product catalogue.</p>
               <button
                 type="button"
                 onClick={() => { closeCart(); navigate('/products'); }}

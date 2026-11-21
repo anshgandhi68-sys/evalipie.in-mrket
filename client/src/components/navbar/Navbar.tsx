@@ -37,7 +37,7 @@ export const Navbar: React.FC = () => {
           <span className="opacity-40">•</span>
           <span>Live Razorpay UPI QR Payments</span>
           <span className="opacity-40 hidden sm:inline">•</span>
-          <span className="hidden sm:inline">180 Verified Database Products</span>
+          <span className="hidden sm:inline">195 Verified Database Products</span>
           <span className="opacity-40 hidden md:inline">•</span>
           <Link to="/experience" className="hidden md:inline text-emerald-200 hover:text-white underline ml-1">
             Experience 3D Storefront
