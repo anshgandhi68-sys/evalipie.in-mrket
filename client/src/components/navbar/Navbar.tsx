@@ -31,22 +31,26 @@ export const Navbar: React.FC = () => {
           />
         </Link>
 
-        {/* Right Nav Links matching Image 2 */}
+        {/* Right Nav Links matching Prototype */}
         <nav className="flex items-center gap-5 sm:gap-7 text-sm font-semibold text-[#687385]">
-          <Link to="/ai" className="hover:text-[#167D73] transition-colors">
+          <a 
+            href="#ai" 
+            onClick={(e) => handleScrollTo('ai', e)}
+            className="hover:text-[#167D73] transition-colors cursor-pointer"
+          >
             Evalipie AI
-          </Link>
+          </a>
           <a 
             href="#cats" 
             onClick={(e) => handleScrollTo('cats', e)}
-            className="hover:text-[#167D73] transition-colors"
+            className="hover:text-[#167D73] transition-colors cursor-pointer"
           >
             Categories
           </a>
           <a 
             href="#trend" 
             onClick={(e) => handleScrollTo('trend', e)}
-            className="hover:text-[#167D73] transition-colors"
+            className="hover:text-[#167D73] transition-colors cursor-pointer"
           >
             Trending
           </a>

@@ -8,7 +8,11 @@ import './DoorHero.css';
 // Exactly matching prototype reference in media_1795265028299_796ce432.html & Screenshot 5
 // ─────────────────────────────────────────────────────────────
 
-export const DoorHero: React.FC = () => {
+export interface DoorHeroProps {
+  onSelectCategory?: (catKey: string) => void;
+}
+
+export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory }) => {
   const heroRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
@@ -163,11 +167,25 @@ export const DoorHero: React.FC = () => {
             <div className="sign">Evalipie</div>
             
             {/* Display Windows (Matching Screenshot 3) */}
-            <div className="win l">
+            <div 
+              className="win l cursor-pointer"
+              title="Click to explore Electronics & Audio"
+              onClick={() => {
+                onSelectCategory?.('AUDIO');
+                document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               <span className="win-icon">🎧</span>
               <small>ELECTRONICS</small>
             </div>
-            <div className="win r">
+            <div 
+              className="win r cursor-pointer"
+              title="Click to explore Home & Kitchen"
+              onClick={() => {
+                onSelectCategory?.('HOME & KITCHEN');
+                document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               <span className="win-icon">🏠</span>
               <small>HOME</small>
             </div>
