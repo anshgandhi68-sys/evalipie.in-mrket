@@ -216,13 +216,13 @@ export const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F4F6F9] relative selection:bg-[#167D73] selection:text-white font-sans text-gray-900">
       {/* 1. Signature Full-Screen Scroll-Locked Entry Video */}
-      <DoorHero title="Welcome to Evalipie" />
+      <DoorHero />
 
       {/* 2. Main Marketplace Feed Container */}
       <main id="marketplace-feed" className="w-full relative z-10 space-y-10">
 
         {/* ── DEPARTMENT STRIP / SUB-NAV ─────────────────────────────────── */}
-        <div className="bg-white border-b border-gray-200 shadow-2xs sticky top-[108px] z-30 transition-all">
+        <div className="bg-white border-b border-gray-200 shadow-2xs sticky top-[64px] z-30 transition-all">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4 overflow-x-auto no-scrollbar">
             {/* Left: Category Switcher Pills */}
             <div className="flex items-center gap-1.5 shrink-0">

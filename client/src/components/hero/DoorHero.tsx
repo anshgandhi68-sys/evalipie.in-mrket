@@ -6,8 +6,10 @@ import React, { useEffect, useRef, useState } from 'react';
 // EVALIPIE ARCHITECTURAL 3D DOOR SCROLL HERO
 //
 // 100% Hardware-Accelerated 3D Transform Animation:
-// - Crisp daylight morning sky with radiant sun and drifting clouds
-// - Brickwork storefront with "Evalipie" sign and display windows
+// - Crisp daylight morning sky with radiant sun, lens glint, and drifting clouds
+// - Atmospheric sunshine rays streaming from top-right onto storefront windows
+// - Architectural brickwork storefront with "Evalipie Storefront" signage
+// - Display windows with sunshine glass reflection (Electronics & Smart Tech)
 // - Striped awning & 3D doorway frame with 1100px perspective
 // - Dual swinging doors with beveled glass and brass handles
 // - Phase 1 (0 -> 0.32): 3D doors swing open (rotateY 108deg)
@@ -21,8 +23,8 @@ export const DoorHero: React.FC<{
   tagline?: string;
   onEnter?: () => void;
 }> = ({
-  title = "Welcome to Evalipie",
-  tagline = "Every Shop. One Intelligent Marketplace.",
+  title = "Every Shop.",
+  tagline = "One Intelligent Marketplace.",
   onEnter
 }) => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -144,120 +146,146 @@ export const DoorHero: React.FC<{
         ref={stageRef}
         className="sticky top-0 h-screen w-full overflow-hidden bg-gradient-to-b from-[#BFE6F7] via-[#E3F4FA] to-[#F7F9FC]"
       >
-        {/* 1. Daylight Sky: Radiant Sun & Clouds */}
+        {/* 1. Daylight Sky: Radiant Morning Sun, Sunshine Rays & Clouds */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Sun */}
+          {/* Radiant Morning Sun */}
           <div
-            className="absolute right-[12%] top-[12%] w-[90px] h-[90px] rounded-full"
+            className="absolute right-[12%] top-[10%] w-[100px] h-[100px] rounded-full z-0"
             style={{
-              background: 'radial-gradient(circle, #FFF4C2 30%, #FFE08A 70%)',
-              boxShadow: '0 0 90px 30px rgba(255, 224, 138, 0.55)',
+              background: 'radial-gradient(circle, #FFFDEB 25%, #FFE58F 65%, rgba(255, 229, 143, 0) 100%)',
+              boxShadow: '0 0 110px 40px rgba(255, 229, 143, 0.55)',
             }}
           />
 
-          {/* Cloud 1 */}
+          {/* Atmospheric Sunshine Beam Overlay (Sunshine from Window Act) */}
+          <div
+            className="absolute inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse 80% 50% at 85% 15%, rgba(255, 248, 220, 0.6) 0%, rgba(255, 243, 196, 0.25) 40%, transparent 75%)',
+            }}
+          />
+
+          {/* Drifting Clouds */}
           <i
             ref={c1Ref}
-            className="absolute left-[8%] top-[22%] h-[34px] w-[120px] rounded-[40px] bg-white opacity-90 blur-[0.5px]"
+            className="absolute left-[7%] top-[18%] h-[34px] w-[130px] rounded-[40px] bg-white opacity-90 blur-[0.5px]"
             style={{ willChange: 'transform' }}
           >
-            <span className="absolute w-[50px] h-[50px] left-[18px] -top-[24px] bg-white rounded-full block" />
-            <span className="absolute w-[38px] h-[38px] left-[60px] -top-[16px] bg-white rounded-full block" />
+            <span className="absolute w-[52px] h-[52px] left-[18px] -top-[24px] bg-white rounded-full block" />
+            <span className="absolute w-[40px] h-[40px] left-[65px] -top-[16px] bg-white rounded-full block" />
           </i>
 
-          {/* Cloud 2 */}
           <i
             ref={c2Ref}
-            className="absolute left-[58%] top-[12%] h-[34px] w-[120px] rounded-[40px] bg-white opacity-80 blur-[0.5px]"
+            className="absolute left-[54%] top-[8%] h-[34px] w-[120px] rounded-[40px] bg-white opacity-80 blur-[0.5px]"
             style={{ willChange: 'transform' }}
           >
-            <span className="absolute w-[50px] h-[50px] left-[18px] -top-[24px] bg-white rounded-full block" />
-            <span className="absolute w-[38px] h-[38px] left-[60px] -top-[16px] bg-white rounded-full block" />
+            <span className="absolute w-[48px] h-[48px] left-[18px] -top-[22px] bg-white rounded-full block" />
+            <span className="absolute w-[36px] h-[36px] left-[60px] -top-[15px] bg-white rounded-full block" />
           </i>
 
-          {/* Cloud 3 */}
           <i
             ref={c3Ref}
-            className="absolute left-[30%] top-[34%] h-[34px] w-[120px] rounded-[40px] bg-white opacity-70 blur-[0.5px]"
+            className="absolute left-[28%] top-[28%] h-[30px] w-[110px] rounded-[40px] bg-white opacity-70 blur-[0.5px]"
             style={{ willChange: 'transform' }}
           >
-            <span className="absolute w-[50px] h-[50px] left-[18px] -top-[24px] bg-white rounded-full block" />
-            <span className="absolute w-[38px] h-[38px] left-[60px] -top-[16px] bg-white rounded-full block" />
+            <span className="absolute w-[44px] h-[44px] left-[16px] -top-[20px] bg-white rounded-full block" />
+            <span className="absolute w-[34px] h-[34px] left-[54px] -top-[14px] bg-white rounded-full block" />
           </i>
         </div>
 
-        {/* 2. Intro Typography */}
+        {/* 2. Intro Typography (Sitting cleanly in the clear sky with ZERO overlap) */}
         <div
           ref={introRef}
-          className="absolute top-[calc(8vh+35px)] left-0 right-0 text-center px-4 z-10 pointer-events-none"
+          className="absolute top-[calc(64px+2.5vh)] left-0 right-0 text-center px-4 z-10 pointer-events-none max-w-4xl mx-auto"
           style={{ willChange: 'transform, opacity' }}
         >
-          <span className="inline-block text-[11px] font-extrabold tracking-[0.2em] uppercase text-[#105B55] bg-white/80 px-4 py-1.5 rounded-full mb-3 shadow-xs border border-white/40 backdrop-blur-xs">
-            evalipie.in · Bengaluru Local Marketplace
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-[0.2em] uppercase text-[#105B55] bg-white/90 px-3.5 py-1 rounded-full mb-2 shadow-xs border border-white/60 backdrop-blur-sm">
+            <span>✦</span>
+            <span>evalipie.in · Bengaluru Hyperlocal</span>
           </span>
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-gray-900 leading-[1.05]">
-            {title}
-            <br />
-            <em className="not-italic text-[#167D73] font-black">{tagline}</em>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-gray-900 leading-[1.08]">
+            {title}{' '}
+            <span className="text-[#167D73] font-black">{tagline}</span>
           </h1>
         </div>
 
-        {/* 3. 3D World (Storefront Wall, Doors, and Interior) */}
+        {/* 3. 3D World (Storefront Wall, Windows, Awning, Doors, Interior) */}
         <div
           ref={worldRef}
           className="absolute inset-0"
           style={{ willChange: 'transform' }}
         >
-          {/* Storefront Wall */}
+          {/* Storefront Building Wall (Proportioned to stay comfortably below the headline) */}
           <div
-            className="absolute left-1/2 bottom-[8vh] -translate-x-1/2 w-[min(94vw,860px)] h-[min(60vh,620px)] rounded-t-[24px] shadow-2xl relative overflow-visible"
+            className="absolute left-1/2 bottom-[6vh] -translate-x-1/2 w-[min(92vw,840px)] h-[min(48vh,460px)] rounded-t-[22px] shadow-2xl relative overflow-visible"
             style={{
               background: 'linear-gradient(180deg, #1b9285, #167D73)',
               boxShadow: '0 30px 60px rgba(16, 91, 85, 0.3)',
             }}
           >
-            {/* Subtle Brickwork Lines */}
+            {/* Subtle Architectural Brickwork Lines */}
             <div
-              className="absolute inset-0 rounded-t-[24px] pointer-events-none"
+              className="absolute inset-0 rounded-t-[22px] pointer-events-none"
               style={{
                 backgroundImage:
-                  'repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 38px)',
+                  'repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 34px)',
               }}
             />
 
-            {/* Store Signboard */}
+            {/* Storefront Signboard */}
             <div
-              className="absolute top-[5%] left-1/2 -translate-x-1/2 bg-white text-[#105B55] font-black text-sm sm:text-xl tracking-tight px-6 py-1.5 rounded-xl shadow-md border border-gray-100 uppercase"
+              className="absolute top-[4%] left-1/2 -translate-x-1/2 bg-white text-[#105B55] font-black text-xs sm:text-lg tracking-wider px-6 py-1.5 rounded-xl shadow-md border border-gray-100 uppercase"
             >
               Evalipie Storefront
             </div>
 
-            {/* Display Window Left: Electronics */}
+            {/* Display Window Left: Electronics (With Sunshine Glass Glint Act) */}
             <div
-              className="absolute bottom-[10%] left-[6%] w-[20%] h-[34%] rounded-xl flex flex-col items-center justify-center border-[6px] border-[#105B55] shadow-inner"
-              style={{ background: 'linear-gradient(135deg, #D9F1F8, #ffffff)' }}
+              className="absolute bottom-[10%] left-[6%] w-[21%] h-[36%] rounded-xl flex flex-col items-center justify-center border-[5px] border-[#0c3d39] shadow-inner overflow-hidden relative"
+              style={{ background: 'linear-gradient(135deg, #D9F1F8, #ffffff 65%, #FFF8E1 100%)' }}
             >
-              <span className="text-2xl sm:text-4xl">🎧</span>
-              <small className="absolute -bottom-[26px] text-[10px] sm:text-[11px] font-extrabold text-white tracking-wider uppercase">
+              {/* Sunshine Glass Reflection Gleam */}
+              <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(125deg, rgba(255,255,255,0.7) 0%, rgba(255,244,180,0.4) 35%, transparent 60%)',
+                }}
+              />
+              <span className="text-2xl sm:text-3xl relative z-10 drop-shadow-xs">🎧</span>
+              <span className="text-[10px] font-extrabold text-[#105B55] mt-1 relative z-10 hidden sm:block">
+                Sony · Bose ANC
+              </span>
+              <small className="absolute -bottom-[22px] text-[9px] sm:text-[10px] font-black text-white tracking-widest uppercase">
                 Electronics
               </small>
             </div>
 
-            {/* Display Window Right: Tech & Living */}
+            {/* Display Window Right: Smart Tech & Accessories (With Sunshine Glass Glint Act) */}
             <div
-              className="absolute bottom-[10%] right-[6%] w-[20%] h-[34%] rounded-xl flex flex-col items-center justify-center border-[6px] border-[#105B55] shadow-inner"
-              style={{ background: 'linear-gradient(135deg, #D9F1F8, #ffffff)' }}
+              className="absolute bottom-[10%] right-[6%] w-[21%] h-[36%] rounded-xl flex flex-col items-center justify-center border-[5px] border-[#0c3d39] shadow-inner overflow-hidden relative"
+              style={{ background: 'linear-gradient(135deg, #D9F1F8, #ffffff 65%, #FFF8E1 100%)' }}
             >
-              <span className="text-2xl sm:text-4xl">⚡</span>
-              <small className="absolute -bottom-[26px] text-[10px] sm:text-[11px] font-extrabold text-white tracking-wider uppercase">
+              {/* Sunshine Glass Reflection Gleam */}
+              <div 
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'linear-gradient(125deg, rgba(255,255,255,0.7) 0%, rgba(255,244,180,0.4) 35%, transparent 60%)',
+                }}
+              />
+              <span className="text-2xl sm:text-3xl relative z-10 drop-shadow-xs">⚡</span>
+              <span className="text-[10px] font-extrabold text-[#105B55] mt-1 relative z-10 hidden sm:block">
+                65W GaN · Mics
+              </span>
+              <small className="absolute -bottom-[22px] text-[9px] sm:text-[10px] font-black text-white tracking-widest uppercase">
                 Smart Tech
               </small>
             </div>
 
-            {/* Door Frame with 3D Perspective */}
+            {/* Central Doorway Frame with 3D Perspective */}
             <div
               ref={frameRef}
-              className="absolute left-1/2 bottom-0 -translate-x-1/2 h-[76%] aspect-[0.62] rounded-t-[16px] border-[7px] border-b-0 border-[#105B55]"
+              className="absolute left-1/2 bottom-0 -translate-x-1/2 h-[76%] aspect-[0.62] rounded-t-[14px] border-[6px] border-b-0 border-[#0c3d39]"
               style={{
                 perspective: '1100px',
                 background: '#0c3d39',
@@ -265,39 +293,39 @@ export const DoorHero: React.FC<{
             >
               {/* Striped Awning Accent */}
               <div
-                className="absolute -left-[14%] -right-[14%] -top-[34px] h-[30px] rounded-t-[10px] shadow-sm z-20"
+                className="absolute -left-[14%] -right-[14%] -top-[30px] h-[26px] rounded-t-[8px] shadow-sm z-20"
                 style={{
                   background:
-                    'repeating-linear-gradient(90deg, #ffffff 0 22px, #E9F7F3 22px 44px)',
-                  boxShadow: '0 6px 0 #105B55',
+                    'repeating-linear-gradient(90deg, #ffffff 0 20px, #E9F7F3 20px 40px)',
+                  boxShadow: '0 5px 0 #0c3d39',
                 }}
               />
 
               {/* Inside Store Interior (Revealed when doors swing open) */}
               <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center overflow-hidden"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-3 text-center overflow-hidden"
                 style={{
                   background:
                     'radial-gradient(120% 70% at 50% 0%, #E9F7F3, #F7F9FC 70%)',
                 }}
               >
                 {/* Store mini header */}
-                <div className="absolute top-0 left-0 right-0 flex justify-between px-4 py-2 bg-white/95 border-b border-gray-200 text-[11px] font-bold">
+                <div className="absolute top-0 left-0 right-0 flex justify-between px-3 py-1.5 bg-white/95 border-b border-gray-200 text-[10px] font-bold">
                   <span className="text-[#105B55]">Evalipie Marketplace</span>
                   <span className="text-gray-500">Indiranagar ▾</span>
                 </div>
 
-                <div className="space-y-1 mt-6">
-                  <h3 className="text-base sm:text-xl font-black text-gray-900 leading-tight">
+                <div className="space-y-0.5 mt-4">
+                  <h3 className="text-sm sm:text-lg font-black text-gray-900 leading-tight">
                     Find Exactly What You Need
                   </h3>
-                  <p className="text-xs font-bold text-[#167D73]">
+                  <p className="text-[11px] font-bold text-[#167D73]">
                     From 142 Real Neighbourhood Stores
                   </p>
                 </div>
 
                 {/* Simulated Search Pill */}
-                <div className="w-full max-w-[200px] bg-white border border-gray-200 rounded-full px-3 py-1.5 flex items-center justify-between text-[10px] text-gray-500 shadow-xs mt-2">
+                <div className="w-full max-w-[190px] bg-white border border-gray-200 rounded-full px-2.5 py-1 flex items-center justify-between text-[9px] text-gray-500 shadow-xs mt-1">
                   <span>Search local tech & audio…</span>
                   <span className="bg-[#167D73] text-white px-2 py-0.5 rounded-full font-bold">
                     ✦ Go
@@ -305,15 +333,15 @@ export const DoorHero: React.FC<{
                 </div>
 
                 {/* Local Category Icons Row */}
-                <div className="flex gap-2 mt-2">
-                  <span className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-lg">
+                <div className="flex gap-1.5 mt-1">
+                  <span className="w-8 h-8 rounded-lg bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-sm">
                     🎧
                   </span>
-                  <span className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-lg">
+                  <span className="w-8 h-8 rounded-lg bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-sm">
                     🎙️
                   </span>
-                  <span className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-lg">
-                    ⌨️
+                  <span className="w-8 h-8 rounded-lg bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-sm">
+                    ⚡
                   </span>
                 </div>
               </div>
@@ -329,17 +357,24 @@ export const DoorHero: React.FC<{
                   willChange: 'transform',
                 }}
               >
-                {/* Door Glass Inset */}
+                {/* Door Daylight Glass Inset */}
                 <div
-                  className="absolute inset-[9%_14%_40%] rounded-lg border-[4px] border-[#0c3d39]"
+                  className="absolute inset-[9%_14%_40%] rounded-md border-[3px] border-[#0c3d39] overflow-hidden"
                   style={{
                     background:
-                      'linear-gradient(135deg, #D9F1F8, #ffffff 60%, #BFE6F7)',
+                      'linear-gradient(135deg, #D9F1F8, #ffffff 60%, #FFF8E1)',
                   }}
-                />
+                >
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      background: 'linear-gradient(120deg, rgba(255,255,255,0.6) 0%, rgba(255,244,180,0.3) 40%, transparent 70%)'
+                    }}
+                  />
+                </div>
                 {/* Brass Door Handle */}
                 <div
-                  className="absolute top-[56%] right-[10px] w-[9px] h-[22%] rounded-md bg-[#F3D27A] shadow-md border border-amber-600/30"
+                  className="absolute top-[56%] right-[8px] w-[8px] h-[22%] rounded-md bg-[#F3D27A] shadow-md border border-amber-600/30"
                 />
               </div>
 
@@ -354,17 +389,24 @@ export const DoorHero: React.FC<{
                   willChange: 'transform',
                 }}
               >
-                {/* Door Glass Inset */}
+                {/* Door Daylight Glass Inset */}
                 <div
-                  className="absolute inset-[9%_14%_40%] rounded-lg border-[4px] border-[#0c3d39]"
+                  className="absolute inset-[9%_14%_40%] rounded-md border-[3px] border-[#0c3d39] overflow-hidden"
                   style={{
                     background:
-                      'linear-gradient(135deg, #D9F1F8, #ffffff 60%, #BFE6F7)',
+                      'linear-gradient(135deg, #D9F1F8, #ffffff 60%, #FFF8E1)',
                   }}
-                />
+                >
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      background: 'linear-gradient(120deg, rgba(255,255,255,0.6) 0%, rgba(255,244,180,0.3) 40%, transparent 70%)'
+                    }}
+                  />
+                </div>
                 {/* Brass Door Handle */}
                 <div
-                  className="absolute top-[56%] left-[10px] w-[9px] h-[22%] rounded-md bg-[#F3D27A] shadow-md border border-amber-600/30"
+                  className="absolute top-[56%] left-[8px] w-[8px] h-[22%] rounded-md bg-[#F3D27A] shadow-md border border-amber-600/30"
                 />
               </div>
             </div>
@@ -373,12 +415,12 @@ export const DoorHero: React.FC<{
 
         {/* 4. Sidewalk Ground */}
         <div
-          className="absolute left-0 right-0 bottom-0 h-[8vh] border-t-[3px] border-white pointer-events-none"
+          className="absolute left-0 right-0 bottom-0 h-[6vh] border-t-[3px] border-white pointer-events-none"
           style={{ background: 'linear-gradient(180deg, #D8DEE6, #C7CFDA)' }}
         />
 
         {/* 5. Scroll Down Hint / Fast Skip Button */}
-        <div className="absolute bottom-[calc(8vh+14px)] left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        <div className="absolute bottom-[calc(6vh+12px)] left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
           <div
             ref={hintRef}
             className="bg-[#111827] text-white text-[11px] font-black tracking-[0.14em] uppercase px-5 py-2.5 rounded-full shadow-lg border border-white/10 animate-bounce"
