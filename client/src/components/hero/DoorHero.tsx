@@ -170,7 +170,7 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
                 document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              🎧<small>ELECTRONICS</small>
+              <small>ELECTRONICS</small>
             </div>
             <div 
               className="win r cursor-pointer"
@@ -180,7 +180,7 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
                 document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              🏠<small>HOME</small>
+              <small>HOME</small>
             </div>
 
             {/* Frame and Interior Preview */}
@@ -200,12 +200,12 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
                 <p>From every shop.</p>
                 <div className="in-search">
                   <span>Describe what you need…</span>
-                  <u>✦ AI</u>
+                  <u>AI</u>
                 </div>
                 <div className="in-row">
-                  <span>🎧</span>
-                  <span>🎙️</span>
-                  <span>⌨️</span>
+                  <span>AUDIO</span>
+                  <span>MOBILES</span>
+                  <span>LAPTOPS</span>
                 </div>
               </div>
 

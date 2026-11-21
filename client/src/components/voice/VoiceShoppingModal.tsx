@@ -282,7 +282,7 @@ export const VoiceShoppingModal: React.FC<VoiceShoppingModalProps> = ({ isOpen, 
         <div className="p-4 sm:p-5 border-b border-[#E5EAF0] flex items-center justify-between bg-gradient-to-r from-[#105B55] to-[#167D73] text-white">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center font-bold text-lg shadow-sm border border-white/20">
-              🎙️
+              <Mic className="w-5 h-5 text-white" strokeWidth={2} />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -431,8 +431,8 @@ export const VoiceShoppingModal: React.FC<VoiceShoppingModalProps> = ({ isOpen, 
                       <p className="font-bold text-xs text-[#111827] truncate">
                         {idx + 1}. {prod.title}
                       </p>
-                      <p className="text-[11px] text-[#687385] truncate">
-                        📍 {prod.storeName}
+                      <p className="text-[11px] text-[#687385] truncate flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-[#167D73]" /> {prod.storeName}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="font-extrabold text-xs text-[#167D73]">

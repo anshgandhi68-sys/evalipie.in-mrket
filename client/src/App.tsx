@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.js';
 import { CartProvider } from './context/CartContext.js';
 import { Navbar } from './components/navbar/Navbar.js';
@@ -13,13 +13,11 @@ import { ShopsPage } from './pages/marketplace/ShopsPage.js';
 import { ShopStorefrontPage } from './pages/marketplace/ShopStorefrontPage.js';
 import { AccountPage } from './pages/marketplace/AccountPage.js';
 import { PrivacyPolicyPage } from './pages/legal/PrivacyPolicyPage.js';
-import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js';
-import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
-import { AiDiscoveryPage } from './pages/marketplace/AiDiscoveryPage.js';
-import { AiFloatingAssistant } from './components/ai/AiFloatingAssistant.js';
 import DemoOne from './components/ui/demo.js';
 import MetroHeroDemo from './components/ui/metro-hero-demo.js';
 import SlideTabsDemo from './components/ui/slide-tabs-demo.js';
+import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -41,7 +39,7 @@ const AppContent: React.FC = () => {
           <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
-          <Route path="/ai" element={<AiDiscoveryPage />} />
+          <Route path="/ai" element={<Navigate to="/#ai" replace />} />
 
           {/* Demos */}
           <Route path="/demo" element={<DemoOne />} />
@@ -66,7 +64,6 @@ const AppContent: React.FC = () => {
       </main>
       <Footer />
       <CartDrawer />
-      <AiFloatingAssistant />
     </div>
   );
 };

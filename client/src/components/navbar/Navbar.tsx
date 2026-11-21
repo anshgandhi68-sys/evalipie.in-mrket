@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext.js';
 import { PrivacyPolicyModal } from '../legal/PrivacyPolicyModal.js';
-import { VoiceShoppingModal } from '../voice/VoiceShoppingModal.js';
 
 export const Navbar: React.FC = () => {
   const { totalCount, openCart } = useCart();
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
-  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,7 +27,7 @@ export const Navbar: React.FC = () => {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-10 py-3.5 bg-white/85 backdrop-blur-md border-b border-[#E5EAF0]">
         
-        {/* Left: Brand Logo matching User Upload */}
+        {/* Left: Brand Logo */}
         <Link to="/" className="flex items-center group">
           <img 
             src="/assets/evalipie-logo.png" 
@@ -38,7 +36,7 @@ export const Navbar: React.FC = () => {
           />
         </Link>
 
-        {/* Right Nav Links matching Prototype */}
+        {/* Right Nav Links */}
         <nav className="flex items-center gap-5 sm:gap-7 text-sm font-semibold text-[#687385]">
           <a 
             href="#ai" 
@@ -65,18 +63,7 @@ export const Navbar: React.FC = () => {
             Become a Seller
           </Link>
 
-          {/* Voice Shopping Assistant Trigger */}
-          <button
-            type="button"
-            onClick={() => setIsVoiceModalOpen(true)}
-            className="flex items-center gap-1.5 bg-[#E9F7F3] hover:bg-[#d5f3eb] text-[#167D73] px-3.5 py-1.5 rounded-full font-bold text-xs transition-all cursor-pointer border border-[#A7E3D8] shadow-xs hover:scale-105 active:scale-95"
-            title="Speak to Evalipie Voice AI"
-          >
-            <span>🎙️</span>
-            <span>Voice AI</span>
-          </button>
-
-          {/* Cart Pill matching Image 2 */}
+          {/* Cart Pill */}
           <button
             type="button"
             onClick={openCart}
@@ -86,12 +73,6 @@ export const Navbar: React.FC = () => {
           </button>
         </nav>
       </header>
-
-      {/* Voice Shopping Interactive Experience Modal */}
-      <VoiceShoppingModal
-        isOpen={isVoiceModalOpen}
-        onClose={() => setIsVoiceModalOpen(false)}
-      />
 
       {/* DPDP Act 2023 Privacy Policy Modal */}
       <PrivacyPolicyModal 

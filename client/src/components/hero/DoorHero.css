@@ -322,7 +322,10 @@
   border: 1px solid var(--bd);
   display: grid;
   place-items: center;
-  font-size: 9cqw;
+  font-size: 2.8cqw;
+  font-weight: 700;
+  color: var(--deep);
+  letter-spacing: 0.04em;
 }
 
 /* 3D ROTATING DOORS */

@@ -96,6 +96,7 @@ export class AiAssistantController {
         const prod = memoryPg.products.get(doc.product_id);
         const inv = memoryPg.findInventory(doc.product_id, activeCity);
         const currentStock = inv ? inv.available_stock : doc.available_stock;
+        const merchantName = inv?.store_name || (doc as any).store_name || 'Verified Partner Store';
 
         return {
           productId: doc.product_id,
@@ -106,10 +107,11 @@ export class AiAssistantController {
           originalMrp: doc.original_mrp,
           imageUrl: doc.image_url,
           city: activeCity,
+          merchant: merchantName,
           availableStock: currentStock,
           inStock: currentStock > 0,
           sku: doc.sku,
-          matchReason: `Verified physical item at ${inv?.store_name || `${activeCity} Storefront`}, priced at ₹${doc.price.toLocaleString('en-IN')}.`
+          matchReason: `Verified physical item at ${merchantName}, priced at ₹${doc.price.toLocaleString('en-IN')}.`
         };
       });
 
