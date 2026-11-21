@@ -2,7 +2,7 @@
 
 > **Official Domain:** [https://evalipie.in](https://evalipie.in)  
 > **Brand Vision:** Bridging traditional neighbourhood retail and modern e-commerce across India.  
-> **GitHub Repository:** [https://github.com/anshgandhi68-sys/evallipie_market](https://github.com/anshgandhi68-sys/evallipie_market)
+> **GitHub Repository:** [https://github.com/anshgandhi68-sys/evalipie.in-mrket](https://github.com/anshgandhi68-sys/evalipie.in-mrket)
 
 ---
 
