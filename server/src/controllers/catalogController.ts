@@ -54,13 +54,13 @@ export const catalogController = {
   // GET /api/categories
   getCategories: (_req: Request, res: Response) => {
     const categories = [
-      { id: 'cat-1', name: 'Electronics', icon: '🎧', count: 12 },
-      { id: 'cat-2', name: 'Computers & Laptops', icon: '💻', count: 8 },
-      { id: 'cat-3', name: 'Mobiles & Accessories', icon: '📱', count: 14 },
-      { id: 'cat-4', name: 'Home & Kitchen', icon: '🍳', count: 9 },
-      { id: 'cat-5', name: 'Fashion', icon: '👕', count: 6 },
-      { id: 'cat-6', name: 'Grocery', icon: '🛒', count: 15 },
-      { id: 'cat-7', name: 'Sports & Fitness', icon: '🏏', count: 7 }
+      { id: 'cat-1', name: 'Electronics', icon: 'headphones', count: 12 },
+      { id: 'cat-2', name: 'Computers & Laptops', icon: 'laptop', count: 8 },
+      { id: 'cat-3', name: 'Mobiles & Accessories', icon: 'smartphone', count: 14 },
+      { id: 'cat-4', name: 'Home & Kitchen', icon: 'utensils', count: 9 },
+      { id: 'cat-5', name: 'Fashion', icon: 'shirt', count: 6 },
+      { id: 'cat-6', name: 'Grocery', icon: 'shopping-bag', count: 15 },
+      { id: 'cat-7', name: 'Sports & Fitness', icon: 'trophy', count: 7 }
     ];
     res.json({ status: 'success', data: categories });
   },

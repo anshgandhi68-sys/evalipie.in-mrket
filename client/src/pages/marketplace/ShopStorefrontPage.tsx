@@ -131,7 +131,7 @@ export const ShopStorefrontPage: React.FC = () => {
                     <span className="text-[10px] font-bold text-[#167D73] uppercase">{l.product.category}</span>
                     <h3 className="font-extrabold text-xs text-gray-900 line-clamp-2">{l.product.title}</h3>
                     <div className="text-xs font-bold text-emerald-700 pt-1">
-                      {l.availableStock > 0 ? `✓ ${l.availableStock} in stock` : 'Out of stock'}
+                      {l.availableStock > 0 ? `${l.availableStock} in stock` : 'Out of stock'}
                     </div>
                   </div>
 

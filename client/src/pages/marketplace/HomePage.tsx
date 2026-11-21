@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Store, MapPin, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { 
+  Sparkles, Store, MapPin, ArrowRight, ShieldCheck, CheckCircle2,
+  Star, Headphones, Laptop, Smartphone, Utensils, Shirt, ShoppingBag, Trophy, Layers
+} from 'lucide-react';
 import { DoorHero } from '../../components/hero/DoorHero.js';
 import { ProductCard } from '../../components/catalog/ProductCard.js';
 import { SellerComparisonModal } from '../../components/catalog/SellerComparisonModal.js';
@@ -60,20 +63,57 @@ export const HomePage: React.FC = () => {
     'Wireless keyboard for programming'
   ];
 
+  const getCategoryIcon = (icon: string, name: string) => {
+    const key = `${icon || ''} ${name || ''}`.toLowerCase();
+    if (key.includes('electronic') || key.includes('audio') || key.includes('headphone')) {
+      return <Headphones className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+    }
+    if (key.includes('laptop') || key.includes('computer')) {
+      return <Laptop className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+    }
+    if (key.includes('mobile') || key.includes('smartphone') || key.includes('phone')) {
+      return <Smartphone className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+    }
+    if (key.includes('kitchen') || key.includes('home') || key.includes('utensil')) {
+      return <Utensils className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+    }
+    if (key.includes('fashion') || key.includes('shirt') || key.includes('cloth') || key.includes('apparel')) {
+      return <Shirt className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+    }
+    if (key.includes('grocery') || key.includes('bag') || key.includes('market')) {
+      return <ShoppingBag className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+    }
+    if (key.includes('sport') || key.includes('fit') || key.includes('trophy')) {
+      return <Trophy className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+    }
+    return <Layers className="w-5 h-5 text-[#167D73] group-hover:text-white transition-colors" />;
+  };
+
   return (
-    <div className="min-h-screen bg-[#F7F9FC]">
-      {/* 1. Signature 3D Door Hero */}
+    <div className="min-h-screen bg-[#F8FAFC] relative selection:bg-[#167D73] selection:text-white">
+      {/* Blueprint Dot Matrix Ambient Background Design */}
+      <div 
+        className="fixed inset-0 pointer-events-none opacity-20 z-0"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, #94A3B8 1px, transparent 0)`,
+          backgroundSize: '36px 36px'
+        }}
+      />
+      {/* Soft Ambient Daylight Gradient Glow */}
+      <div className="absolute top-[80vh] left-1/2 -translate-x-1/2 w-[90vw] max-w-7xl h-[600px] bg-gradient-to-b from-[#14B8A6]/5 to-transparent rounded-full blur-3xl pointer-events-none -z-0" />
+
+      {/* 1. Signature 3D Door Hero (Daytime Entrance) */}
       <DoorHero />
 
-      {/* Main Marketplace Feed */}
-      <main id="marketplace-feed" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+      {/* Main Marketplace Feed - Single Page Continuous Experience */}
+      <main id="marketplace-feed" className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16 relative z-10">
         
         {/* 2. Evalipie AI Natural Language Discovery Section */}
         <section className="bg-white rounded-3xl border border-[#E5EAF0] p-6 sm:p-10 shadow-lg relative overflow-hidden">
           <div className="max-w-3xl space-y-3">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#7657E8] bg-[#F0ECFD] px-3 py-1 rounded-full">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#7657E8] bg-[#F0ECFD] px-3.5 py-1 rounded-full">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>✦ Evalipie AI Discovery</span>
+              <span>Evalipie AI Discovery</span>
             </span>
             <h2 className="text-3xl font-extrabold text-[#111827] tracking-tight">
               You don’t need the product name. Just tell us what you need.
@@ -177,7 +217,9 @@ export const HomePage: React.FC = () => {
                 to={`/products?category=${encodeURIComponent(cat.name)}`}
                 className="bg-white p-4 rounded-2xl border border-gray-200 hover:border-[#167D73] hover:shadow-md transition-all flex flex-col items-center justify-center text-center gap-2 group"
               >
-                <span className="text-3xl group-hover:scale-110 transition-transform">{cat.icon}</span>
+                <div className="w-12 h-12 rounded-2xl bg-[#E9F7F3] group-hover:bg-[#167D73] flex items-center justify-center transition-all shadow-xs">
+                  {getCategoryIcon(cat.icon, cat.name)}
+                </div>
                 <span className="text-xs font-extrabold text-gray-800 group-hover:text-[#167D73] leading-tight">
                   {cat.name}
                 </span>
@@ -257,7 +299,10 @@ export const HomePage: React.FC = () => {
                     <span className="text-[10px] font-bold text-[#105B55] bg-[#E9F7F3] px-2.5 py-0.5 rounded-full uppercase">
                       {shop.stores && shop.stores.length > 1 ? `${shop.stores.length} Branches` : 'Independent Shop'}
                     </span>
-                    <span className="text-xs font-bold text-amber-500">★ {shop.ratingAvg}</span>
+                    <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
+                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      <span>{shop.ratingAvg}</span>
+                    </span>
                   </div>
 
                   <div>
