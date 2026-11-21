@@ -6,13 +6,6 @@ import { Navbar } from './components/navbar/Navbar.js';
 import { Footer } from './components/common/Footer.js';
 import { CartDrawer } from './components/cart/CartDrawer.js';
 
-// Evaluation Platform Pages
-import { EvaluationLandingPage } from './pages/evaluation/EvaluationLandingPage.js';
-import { EvaluationWorkspacePage } from './pages/evaluation/EvaluationWorkspacePage.js';
-import { LiveProgressPage } from './pages/evaluation/LiveProgressPage.js';
-import { ResultsDashboardPage } from './pages/evaluation/ResultsDashboardPage.js';
-import { ProjectsHistoryPage } from './pages/evaluation/ProjectsHistoryPage.js';
-
 // Marketplace Flagship Pages
 import { HomePage } from './pages/marketplace/HomePage.js';
 import { ProductsPage } from './pages/marketplace/ProductsPage.js';
@@ -34,24 +27,25 @@ import DemoOne from './components/ui/demo.js';
 import MetroHeroDemo from './components/ui/metro-hero-demo.js';
 import SlideTabsDemo from './components/ui/slide-tabs-demo.js';
 
+// Optional Evaluation Tools
+import { EvaluationLandingPage } from './pages/evaluation/EvaluationLandingPage.js';
+import { EvaluationWorkspacePage } from './pages/evaluation/EvaluationWorkspacePage.js';
+import { LiveProgressPage } from './pages/evaluation/LiveProgressPage.js';
+import { ResultsDashboardPage } from './pages/evaluation/ResultsDashboardPage.js';
+import { ProjectsHistoryPage } from './pages/evaluation/ProjectsHistoryPage.js';
+
 const AppContent: React.FC = () => {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const isExperience = location.pathname === '/experience' || location.pathname === '/storefront';
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBF7EF] text-[#111827]">
+    <div className="min-h-screen flex flex-col bg-[#F7F9FC] text-[#111827]">
       {!isExperience && <Navbar />}
       <main className={`flex-1 ${isHome || isExperience ? 'pt-0' : 'pt-24 sm:pt-28'}`}>
         <Routes>
-          {/* AI Software Evaluation Platform Core Routes */}
-          <Route path="/" element={<EvaluationLandingPage />} />
-          <Route path="/evaluate" element={<EvaluationWorkspacePage />} />
-          <Route path="/evaluation/:id" element={<LiveProgressPage />} />
-          <Route path="/evaluation/:id/results" element={<ResultsDashboardPage />} />
-          <Route path="/projects" element={<ProjectsHistoryPage />} />
-
-          {/* Marketplace Core Routes */}
+          {/* Marketplace Core Flagship Routes */}
+          <Route path="/" element={<HomePage />} />
           <Route path="/marketplace" element={<HomePage />} />
           <Route path="/experience" element={<ExperiencePage />} />
           <Route path="/storefront" element={<ExperiencePage />} />
@@ -87,8 +81,14 @@ const AppContent: React.FC = () => {
           <Route path="/admin" element={<AdminDashboardPage />} />
           <Route path="/admin/*" element={<AdminDashboardPage />} />
 
+          {/* Evaluation Tool Routes */}
+          <Route path="/evaluate" element={<EvaluationWorkspacePage />} />
+          <Route path="/evaluation/:id" element={<LiveProgressPage />} />
+          <Route path="/evaluation/:id/results" element={<ResultsDashboardPage />} />
+          <Route path="/projects" element={<ProjectsHistoryPage />} />
+
           {/* Catch-all redirect to Home */}
-          <Route path="*" element={<EvaluationLandingPage />} />
+          <Route path="*" element={<HomePage />} />
         </Routes>
       </main>
       <Footer />

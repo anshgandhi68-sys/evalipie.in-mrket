@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext.js';
 import { useAuth } from '../../context/AuthContext.js';
-import { Heart, User, Shield, LogOut, ChevronDown, ShoppingBag, Play, FolderGit2, Cpu } from 'lucide-react';
+import { Heart, User, Shield, LogOut, ChevronDown, ShoppingBag } from 'lucide-react';
 import { PrivacyPolicyModal } from '../legal/PrivacyPolicyModal.js';
 import { AuthModal } from '../auth/AuthModal.js';
 
@@ -14,24 +14,33 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const handleScrollTo = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (location.pathname === '/' || location.pathname === '/marketplace') {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    }
+  };
+
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50">
         {/* Top Flagship Announcement Bar */}
         <div className="bg-[#105B55] text-white py-1.5 px-4 text-center text-[11px] sm:text-xs font-medium tracking-wide flex items-center justify-center gap-2 sm:gap-3">
-          <span className="font-bold flex items-center gap-1">
-            <Cpu className="w-3.5 h-3.5 text-emerald-300" />
-            Evalipie AI Software Auditor
-          </span>
+          <span>Free Pan-India Delivery on Orders Above ₹999</span>
           <span className="opacity-40">•</span>
-          <span className="italic hidden sm:inline">"Your project makes claims. Evalipie tries to break them."</span>
+          <span>Live Razorpay UPI QR Payments</span>
           <span className="opacity-40 hidden sm:inline">•</span>
-          <Link to="/evaluate" className="text-emerald-200 hover:text-white underline font-semibold">
-            Evaluate Repository
-          </Link>
+          <span className="hidden sm:inline">180 Verified Database Products</span>
           <span className="opacity-40 hidden md:inline">•</span>
-          <Link to="/marketplace" className="hidden md:inline text-white/80 hover:text-white">
-            Marketplace & Storefront (180 Products)
+          <Link to="/experience" className="hidden md:inline text-emerald-200 hover:text-white underline ml-1">
+            Experience 3D Storefront
           </Link>
         </div>
 
@@ -48,36 +57,36 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Center/Right Nav Links */}
-          <nav className="flex items-center gap-4 sm:gap-6 text-sm font-semibold text-[#687385]">
+          <nav className="flex items-center gap-3 sm:gap-5 lg:gap-6 text-xs sm:text-sm font-semibold text-[#687385]">
             <Link 
-              to="/evaluate"
-              className="hover:text-[#105B55] transition-colors cursor-pointer flex items-center gap-1.5 text-[#111827] font-bold"
+              to="/products"
+              className="hover:text-[#167D73] transition-colors cursor-pointer"
             >
-              <Play className="w-3.5 h-3.5 text-[#105B55] fill-current" />
-              <span>Evaluate</span>
+              All Products
             </Link>
 
-            <Link 
-              to="/projects"
-              className="hover:text-[#105B55] transition-colors cursor-pointer hidden sm:flex items-center gap-1.5"
+            <a 
+              href="#ai" 
+              onClick={(e) => handleScrollTo('ai', e)}
+              className="hover:text-[#167D73] transition-colors cursor-pointer"
             >
-              <FolderGit2 className="w-3.5 h-3.5" />
-              <span>Projects</span>
-            </Link>
-
-            <Link 
-              to="/marketplace"
-              className="hover:text-[#105B55] transition-colors cursor-pointer hidden md:inline-block"
-            >
-              Marketplace
-            </Link>
+              Evalipie AI
+            </a>
 
             <Link 
               to="/categories" 
-              className="hover:text-[#105B55] transition-colors cursor-pointer hidden lg:inline-block"
+              className="hover:text-[#167D73] transition-colors cursor-pointer"
             >
               Categories
             </Link>
+
+            <a 
+              href="#trend" 
+              onClick={(e) => handleScrollTo('trend', e)}
+              className="hover:text-[#167D73] transition-colors cursor-pointer hidden md:inline-block"
+            >
+              Deals & Trending
+            </a>
 
             {/* Admin Direct Pill if user is Admin */}
             {isAdmin && (
@@ -93,12 +102,12 @@ export const Navbar: React.FC = () => {
             {/* Wishlist Link with Live Counter */}
             <Link
               to="/wishlist"
-              className="relative p-2 text-gray-600 hover:text-[#105B55] transition-colors cursor-pointer"
+              className="relative p-2 text-gray-600 hover:text-[#167D73] transition-colors cursor-pointer"
               title="Wishlist"
             >
               <Heart className="w-5 h-5" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#105B55] text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#167D73] text-white text-[10px] font-bold flex items-center justify-center">
                   {wishlistCount}
                 </span>
               )}
@@ -140,13 +149,15 @@ export const Navbar: React.FC = () => {
                       My Account & Orders
                     </Link>
 
-                    <Link
-                      to="/projects"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="block px-3.5 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50"
-                    >
-                      Evaluation History
-                    </Link>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="block px-3.5 py-2 text-xs font-medium text-teal-700 hover:bg-gray-50"
+                      >
+                        Platform Administration
+                      </Link>
+                    )}
 
                     <button
                       type="button"

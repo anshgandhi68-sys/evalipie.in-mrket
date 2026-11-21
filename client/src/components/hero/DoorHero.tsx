@@ -1,21 +1,22 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import './DoorHero.css';
 
 export interface DoorHeroProps {
   onEnter?: () => void;
-  onExploreDemo?: () => void;
   onSelectCategory?: (catKey: string) => void;
   onSearch?: (query: string) => void;
 }
 
 export const DoorHero: React.FC<DoorHeroProps> = ({ 
   onEnter, 
-  onExploreDemo,
   onSelectCategory,
   onSearch
 }) => {
+  const { activeCity } = useAuth();
+
   const heroRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
@@ -80,8 +81,8 @@ export const DoorHero: React.FC<DoorHeroProps> = ({
       dl.style.transform = `rotateY(${a * 108}deg)`;
       dr.style.transform = `rotateY(${-a * 108}deg)`;
 
-      // 2. Camera zoom through doorway (0.30 -> 0.90)
-      const e = ease(clamp((p - 0.30) / 0.60, 0, 1));
+      // 2. Camera zoom through doorway (0.28 -> 0.88)
+      const e = ease(clamp((p - 0.28) / 0.60, 0, 1));
       world.style.transform = `translate(${(window.innerWidth / 2 - cx) * e}px, ${(window.innerHeight / 2 - cy) * e}px) scale(${1 + (S - 1) * e})`;
 
       // 3. Intro text fade & slide up (0 -> 0.18)
@@ -106,9 +107,9 @@ export const DoorHero: React.FC<DoorHeroProps> = ({
       if (c2) c2.style.marginLeft = `${-p * 100}px`;
       if (c3) c3.style.marginLeft = `${-p * 140}px`;
 
-      // 7. Smooth dissolve into live platform page (0.76 -> 0.96)
-      if (p >= 0.76) {
-        const fade = (p - 0.76) / 0.20;
+      // 7. Smooth dissolve directly into live Bento Hero marketplace (0.78 -> 0.96)
+      if (p >= 0.78) {
+        const fade = (p - 0.78) / 0.18;
         stage.style.opacity = String(Math.max(0, 1 - fade));
         stage.style.pointerEvents = fade > 0.4 ? 'none' : 'auto';
         if (p >= 0.96) {
@@ -167,10 +168,10 @@ export const DoorHero: React.FC<DoorHeroProps> = ({
 
         {/* Intro Headline */}
         <div className="intro" id="intro" ref={introRef}>
-          <p className="eyebrow">evalipie.in • AI Software Evaluation</p>
+          <p className="eyebrow">evalipie.in</p>
           <h1>
-            Your project makes claims.<br />
-            <em>Evalipie tries to break them.</em>
+            Every Shop.<br />
+            <em>One Intelligent Marketplace.</em>
           </h1>
         </div>
 
@@ -182,17 +183,23 @@ export const DoorHero: React.FC<DoorHeroProps> = ({
             {/* Display Windows */}
             <div 
               className="win l cursor-pointer"
-              title="Requirements vs Reality"
-              onClick={handleOpenDoors}
+              title="Click to explore Electronics & Audio"
+              onClick={() => {
+                onSelectCategory?.('AUDIO');
+                document.getElementById('cats')?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
-              <small>CLAIMS AUDIT</small>
+              <small>ELECTRONICS</small>
             </div>
             <div 
               className="win r cursor-pointer"
-              title="Bug Reproduction Sandbox"
-              onClick={handleOpenDoors}
+              title="Click to explore Home & Kitchen"
+              onClick={() => {
+                onSelectCategory?.('HOME & KITCHEN');
+                document.getElementById('cats')?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
-              <small>BUG SANDBOX</small>
+              <small>HOME</small>
             </div>
 
             {/* Frame and Interior Preview with Responsive Container Query Sizing */}
@@ -200,44 +207,62 @@ export const DoorHero: React.FC<DoorHeroProps> = ({
               className="frame cursor-pointer" 
               id="frame" 
               ref={frameRef}
-              title="Enter Evalipie Evaluation Platform"
+              title="Enter Evalipie Marketplace"
               onClick={handleOpenDoors}
             >
               <div className="inside">
                 <div className="in-hd">
-                  <b>Evalipie AI</b>
-                  <span>Autonomous Evaluation Engine</span>
+                  <b>Evalipie</b>
+                  <span>{activeCity || 'Bengaluru'} ▾</span>
                 </div>
 
-                <div className="in-hero-claims">
-                  <span className="in-badge-eval">10-STAGE PIPELINE</span>
-                  <h2>
-                    Find what your<br />
-                    <em>tests missed.</em>
-                  </h2>
-                  <p>Static checks • Sandbox reproduction • 0–100 quality score</p>
-                </div>
+                {/* Live Bento Preview Cards Visible through Open Doorway */}
+                <div className="in-bento-preview">
+                  
+                  {/* Left Card: Macbook M4 Pro */}
+                  <div className="in-bento-card card-mac">
+                    <div className="in-card-txt">
+                      <span className="in-badge">FLAGSHIP</span>
+                      <h4>Macbook m4 pro</h4>
+                      <p>Elevate entertainment</p>
+                    </div>
+                    <img 
+                      src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&auto=format&fit=crop&q=80" 
+                      alt="Macbook" 
+                      className="in-card-img"
+                    />
+                  </div>
 
-                <div className="in-cards-row">
-                  <div className="in-mini-card">
-                    <span>⚡</span>
-                    <b>Race Conditions</b>
-                    <small>Reproduced</small>
+                  {/* Center Card: AirPods Max */}
+                  <div className="in-bento-card card-airpods">
+                    <img 
+                      src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=300&auto=format&fit=crop&q=80" 
+                      alt="AirPods Max" 
+                      className="in-card-img"
+                    />
+                    <div className="in-card-txt">
+                      <h4>AirPods Max</h4>
+                      <p>Studio fidelity audio</p>
+                    </div>
                   </div>
-                  <div className="in-mini-card">
-                    <span>🛡️</span>
-                    <b>IDOR Security</b>
-                    <small>Detected</small>
+
+                  {/* Right Card: Shoes & Deals */}
+                  <div className="in-bento-card card-shoes">
+                    <div className="in-card-txt">
+                      <h4>Flat 20% Off</h4>
+                      <p>Regular Shoes</p>
+                    </div>
+                    <img 
+                      src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&auto=format&fit=crop&q=80" 
+                      alt="Shoes" 
+                      className="in-card-img"
+                    />
                   </div>
-                  <div className="in-mini-card">
-                    <span>📊</span>
-                    <b>Claims Matrix</b>
-                    <small>Verified</small>
-                  </div>
+
                 </div>
 
                 <div className="in-enter-cta">
-                  <span>Enter Evaluation Platform ↓</span>
+                  <span>Enter Storefront ↓</span>
                 </div>
               </div>
 
