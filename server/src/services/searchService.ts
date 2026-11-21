@@ -32,13 +32,13 @@ function tokenFuzzyMatch(queryWords: string[], targetText: string): number {
     for (const t of targetWords) {
       if (t === q) {
         bestWordScore = Math.max(bestWordScore, 1.0);
-      } else if (t.startsWith(q) || q.startsWith(t)) {
+      } else if (q.length >= 3 && t.length >= 3 && (t.startsWith(q) || q.startsWith(t))) {
         bestWordScore = Math.max(bestWordScore, 0.85);
       } else {
         const dist = levenshteinDistance(q, t);
         const maxLen = Math.max(q.length, t.length);
         const similarity = 1 - dist / maxLen;
-        if (similarity >= 0.7) {
+        if (q.length >= 4 && similarity >= 0.75) {
           bestWordScore = Math.max(bestWordScore, similarity * 0.8);
         }
       }
@@ -88,7 +88,7 @@ export class SearchService {
         const descScore = tokenFuzzyMatch(queryWords, product.description) * 1.0;
         score = titleScore + brandScore + tagsScore + descScore;
 
-        if (score < 0.8) {
+        if (score < 1.2) {
           continue; // No sufficient match
         }
       }

@@ -14,13 +14,18 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  const handleAiClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('open-evalipie-ai'));
+  };
+
   return (
     <header className="hd">
       <Link className="logo" to="/">
         <i>e</i>Evalipie
       </Link>
       <nav>
-        <a href="#ai" onClick={(e) => handleScrollTo('ai', e)}>Evalipie AI</a>
+        <a href="#ai" onClick={handleAiClick}>✦ Evalipie AI</a>
         <a href="#cats" onClick={(e) => handleScrollTo('cats', e)}>Categories</a>
         <a href="#trend" onClick={(e) => handleScrollTo('trend', e)}>Trending</a>
         <Link to="/business/dashboard">Become a Seller</Link>

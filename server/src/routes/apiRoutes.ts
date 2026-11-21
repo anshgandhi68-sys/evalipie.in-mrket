@@ -3,8 +3,12 @@ import { catalogController } from '../controllers/catalogController.js';
 import { checkoutController } from '../controllers/checkoutController.js';
 import { merchantController } from '../controllers/merchantController.js';
 import { adminController } from '../controllers/adminController.js';
+import { aiRouter } from './aiRoutes.js';
 
 export const apiRouter = Router();
+
+// AI Intelligence Engine Routes
+apiRouter.use('/ai', aiRouter);
 
 // 1. Catalog & Marketplace
 apiRouter.get('/products', catalogController.getProducts);

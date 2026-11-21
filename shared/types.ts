@@ -203,6 +203,8 @@ export interface StructuredIntent {
 }
 
 export interface AiDiscoveryResult {
+  conversationId?: string;
+  explanation?: string;
   intentAnalysis: StructuredIntent;
   matches: Array<{
     productId: string;

@@ -1,5 +1,5 @@
 /* EVALIPIE ARCHITECTURAL DOOR HERO & HEADER CSS
- * Exactly matching Evalipie prototype reference
+ * Day-lit storefront with warm morning sunshine, glass reflections, and 3D door entry animation.
  */
 
 :root {
@@ -27,9 +27,9 @@
   align-items: center;
   gap: 16px;
   padding: 12px clamp(16px, 4vw, 40px);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--bd);
 }
 
@@ -81,13 +81,18 @@
   color: #fff;
   border: 0;
   border-radius: 999px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: transform 0.15s;
+}
+
+.cart:hover {
+  transform: translateY(-1px);
 }
 
 @media (max-width: 700px) {
@@ -98,7 +103,7 @@
 
 /* HERO — scroll-driven door */
 #hero {
-  height: 480vh;
+  height: 240vh;
   position: relative;
 }
 
@@ -110,15 +115,27 @@
   background: linear-gradient(180deg, #BFE6F7 0%, #E3F4FA 55%, #F7F9FC 100%);
 }
 
+/* DAYTIME SUN WITH WARM SUNSHINE HALO */
 .sun {
   position: absolute;
   right: 12%;
-  top: 14%;
-  width: 90px;
-  height: 90px;
+  top: 10%;
+  width: 95px;
+  height: 95px;
   border-radius: 50%;
-  background: radial-gradient(circle, #FFF4C2 30%, #FFE08A 70%);
-  box-shadow: 0 0 90px 30px rgba(255, 224, 138, 0.55);
+  background: radial-gradient(circle, #FFF9D2 20%, #FFE285 65%, #FDBB2D 100%);
+  box-shadow: 0 0 100px 40px rgba(255, 226, 133, 0.7), 0 0 180px 80px rgba(255, 243, 176, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* SUNSHINE RAYS FROM SKY */
+.sun-rays {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 88% 15%, rgba(255, 248, 215, 0.4) 0%, rgba(255, 242, 190, 0.15) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .cloud {
@@ -127,8 +144,9 @@
   width: 120px;
   border-radius: 40px;
   background: #fff;
-  opacity: 0.85;
+  opacity: 0.88;
   filter: blur(1px);
+  z-index: 1;
 }
 
 .cloud::before,
@@ -155,24 +173,25 @@
 
 .c1 {
   left: 8%;
-  top: 22%;
+  top: 20%;
 }
 
 .c2 {
-  left: 58%;
-  top: 12%;
+  left: 55%;
+  top: 10%;
   transform: scale(0.7);
 }
 
 .c3 {
-  left: 30%;
-  top: 34%;
+  left: 28%;
+  top: 32%;
   transform: scale(0.5);
 }
 
+/* INTRO TEXT — CLEARLY ABOVE STORE BUILDING, ZERO OVERLAP */
 .intro {
   position: absolute;
-  top: calc(9dvh + 40px);
+  top: clamp(68px, 11vh, 92px);
   left: 0;
   right: 0;
   text-align: center;
@@ -183,21 +202,23 @@
 
 .eyebrow {
   display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--deep);
-  background: rgba(255, 255, 255, 0.7);
-  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 5px 14px;
   border-radius: 999px;
-  margin: 0 0 14px;
+  margin: 0 0 10px;
+  box-shadow: 0 2px 10px rgba(16, 91, 85, 0.08);
 }
 
 .intro h1 {
   margin: 0;
-  font-size: clamp(30px, 6vw, 68px);
-  line-height: 1.03;
+  font-size: clamp(26px, 4.4vw, 54px);
+  line-height: 1.06;
   letter-spacing: -0.035em;
   font-weight: 800;
   color: var(--navy);
@@ -206,24 +227,27 @@
 .intro h1 em {
   font-style: normal;
   color: var(--teal);
+  display: block;
 }
 
+/* 3D STOREFRONT SCENE */
 .world {
   position: absolute;
   inset: 0;
   will-change: transform;
+  z-index: 2;
 }
 
 .wall {
   position: absolute;
   left: 50%;
-  bottom: 8dvh;
+  bottom: clamp(12px, 3.5vh, 28px);
   transform: translateX(-50%);
-  width: min(94vw, 860px);
-  height: min(60dvh, 620px);
+  width: min(92vw, 820px);
+  height: min(52vh, 500px);
   background: linear-gradient(180deg, #1b9285, var(--teal));
-  border-radius: 22px 22px 0 0;
-  box-shadow: 0 30px 60px rgba(16, 91, 85, 0.25);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 25px 60px rgba(16, 91, 85, 0.28);
 }
 
 .wall::before {
@@ -243,24 +267,36 @@
   background: #fff;
   color: var(--deep);
   font-weight: 800;
-  font-size: clamp(14px, 2.4vw, 22px);
+  font-size: clamp(13px, 2.2vw, 20px);
   letter-spacing: -0.01em;
-  padding: 6px 22px;
+  padding: 5px 20px;
   border-radius: 10px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
+/* WINDOWS WITH DAYTIME SUNSHINE SHEEN */
 .win {
   position: absolute;
-  bottom: 10%;
+  bottom: 12%;
   width: 20%;
   height: 34%;
-  background: linear-gradient(135deg, #D9F1F8, #fff);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 248, 215, 0.85) 35%, #D9F1F8 85%);
   border: 6px solid var(--deep);
-  border-radius: 10px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: clamp(20px, 4vw, 36px);
+  font-size: clamp(20px, 3.8vw, 36px);
+  box-shadow: inset 0 0 20px rgba(255, 245, 180, 0.5), 0 8px 16px rgba(0, 0, 0, 0.15);
+  overflow: visible;
+}
+
+.win::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 245, 170, 0.5) 30%, transparent 60%);
+  pointer-events: none;
 }
 
 .win.l {
@@ -278,16 +314,10 @@
   font-weight: 700;
   color: #fff;
   letter-spacing: 0.1em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.awning {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: calc(78% * 1 + 0px);
-  width: 0;
-}
-
+/* DOOR FRAME & AWNING */
 .frame {
   position: absolute;
   left: 50%;
@@ -307,14 +337,15 @@
   position: absolute;
   left: -14%;
   right: -14%;
-  top: -34px;
-  height: 30px;
+  top: -32px;
+  height: 28px;
   border-radius: 10px 10px 0 0;
   background: repeating-linear-gradient(90deg, #fff 0 22px, #E9F7F3 22px 44px);
   box-shadow: 0 6px 0 var(--deep);
   z-index: 5;
 }
 
+/* STORE INTERIOR */
 .inside {
   position: absolute;
   inset: 0;
@@ -405,6 +436,7 @@
   font-size: 9cqw;
 }
 
+/* 3D ROTATING DOORS WITH SUNSHINE REFLECTIONS */
 .door {
   position: absolute;
   top: 0;
@@ -431,11 +463,13 @@
   content: "";
   position: absolute;
   inset: 9% 14% 40%;
-  background: linear-gradient(135deg, #D9F1F8, #fff 60%, #BFE6F7);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 200, 0.75) 30%, #D9F1F8 75%, #BFE6F7 100%);
   border-radius: 8px;
   border: 4px solid #0c3d39;
+  box-shadow: inset 0 0 14px rgba(255, 240, 160, 0.45);
 }
 
+/* GOLDEN BRASS DOOR HANDLES */
 .door::after {
   content: "";
   position: absolute;
@@ -443,8 +477,8 @@
   width: 9px;
   height: 22%;
   border-radius: 6px;
-  background: #F3D27A;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, #FFEAA7, #F3D27A 60%, #D4AC0D);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 1px 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 .dl::after {
@@ -460,32 +494,72 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 8dvh;
+  height: clamp(8px, 2vh, 16px);
   background: linear-gradient(180deg, #D8DEE6, #C7CFDA);
-  border-top: 3px solid #fff;
+  border-top: 2px solid #fff;
+  z-index: 2;
 }
 
-.hint {
+/* INTERACTIVE BOTTOM BUTTONS */
+.hero-controls {
   position: absolute;
-  bottom: calc(8dvh + 14px);
+  bottom: clamp(14px, 3vh, 24px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.hint {
   background: var(--navy);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 999px;
-  white-space: nowrap;
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.25);
   animation: bob 1.6s ease-in-out infinite;
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.hint:hover {
+  background: #000;
+  transform: scale(1.03);
+}
+
+.skip-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--deep);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--bd);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+  transition: all 0.15s;
+}
+
+.skip-btn:hover {
+  background: #fff;
+  border-color: var(--teal);
+  color: var(--teal);
 }
 
 @keyframes bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
   50% {
-    transform: translate(-50%, 5px);
+    transform: translateY(4px);
   }
 }
 

@@ -59,11 +59,29 @@ export const api = {
     return fetchJson<Array<{ product: CanonicalProduct; minPrice: number; sellerCount: number; inStock: boolean }>>(`/search?${query}`);
   },
 
-  aiDiscover: (prompt: string, city = 'Bengaluru') => {
+  aiDiscover: (prompt: string, conversationId?: string, city = 'Bengaluru') => {
     return fetchJson<AiDiscoveryResult>('/ai/discover', {
       method: 'POST',
-      body: JSON.stringify({ prompt, city }),
+      body: JSON.stringify({ prompt, conversationId, city }),
     });
+  },
+
+  aiCompare: (productIds: string[]) => {
+    return fetchJson<any>('/ai/compare', {
+      method: 'POST',
+      body: JSON.stringify({ productIds }),
+    });
+  },
+
+  aiAlternatives: (productId: string, budget?: number) => {
+    return fetchJson<any>('/ai/alternatives', {
+      method: 'POST',
+      body: JSON.stringify({ productId, budget }),
+    });
+  },
+
+  aiHealth: () => {
+    return fetchJson<any>('/ai/health');
   },
 
   // Checkout

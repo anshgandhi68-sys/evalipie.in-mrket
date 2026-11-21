@@ -55,6 +55,17 @@ export const initialOrganizations: Organization[] = [
     isVerified: true,
     isActive: true,
     createdAt: new Date().toISOString()
+  },
+  {
+    id: 'org-kirana',
+    name: 'Sharma General Kirana & Provisions',
+    businessType: 'INDEPENDENT_SHOP',
+    taxIdentifier: '29ABCDE1234F1Z8',
+    contactEmail: 'kirana@evalipie.in',
+    contactPhone: '+919845012345',
+    isVerified: true,
+    isActive: true,
+    createdAt: new Date().toISOString()
   }
 ];
 
@@ -142,10 +153,38 @@ export const initialStores: Store[] = [
     longitude: 77.6245,
     contactPhone: '+919900112233',
     isActive: true
+  },
+  {
+    id: 'store-kirana-ind',
+    organizationId: 'org-kirana',
+    name: 'Sharma General Kirana — Indiranagar',
+    storeCode: 'SHAR-KIR-01',
+    addressLine1: '88, 6th Main, Defence Colony, Indiranagar',
+    city: 'Bengaluru',
+    state: 'Karnataka',
+    postalCode: '560038',
+    latitude: 12.9750,
+    longitude: 77.6430,
+    contactPhone: '+919845012345',
+    isActive: true
   }
 ];
 
 export const initialShops: Shop[] = [
+  {
+    id: 'shop-kirana',
+    organizationId: 'org-kirana',
+    slug: 'sharma-kirana',
+    displayName: 'Sharma General Kirana',
+    tagline: 'Fresh Staples, Daily Groceries, Pure Ghee & Spices',
+    description: 'Neighbourhood grocery store serving Indiranagar since 1998 with hand-picked Basmati rice, premium pulses, and everyday staples.',
+    logoUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&auto=format&fit=crop&q=80',
+    bannerUrl: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=1200&auto=format&fit=crop&q=80',
+    primaryColor: '#059669',
+    ratingAvg: 4.9,
+    ratingCount: 520,
+    isPublished: true
+  },
   {
     id: 'shop-sharma',
     organizationId: 'org-sharma',
@@ -334,6 +373,70 @@ export const initialProducts: CanonicalProduct[] = [
     },
     imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80',
     tags: ['watch', 'smartwatch', 'fitness', 'health', 'heart rate', 'tracker']
+  },
+  {
+    id: 'prod-kirana-1',
+    title: 'Daawat Rozana Gold Basmati Rice (5kg)',
+    brand: 'Daawat',
+    category: 'Kirana & Groceries',
+    subCategory: 'Rice & Grains',
+    upcEan: '8901234567901',
+    description: 'Finest long-grain Rozana Gold Basmati rice with authentic rich aroma, fluffy texture, and slender grains for daily biryani and pulav.',
+    attributes: {
+      weight: '5kg',
+      grain_type: 'Long Grain Basmati',
+      shelf_life: '24 Months'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
+    tags: ['rice', 'basmati', 'daawat', 'rozana', 'groceries', 'kirana', 'grains', 'food', 'staples']
+  },
+  {
+    id: 'prod-kirana-2',
+    title: 'Fortune Sunlite Refined Sunflower Oil (1L Pouch)',
+    brand: 'Fortune',
+    category: 'Kirana & Groceries',
+    subCategory: 'Edible Oils',
+    upcEan: '8901234567902',
+    description: 'Light, non-sticky refined sunflower cooking oil enriched with Vitamin A and Vitamin D for healthy everyday cooking and frying.',
+    attributes: {
+      volume: '1L',
+      packaging: 'Pouch',
+      enriched_with: 'Vitamins A & D'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=80',
+    tags: ['oil', 'cooking oil', 'sunflower oil', 'fortune', 'sunlite', 'kirana', 'groceries', 'staples']
+  },
+  {
+    id: 'prod-kirana-3',
+    title: 'Tata Tea Gold Premium Black Tea (500g Pack)',
+    brand: 'Tata Tea',
+    category: 'Kirana & Groceries',
+    subCategory: 'Tea & Beverages',
+    upcEan: '8901234567903',
+    description: 'Exquisite blend of rich Assam CTC tea with 15% gently rolled long leaves for an irresistible aroma and rich full-bodied taste.',
+    attributes: {
+      weight: '500g',
+      blend: 'Assam CTC with Long Leaves',
+      caffeine: 'Medium'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80',
+    tags: ['tea', 'chai', 'tata tea', 'gold', 'assam tea', 'beverages', 'kirana', 'groceries']
+  },
+  {
+    id: 'prod-kirana-4',
+    title: 'Aashirvaad Select 100% Sharbati Whole Wheat Atta (5kg)',
+    brand: 'Aashirvaad',
+    category: 'Kirana & Groceries',
+    subCategory: 'Flours & Grains',
+    upcEan: '8901234567904',
+    description: 'Premium quality 100% pure Sharbati wheat flour harvested from Sehore, Madhya Pradesh, producing golden, extra-soft rotis that stay soft longer.',
+    attributes: {
+      weight: '5kg',
+      grain_source: 'Madhya Pradesh Sharbati',
+      fiber: 'High Fiber Whole Wheat'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
+    tags: ['atta', 'wheat flour', 'aashirvaad', 'sharbati', 'roti', 'kirana', 'groceries', 'staples']
   }
 ];
 
@@ -469,10 +572,156 @@ export const initialListings: MerchantListing[] = [
     originalMrp: 3499.00,
     condition: 'NEW',
     isActive: true
+  },
+  // Kirana Products Matching User Reference
+  {
+    id: 'list-city-rice',
+    organizationId: 'org-citysuper',
+    productId: 'prod-kirana-1',
+    merchantSku: 'CITY-RICE-01',
+    sellingPrice: 420.00,
+    originalMrp: 480.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-kirana-rice',
+    organizationId: 'org-kirana',
+    productId: 'prod-kirana-1',
+    merchantSku: 'KIR-RICE-01',
+    sellingPrice: 435.00,
+    originalMrp: 480.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-kirana-oil',
+    organizationId: 'org-kirana',
+    productId: 'prod-kirana-2',
+    merchantSku: 'KIR-OIL-01',
+    sellingPrice: 145.00,
+    originalMrp: 175.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-city-oil',
+    organizationId: 'org-citysuper',
+    productId: 'prod-kirana-2',
+    merchantSku: 'CITY-OIL-01',
+    sellingPrice: 152.00,
+    originalMrp: 175.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-city-tea',
+    organizationId: 'org-citysuper',
+    productId: 'prod-kirana-3',
+    merchantSku: 'CITY-TEA-01',
+    sellingPrice: 285.00,
+    originalMrp: 320.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-kirana-tea',
+    organizationId: 'org-kirana',
+    productId: 'prod-kirana-3',
+    merchantSku: 'KIR-TEA-01',
+    sellingPrice: 295.00,
+    originalMrp: 320.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-kirana-atta',
+    organizationId: 'org-kirana',
+    productId: 'prod-kirana-4',
+    merchantSku: 'KIR-ATTA-01',
+    sellingPrice: 310.00,
+    originalMrp: 360.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-city-atta',
+    organizationId: 'org-citysuper',
+    productId: 'prod-kirana-4',
+    merchantSku: 'CITY-ATTA-01',
+    sellingPrice: 325.00,
+    originalMrp: 360.00,
+    condition: 'NEW',
+    isActive: true
   }
 ];
 
 export const initialInventory: StoreInventory[] = [
+  // Kirana Inventories
+  {
+    id: 'inv-city-rice-ind',
+    listingId: 'list-city-rice',
+    storeId: 'store-city-ind',
+    quantity: 18,
+    reservedQuantity: 0,
+    reorderThreshold: 5
+  },
+  {
+    id: 'inv-kirana-rice-ind',
+    listingId: 'list-kirana-rice',
+    storeId: 'store-kirana-ind',
+    quantity: 12,
+    reservedQuantity: 0,
+    reorderThreshold: 4
+  },
+  {
+    id: 'inv-kirana-oil-ind',
+    listingId: 'list-kirana-oil',
+    storeId: 'store-kirana-ind',
+    quantity: 24,
+    reservedQuantity: 0,
+    reorderThreshold: 6
+  },
+  {
+    id: 'inv-city-oil-ind',
+    listingId: 'list-city-oil',
+    storeId: 'store-city-ind',
+    quantity: 30,
+    reservedQuantity: 0,
+    reorderThreshold: 8
+  },
+  {
+    id: 'inv-city-tea-ind',
+    listingId: 'list-city-tea',
+    storeId: 'store-city-ind',
+    quantity: 15,
+    reservedQuantity: 0,
+    reorderThreshold: 4
+  },
+  {
+    id: 'inv-kirana-tea-ind',
+    listingId: 'list-kirana-tea',
+    storeId: 'store-kirana-ind',
+    quantity: 10,
+    reservedQuantity: 0,
+    reorderThreshold: 3
+  },
+  {
+    id: 'inv-kirana-atta-ind',
+    listingId: 'list-kirana-atta',
+    storeId: 'store-kirana-ind',
+    quantity: 20,
+    reservedQuantity: 0,
+    reorderThreshold: 5
+  },
+  {
+    id: 'inv-city-atta-ind',
+    listingId: 'list-city-atta',
+    storeId: 'store-city-ind',
+    quantity: 25,
+    reservedQuantity: 0,
+    reorderThreshold: 6
+  },
   // Sharma Headphone: EXACTLY 1 REMAINING! (Key for concurrency contest)
   {
     id: 'inv-sharma-headphone-ind',
