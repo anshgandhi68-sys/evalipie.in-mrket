@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Mic, Store, Sparkles, Shield, MapPin, UserCheck, Shirt } from 'lucide-react';
 import { useCart } from '../../context/CartContext.js';
 import { useAuth, UserPersona } from '../../context/AuthContext.js';
+import { SlideTabs, SlideTabItem } from '../ui/slide-tabs.js';
 
 export const Navbar: React.FC = () => {
   const { totalCount, openCart } = useCart();
@@ -10,7 +11,15 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const isCurrent = (path: string) => location.pathname === path;
+  const navItems: SlideTabItem[] = [
+    { label: "Discover", href: "/" },
+    { label: "Catalog", href: "/products" },
+    { label: "Local Rail", href: "/demo/rail" },
+    { label: "AI Search", href: "/ai" },
+    { label: "Voice Khata", href: "/business/voice-khata", badge: "Gnani" },
+    { label: "Merchant OS", href: "/business/dashboard" },
+    { label: "Admin", href: "/admin" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,35 +81,14 @@ export const Navbar: React.FC = () => {
           </span>
         </Link>
 
-        {/* Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 text-[13px] font-bold text-[#5D6661] uppercase tracking-wide">
-          <Link to="/" className={`transition-colors hover:text-[#0F1412] ${isCurrent('/') ? 'text-[#0F1412]' : ''}`}>
-            Discover
-          </Link>
-          <Link to="/products" className={`transition-colors hover:text-[#0F1412] ${isCurrent('/products') ? 'text-[#0F1412]' : ''}`}>
-            Catalog
-          </Link>
-          <Link to="/demo/rail" className={`flex items-center gap-1.5 transition-colors hover:text-[#167D73] ${isCurrent('/demo/rail') ? 'text-[#167D73]' : ''}`}>
-            <Shirt className="w-4 h-4 text-[#167D73]" />
-            <span>Local Rail</span>
-          </Link>
-          <Link to="/ai" className={`flex items-center gap-1.5 transition-colors hover:text-[#7657E8] ${isCurrent('/ai') ? 'text-[#7657E8]' : ''}`}>
-            <Sparkles className="w-4 h-4 text-[#7657E8]" />
-            <span>AI Discovery</span>
-          </Link>
-          <Link to="/business/voice-khata" className={`flex items-center gap-1.5 transition-colors hover:text-[#167D73] ${location.pathname.startsWith('/business/voice-khata') ? 'text-[#167D73]' : ''}`}>
-            <Mic className="w-4 h-4 text-[#167D73]" />
-            <span>Voice Khata</span>
-            <span className="bg-[#E9F7F3] text-[#167D73] text-[9px] font-extrabold px-1.5 py-0.5 rounded-full tracking-wider">Gnani PS2</span>
-          </Link>
-          <Link to="/business/dashboard" className={`flex items-center gap-1.5 transition-colors hover:text-[#0F1412] ${location.pathname.startsWith('/business') && !location.pathname.includes('voice-khata') ? 'text-[#0F1412]' : ''}`}>
-            <Store className="w-4 h-4" />
-            <span>Merchant SaaS</span>
-          </Link>
-          <Link to="/admin" className={`flex items-center gap-1.5 transition-colors hover:text-[#0F1412] ${location.pathname.startsWith('/admin') ? 'text-[#0F1412]' : ''}`}>
-            <Shield className="w-4 h-4" />
-            <span>Admin</span>
-          </Link>
+        {/* Navigation Slide Tabs (Fluid 21st.dev pill navigation) */}
+        <nav className="hidden lg:flex items-center">
+          <SlideTabs 
+            items={navItems}
+            borderColor="border-[#0F1412]"
+            pillColor="bg-[#0F1412]"
+            className="py-0.5 px-1 bg-white/80"
+          />
         </nav>
 
         {/* Right Action Controls */}

@@ -14,6 +14,7 @@ import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 import DemoOne from './components/ui/demo.js';
 import MetroHeroDemo from './components/ui/metro-hero-demo.js';
+import SlideTabsDemo from './components/ui/slide-tabs-demo.js';
 
 export const App: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ export const App: React.FC = () => {
                 <Route path="/demo" element={<DemoOne />} />
                 <Route path="/demo/rail" element={<DemoOne />} />
                 <Route path="/demo/video" element={<MetroHeroDemo />} />
+                <Route path="/demo/tabs" element={<SlideTabsDemo />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
                 <Route path="/ai" element={<HomePage />} />
