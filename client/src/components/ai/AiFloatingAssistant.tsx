@@ -42,11 +42,13 @@ export const AiFloatingAssistant: React.FC = () => {
       return;
     }
     const handleScroll = () => {
-      // Only show assistant once user scrolls past the initial hero viewport
-      if (window.scrollY > 300) {
-        setHasScrolled(true);
+      // Only show assistant once user has scrolled past the 3D door hero into the marketplace
+      const hero = document.getElementById('hero');
+      if (hero) {
+        const heroBottom = hero.getBoundingClientRect().bottom;
+        setHasScrolled(heroBottom <= window.innerHeight * 0.6);
       } else {
-        setHasScrolled(false);
+        setHasScrolled(window.scrollY > 600);
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });

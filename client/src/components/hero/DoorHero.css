@@ -23,11 +23,14 @@
 }
 
 .stage {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
+  height: 100vh;
   height: 100dvh;
   overflow: hidden;
   background: linear-gradient(180deg, #BFE6F7 0%, #E3F4FA 55%, #F7F9FC 100%);
+  z-index: 10;
 }
 
 .sun {

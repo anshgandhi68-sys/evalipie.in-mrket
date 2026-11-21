@@ -461,7 +461,7 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-[#F7F9FC] text-[#111827] overflow-x-hidden selection:bg-[#167D73] selection:text-white font-sans">
+    <div className="w-full bg-[#F7F9FC] text-[#111827] selection:bg-[#167D73] selection:text-white font-sans">
       
       {/* ── 1. NATIVE 3D STOREFRONT DOOR HERO ─────────────────────── */}
       <DoorHero onSelectCategory={(catKey) => {
