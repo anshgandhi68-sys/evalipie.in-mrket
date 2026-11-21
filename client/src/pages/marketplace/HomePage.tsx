@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mic, Check, Heart, Star, ShoppingBag, ArrowRight } from 'lucide-react';
+import { DoorHero } from '../../components/hero/DoorHero.js';
 import { BentoGridHero } from '../../components/home/BentoGridHero.js';
 import { ShopByCategoryCarousel } from '../../components/home/ShopByCategoryCarousel.js';
 import { SellerComparisonModal } from '../../components/catalog/SellerComparisonModal.js';
@@ -642,15 +643,31 @@ export const HomePage: React.FC = () => {
   return (
     <div className="w-full bg-[#F7F9FC] text-[#111827] selection:bg-[#167D73] selection:text-white font-sans">
       
-      {/* ── 1. ASYMMETRICAL BENTO GRID HERO (Reference Image 1 Alignment) ── */}
-      <BentoGridHero onShowToast={showToast} />
+      {/* ── 1. 3D STOREFRONT DOOR HERO — Smooth Scroll Transition into Marketplace ── */}
+      <DoorHero 
+        onSelectCategory={(catKey) => {
+          setSelectedCategory(catKey);
+          showToast(`Filtered by ${catKey}`);
+          document.getElementById('cats')?.scrollIntoView({ behavior: 'smooth' });
+        }} 
+        onSearch={(query) => {
+          setAiQuery(query);
+          handleAiSearch(query);
+          document.getElementById('ai')?.scrollIntoView({ behavior: 'smooth' });
+        }}
+      />
 
-      {/* ── 2. SHOP BY CATEGORY CIRCULAR CAROUSEL (Reference Image 1 Alignment) ── */}
-      <div id="cats">
-        <ShopByCategoryCarousel categories={taxonomyCategories} />
+      {/* ── 2. LIVE MARKETPLACE CONTENT (Bento Grid Hero & Categories) ── */}
+      <div id="marketplace-content" className="relative z-20">
+        <BentoGridHero onShowToast={showToast} />
+
+        {/* ── 3. SHOP BY CATEGORY CIRCULAR CAROUSEL ── */}
+        <div id="cats">
+          <ShopByCategoryCarousel categories={taxonomyCategories} />
+        </div>
       </div>
 
-      {/* ── 3. MAIN EVALIPIE AI DISCOVERY INTERFACE (#ai) ──────────── */}
+      {/* ── 4. MAIN EVALIPIE AI DISCOVERY INTERFACE (#ai) ──────────── */}
       {/* Centered, minimal, elegant, professional layout using brand palette */}
       <section className="w-full bg-[#FBF7EF] border-y border-[#E5EAF0] py-16 md:py-24" id="ai">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">

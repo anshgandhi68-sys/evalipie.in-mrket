@@ -18,7 +18,7 @@
 
 /* HERO — scroll-driven door */
 #hero {
-  height: 150vh;
+  height: 220vh;
   position: relative;
 }
 
@@ -31,6 +31,7 @@
   overflow: hidden;
   background: linear-gradient(180deg, #BFE6F7 0%, #E3F4FA 55%, #F7F9FC 100%);
   z-index: 10;
+  transition: opacity 0.12s ease-out;
 }
 
 .sun {
@@ -237,17 +238,16 @@
   z-index: 5;
 }
 
-/* INTERIOR DISCOVERY PREVIEW */
+/* INTERIOR DISCOVERY PREVIEW — Reveals Bento Grid Hero directly */
 .inside {
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 70% at 50% 0%, var(--mint), var(--bg) 70%);
+  background: radial-gradient(120% 70% at 50% 0%, #E9F7F3, #F7F9FC 70%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: clamp(10px, 2.5vh, 20px);
-  padding: clamp(16px, 3.5vw, 36px);
+  justify-content: space-between;
+  padding: clamp(28px, 4.5vh, 40px) 10px 14px;
   text-align: center;
   overflow: hidden;
   box-sizing: border-box;
@@ -272,85 +272,76 @@
 .in-hd b { color: var(--deep); font-weight: 800; letter-spacing: -0.01em; }
 .in-hd span { color: var(--mut); font-size: 11px; font-weight: 600; }
 
-.inside h2 {
-  margin: 0;
-  font-size: clamp(16px, 2.4vw, 26px);
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  color: var(--navy);
-  font-weight: 800;
-  max-width: 92%;
+/* Bento Preview Cards inside Doorway */
+.in-bento-preview {
+  width: 94%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 4px;
 }
 
-.inside p {
-  margin: 0;
-  font-size: clamp(11px, 1.4vw, 14px);
-  color: var(--teal);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-.in-search {
-  width: min(92%, 300px);
+.in-bento-card {
   background: #fff;
-  border: 1.5px solid var(--bd);
-  border-radius: 999px;
-  padding: 6px 10px 6px 14px;
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 6px 8px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  font-size: clamp(10px, 1.2vw, 12px);
+  box-shadow: 0 2px 6px rgba(17, 24, 39, 0.05);
+}
+
+.in-bento-card.card-mac {
+  grid-column: span 2;
+  flex-direction: row;
+  text-align: left;
+  gap: 8px;
+}
+
+.in-card-txt h4 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.15;
+}
+
+.in-card-txt p {
+  margin: 2px 0 0;
+  font-size: 8.5px;
   color: var(--mut);
-  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.08);
-  transition: all 0.2s ease;
-  cursor: pointer;
+  line-height: 1.15;
 }
 
-.in-search:hover {
-  border-color: var(--teal);
-  box-shadow: 0 6px 18px rgba(22, 125, 115, 0.15);
+.in-card-img {
+  width: 46px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
-.in-search u {
-  text-decoration: none;
-  background: var(--teal);
-  color: #fff;
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.04em;
+.in-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--teal);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.in-row {
-  display: flex;
-  gap: 6px;
-  margin-top: 2px;
-}
-
-.in-row button,
-.in-row span {
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: #fff;
-  border: 1px solid var(--bd);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.in-enter-cta {
   font-size: 10px;
   font-weight: 700;
   color: var(--deep);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transition: all 0.15s ease;
-  cursor: pointer;
-}
-
-.in-row button:hover {
-  border-color: var(--teal);
-  background: var(--mint);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--bd);
+  border-radius: 999px;
+  padding: 4px 12px;
+  box-shadow: 0 2px 8px rgba(16, 91, 85, 0.12);
+  margin-top: 2px;
 }
 
 /* 3D ROTATING DOORS */

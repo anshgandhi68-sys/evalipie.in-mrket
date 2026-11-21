@@ -25,12 +25,13 @@ import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
+  const isHome = location.pathname === '/';
   const isExperience = location.pathname === '/experience' || location.pathname === '/storefront';
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F9FC] text-[#111827]">
       {!isExperience && <Navbar />}
-      <main className={`flex-1 ${isExperience ? 'pt-0' : 'pt-24 sm:pt-28'}`}>
+      <main className={`flex-1 ${isHome || isExperience ? 'pt-0' : 'pt-24 sm:pt-28'}`}>
         <Routes>
           {/* Marketplace Core Routes */}
           <Route path="/" element={<HomePage />} />

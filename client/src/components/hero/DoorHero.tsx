@@ -101,6 +101,16 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
       if (c1) c1.style.marginLeft = `${-p * 60}px`;
       if (c2) c2.style.marginLeft = `${-p * 100}px`;
       if (c3) c3.style.marginLeft = `${-p * 140}px`;
+
+      // 7. Seamless fade-out into live marketplace page (0.85 -> 1.0)
+      if (p >= 0.85) {
+        const fade = (p - 0.85) / 0.15;
+        stage.style.opacity = String(Math.max(0, 1 - fade));
+        stage.style.pointerEvents = fade > 0.5 ? 'none' : 'auto';
+      } else {
+        stage.style.opacity = '1';
+        stage.style.pointerEvents = 'auto';
+      }
     };
 
     const handleScroll = () => {
@@ -124,10 +134,7 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
   }, []);
 
   const handleOpenDoors = () => {
-    const aiSection = document.getElementById('ai');
-    if (aiSection) {
-      aiSection.scrollIntoView({ behavior: 'smooth' });
-    } else if (heroRef.current) {
+    if (heroRef.current) {
       window.scrollTo({
         top: heroRef.current.offsetHeight,
         behavior: 'smooth'
@@ -196,51 +203,49 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
                   <b>Evalipie</b>
                   <span>{activeCity || 'Bengaluru'} ▾</span>
                 </div>
-                <h2>Find exactly what you need.</h2>
-                <p>From every shop.</p>
-                <div 
-                  className="in-search"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    const aiInput = document.getElementById('ai-search-input') || document.getElementById('ai');
-                    aiInput?.scrollIntoView({ behavior: 'smooth' });
-                    setTimeout(() => (document.getElementById('ai-search-input') as HTMLInputElement)?.focus(), 400);
-                  }}
-                >
-                  <span>Describe what you need…</span>
-                  <u>AI Search</u>
+
+                {/* Live Bento Preview Cards Visible through Open Doorway */}
+                <div className="in-bento-preview">
+                  <div className="in-bento-card card-mac">
+                    <div className="in-card-txt">
+                      <span className="in-badge">FLAGSHIP</span>
+                      <h4>Macbook m4 pro</h4>
+                      <p>Elevate entertainment</p>
+                    </div>
+                    <img 
+                      src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&auto=format&fit=crop&q=80" 
+                      alt="Macbook" 
+                      className="in-card-img"
+                    />
+                  </div>
+
+                  <div className="in-bento-card card-airpods">
+                    <img 
+                      src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&auto=format&fit=crop&q=80" 
+                      alt="AirPods Max" 
+                      className="in-card-img"
+                    />
+                    <div className="in-card-txt">
+                      <h4>AirPods Max</h4>
+                      <p>Studio fidelity</p>
+                    </div>
+                  </div>
+
+                  <div className="in-bento-card card-shoes">
+                    <div className="in-card-txt">
+                      <h4>Flat 20% Off</h4>
+                      <p>Regular Shoes</p>
+                    </div>
+                    <img 
+                      src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&auto=format&fit=crop&q=80" 
+                      alt="Shoes" 
+                      className="in-card-img"
+                    />
+                  </div>
                 </div>
-                <div className="in-row">
-                  <button 
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectCategory?.('AUDIO');
-                      document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    AUDIO
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectCategory?.('MOBILES');
-                      document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    MOBILES
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectCategory?.('LAPTOPS');
-                      document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                  >
-                    LAPTOPS
-                  </button>
+
+                <div className="in-enter-cta">
+                  <span>Enter Storefront ↓</span>
                 </div>
               </div>
 
