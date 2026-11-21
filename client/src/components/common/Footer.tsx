@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-[#687385] leading-relaxed">
-                Hyperlocal retail intelligence connecting independent neighborhood kiranas, electronics stores, and local retailers directly to buyers with zero phantom stock.
+                Hyperlocal retail intelligence connecting independent electronics stores, boutiques, authorized dealers, and local retailers directly to buyers with zero phantom stock.
               </p>
             </div>
 

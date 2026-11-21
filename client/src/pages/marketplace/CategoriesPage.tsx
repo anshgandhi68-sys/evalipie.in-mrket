@@ -10,11 +10,11 @@ import { api } from '../../services/api.js';
 
 const CATEGORIES_DATA = [
   {
-    id: 'Kirana & Groceries',
-    name: 'Kirana & Staples',
-    tagline: 'Fresh Basmati, edible oils, flours, spices & daily provisions',
+    id: 'Smart Wearables',
+    name: 'Smart Wearables & Tech',
+    tagline: 'Apple Watch Series 10, AMOLED fitness bands, smart rings & GPS sports watches',
     count: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=80',
     icon: <ShoppingBag className="w-5 h-5 text-emerald-600" />
   },
   {

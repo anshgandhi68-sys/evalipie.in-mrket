@@ -33,7 +33,7 @@ export const AiDiscoveryModal: React.FC<AiDiscoveryModalProps> = ({
 
   const quickChips = [
     'Wireless headphones under ₹2,000',
-    'Daawat Basmati rice and sunflower oil near Indiranagar',
+    'Sony ANC headphones or Apple Watch near Indiranagar',
     'Mujhe programming ke liye laptop chahiye 60,000 ke andar',
     'Compact digital air fryer for small apartment'
   ];
@@ -223,7 +223,7 @@ export const AiDiscoveryModal: React.FC<AiDiscoveryModalProps> = ({
             value={prompt}
             onChange={e => setPrompt(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder="Ask in English, Hindi, Hinglish, Gujarati (e.g. Rice aur sunflower oil under 500)..."
+            placeholder="Ask in English, Hindi, Hinglish (e.g. Wireless headphones under 2000)..."
             className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-semibold outline-none focus:border-[#7657E8] focus:bg-white transition-all shadow-inner"
           />
           <button
