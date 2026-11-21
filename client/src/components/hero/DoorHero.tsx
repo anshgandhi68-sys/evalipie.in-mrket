@@ -5,12 +5,10 @@ import './DoorHero.css';
 
 // ─────────────────────────────────────────────────────────────
 // EVALIPIE ARCHITECTURAL 3D DOOR SCROLL HERO
-// Daytime storefront with sunshine, glass reflections, and 3D door entry
+// Exactly matching prototype reference in media_1795265028299_796ce432.html
 // ─────────────────────────────────────────────────────────────
 
-export const DoorHero: React.FC<{
-  onEnter?: () => void;
-}> = ({ onEnter }) => {
+export const DoorHero: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
@@ -18,7 +16,7 @@ export const DoorHero: React.FC<{
   const dlRef = useRef<HTMLDivElement>(null);
   const drRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLButtonElement>(null);
   const barRef = useRef<HTMLElement>(null);
   const c1Ref = useRef<HTMLElement>(null);
   const c2Ref = useRef<HTMLElement>(null);
@@ -32,7 +30,7 @@ export const DoorHero: React.FC<{
     const dl = dlRef.current;
     const dr = drRef.current;
     const intro = introRef.current;
-    const controls = controlsRef.current;
+    const hint = hintRef.current;
     const bar = barRef.current;
     const c1 = c1Ref.current;
     const c2 = c2Ref.current;
@@ -59,7 +57,7 @@ export const DoorHero: React.FC<{
       const st = stage.getBoundingClientRect().top;
       cy = r.top - st + r.height / 2;
       world.style.transformOrigin = `${cx}px ${cy}px`;
-      S = Math.max(window.innerWidth / fw, window.innerHeight / fh) * 1.08;
+      S = Math.max(window.innerWidth / fw, window.innerHeight / fh) * 1.06;
       update();
     };
 
@@ -70,25 +68,25 @@ export const DoorHero: React.FC<{
       if (total <= 0) return;
       const p = clamp(-hero.getBoundingClientRect().top / total, 0, 1);
 
-      // 1. Door rotation (0 -> 0.35)
-      const a = ease(clamp(p / 0.35, 0, 1));
+      // 1. Door opening rotation (0 -> 0.32)
+      const a = ease(clamp(p / 0.32, 0, 1));
       dl.style.transform = `rotateY(${a * 108}deg)`;
       dr.style.transform = `rotateY(${-a * 108}deg)`;
 
-      // 2. Camera zoom through doorway (0.28 -> 0.95)
-      const e = ease(clamp((p - 0.28) / 0.65, 0, 1));
+      // 2. Camera zoom through doorway (0.30 -> 0.92)
+      const e = ease(clamp((p - 0.30) / 0.62, 0, 1));
       world.style.transform = `translate(${(window.innerWidth / 2 - cx) * e}px, ${(window.innerHeight / 2 - cy) * e}px) scale(${1 + (S - 1) * e})`;
 
-      // 3. Intro fade & slide
+      // 3. Intro fade & slide up
       if (intro) {
-        intro.style.opacity = String(1 - clamp(p / 0.18, 0, 1));
-        intro.style.transform = `translateY(${-p * 70}px)`;
+        intro.style.opacity = String(1 - clamp(p / 0.16, 0, 1));
+        intro.style.transform = `translateY(${-p * 80}px)`;
       }
 
-      // 4. Controls fade
-      if (controls) {
-        controls.style.opacity = String(1 - clamp(p * 6, 0, 1));
-        controls.style.pointerEvents = p > 0.1 ? 'none' : 'auto';
+      // 4. Hint button fade
+      if (hint) {
+        hint.style.opacity = String(1 - clamp(p * 10, 0, 1));
+        hint.style.pointerEvents = p > 0.08 ? 'none' : 'auto';
       }
 
       // 5. Progress bar
@@ -97,9 +95,9 @@ export const DoorHero: React.FC<{
       }
 
       // 6. Clouds parallax
-      if (c1) c1.style.marginLeft = `${-p * 70}px`;
-      if (c2) c2.style.marginLeft = `${-p * 110}px`;
-      if (c3) c3.style.marginLeft = `${-p * 150}px`;
+      if (c1) c1.style.marginLeft = `${-p * 60}px`;
+      if (c2) c2.style.marginLeft = `${-p * 100}px`;
+      if (c3) c3.style.marginLeft = `${-p * 140}px`;
     };
 
     const handleScroll = () => {
@@ -110,13 +108,13 @@ export const DoorHero: React.FC<{
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', measure);
     
-    // Initial measure after layout settles
+    // Initial measurement
     measure();
-    const t = setTimeout(measure, 150);
+    const timer = setTimeout(measure, 100);
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
-      clearTimeout(t);
+      clearTimeout(timer);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', measure);
     };
@@ -125,29 +123,17 @@ export const DoorHero: React.FC<{
   const handleOpenDoors = () => {
     if (!heroRef.current) return;
     const heroTop = heroRef.current.getBoundingClientRect().top + window.scrollY;
-    // Scroll ~50% into hero to open doors and initiate zoom
     window.scrollTo({
       top: heroTop + (heroRef.current.offsetHeight * 0.45),
       behavior: 'smooth'
     });
   };
 
-  const handleSkipToStore = () => {
-    const feed = document.getElementById('marketplace-feed') || document.getElementById('cats');
-    if (feed) {
-      feed.scrollIntoView({ behavior: 'smooth' });
-    } else if (heroRef.current) {
-      window.scrollTo({
-        top: heroRef.current.offsetHeight,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   return (
     <section id="hero" ref={heroRef}>
       <div className="stage" id="top" ref={stageRef}>
-        {/* Daytime Sunny Sky */}
+        
+        {/* Daytime Sky with Morning Sunshine Glow & Parallax Clouds */}
         <div className="sky">
           <i className="sun" title="Morning Sunshine" />
           <div className="sun-rays" />
@@ -156,11 +142,11 @@ export const DoorHero: React.FC<{
           <i className="cloud c3" ref={c3Ref} />
         </div>
 
-        {/* Intro Typography — Safely placed in the clear sky with zero overlap */}
+        {/* Intro Typography (Clear in the sky above building facade) */}
         <div className="intro" id="intro" ref={introRef}>
           <p className="eyebrow">evalipie.in</p>
           <h1>
-            Every Shop.
+            Every Shop.<br />
             <em>One Intelligent Marketplace.</em>
           </h1>
         </div>
@@ -200,7 +186,7 @@ export const DoorHero: React.FC<{
                 </div>
               </div>
 
-              {/* 3D Doors */}
+              {/* 3D Rotating Doors */}
               <div className="door dl" id="dl" ref={dlRef} />
               <div className="door dr" id="dr" ref={drRef} />
             </div>
@@ -209,25 +195,16 @@ export const DoorHero: React.FC<{
 
         <div className="ground" />
 
-        {/* Interactive Bottom Control Buttons */}
-        <div className="hero-controls" ref={controlsRef}>
-          <button 
-            type="button" 
-            className="hint" 
-            onClick={handleOpenDoors}
-            title="Click or scroll to open the door"
-          >
-            Scroll to open the door ↓
-          </button>
-          <button 
-            type="button" 
-            className="skip-btn" 
-            onClick={handleSkipToStore}
-            title="Skip straight to verified catalogue"
-          >
-            Skip to Store →
-          </button>
-        </div>
+        {/* Bottom Scroll Pill Button (Matching Screenshot 5) */}
+        <button 
+          type="button" 
+          className="hint" 
+          id="hint" 
+          ref={hintRef}
+          onClick={handleOpenDoors}
+        >
+          Scroll to open the door ↓
+        </button>
 
         {/* Progress Bar */}
         <div className="bar"><i id="bar" ref={barRef} /></div>

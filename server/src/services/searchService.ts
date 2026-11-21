@@ -49,8 +49,23 @@ function tokenFuzzyMatch(queryWords: string[], targetText: string): number {
   return score;
 }
 
+function normalizeWord(word: string): string {
+  const w = word.toLowerCase().trim();
+  if (w.endsWith('shoes')) return 'shoe';
+  if (w.endsWith('headphones')) return 'headphone';
+  if (w.endsWith('earphones')) return 'earphone';
+  if (w.endsWith('chairs')) return 'chair';
+  if (w.endsWith('laptops')) return 'laptop';
+  if (w.endsWith('phones')) return 'phone';
+  if (w.endsWith('cleaners') || w.endsWith('cleaning')) return 'clean';
+  if (w.endsWith('products') || w.endsWith('product')) return 'product';
+  if (w === 't-shirt' || w === 'tshirt' || w === 'tee' || w === 'tshirts') return 'tshirt';
+  if (w === "men's" || w === 'mens') return 'men';
+  return w;
+}
+
 export class SearchService {
-  // Typo-Tolerant Catalog Search (Simulates Aiven OpenSearch)
+  // Typo-Tolerant Catalog Search (Simulates Aiven OpenSearch with budget & synonym awareness)
   search(params: {
     query?: string;
     category?: string;
@@ -59,11 +74,33 @@ export class SearchService {
     maxPrice?: number;
   }): Array<{ product: CanonicalProduct; minPrice: number; sellerCount: number; inStock: boolean; relevanceScore: number }> {
     const products = Array.from(db.products.values());
-    const queryWords = (params.query || '')
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, ' ')
-      .split(/\s+/)
-      .filter(Boolean);
+    let rawQuery = (params.query || '').trim();
+    let maxPrice = params.maxPrice;
+    let minPrice = params.minPrice;
+
+    // 1. Budget extraction (e.g. "laptop under 60000", "headphones under 2000", "below 1500")
+    const budgetMatch = rawQuery.match(/(?:under|below|less than|within|ke andar|ke niche)\s*(?:₹|rs\.?|inr)?\s*(\d[\d,]*(?:\s*(?:k|thousand|hazar|lakh))?)/i);
+    if (budgetMatch) {
+      const budgetStr = budgetMatch[1].toLowerCase().replace(/,/g, '').trim();
+      let budgetVal = 0;
+      if (budgetStr.endsWith('k')) {
+        budgetVal = parseFloat(budgetStr) * 1000;
+      } else if (budgetStr.includes('lakh')) {
+        budgetVal = parseFloat(budgetStr) * 100000;
+      } else if (budgetStr.includes('thousand') || budgetStr.includes('hazar')) {
+        budgetVal = parseFloat(budgetStr) * 1000;
+      } else {
+        budgetVal = parseFloat(budgetStr);
+      }
+      if (!isNaN(budgetVal) && budgetVal > 0) {
+        maxPrice = maxPrice !== undefined ? Math.min(maxPrice, budgetVal) : budgetVal;
+      }
+      rawQuery = rawQuery.replace(budgetMatch[0], ' ').trim();
+    }
+
+    const cleanPhrase = rawQuery.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    const queryWords = cleanPhrase.split(/\s+/).filter(Boolean);
+    const normalizedQueryWords = queryWords.map(normalizeWord);
 
     const results: Array<{
       product: CanonicalProduct;
@@ -82,13 +119,30 @@ export class SearchService {
       // 2. Compute search score (Title^3 + Tags^2 + Brand^2 + Description)
       let score = 1.0;
       if (queryWords.length > 0) {
-        const titleScore = tokenFuzzyMatch(queryWords, product.title) * 3.0;
-        const brandScore = tokenFuzzyMatch(queryWords, product.brand) * 2.0;
-        const tagsScore = tokenFuzzyMatch(queryWords, (product.tags || []).join(' ')) * 2.0;
-        const descScore = tokenFuzzyMatch(queryWords, product.description) * 1.0;
-        score = titleScore + brandScore + tagsScore + descScore;
+        const prodTitleNorm = product.title.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+        const prodBrandNorm = product.brand.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+        const prodCategoryNorm = product.category.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+        const prodTagsNorm = (product.tags || []).join(' ').toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
+        const prodDescNorm = product.description.toLowerCase().replace(/[^a-z0-9\s]/g, ' ');
 
-        if (score < 1.2) {
+        // Exact phrase bonus (e.g. "iphone 16", "samsung galaxy", "running shoes")
+        let phraseBonus = 0;
+        if (cleanPhrase.length >= 3) {
+          if (prodTitleNorm.includes(cleanPhrase)) phraseBonus += 15.0;
+          if (prodBrandNorm.includes(cleanPhrase)) phraseBonus += 10.0;
+          if (prodTagsNorm.includes(cleanPhrase)) phraseBonus += 8.0;
+          if (prodCategoryNorm.includes(cleanPhrase)) phraseBonus += 6.0;
+        }
+
+        const titleScore = tokenFuzzyMatch(normalizedQueryWords, prodTitleNorm) * 3.0;
+        const brandScore = tokenFuzzyMatch(normalizedQueryWords, prodBrandNorm) * 2.5;
+        const tagsScore = tokenFuzzyMatch(normalizedQueryWords, prodTagsNorm) * 2.0;
+        const catScore = tokenFuzzyMatch(normalizedQueryWords, prodCategoryNorm) * 2.0;
+        const descScore = tokenFuzzyMatch(normalizedQueryWords, prodDescNorm) * 1.0;
+
+        score = phraseBonus + titleScore + brandScore + tagsScore + catScore + descScore;
+
+        if (score < 1.0) {
           continue; // No sufficient match
         }
       }
@@ -97,13 +151,13 @@ export class SearchService {
       const listings = Array.from(db.listings.values()).filter(l => l.productId === product.id && l.isActive);
       if (listings.length === 0) continue;
 
-      let minPrice = Infinity;
+      let bestSellingPrice = Infinity;
       let totalStock = 0;
       let matchingSellers = 0;
 
       for (const listing of listings) {
-        if (params.minPrice !== undefined && listing.sellingPrice < params.minPrice) continue;
-        if (params.maxPrice !== undefined && listing.sellingPrice > params.maxPrice) continue;
+        if (minPrice !== undefined && listing.sellingPrice < minPrice) continue;
+        if (maxPrice !== undefined && listing.sellingPrice > maxPrice) continue;
 
         // Check stock in city
         let sellerStockInCity = 0;
@@ -118,15 +172,15 @@ export class SearchService {
           }
         }
 
-        minPrice = Math.min(minPrice, listing.sellingPrice);
+        bestSellingPrice = Math.min(bestSellingPrice, listing.sellingPrice);
         totalStock += sellerStockInCity;
         matchingSellers++;
       }
 
-      if (matchingSellers > 0 && minPrice !== Infinity) {
+      if (matchingSellers > 0 && bestSellingPrice !== Infinity) {
         results.push({
           product,
-          minPrice,
+          minPrice: bestSellingPrice,
           sellerCount: matchingSellers,
           inStock: totalStock > 0,
           relevanceScore: score

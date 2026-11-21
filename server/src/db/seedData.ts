@@ -66,6 +66,17 @@ export const initialOrganizations: Organization[] = [
     isVerified: true,
     isActive: true,
     createdAt: new Date().toISOString()
+  },
+  {
+    id: 'org-boutique',
+    name: 'Indiranagar Boutique Collective',
+    businessType: 'INDEPENDENT_SHOP',
+    taxIdentifier: '29XYZAB9876C1Z4',
+    contactEmail: 'atelier@indiranagarboutique.in',
+    contactPhone: '+919886012345',
+    isVerified: true,
+    isActive: true,
+    createdAt: new Date().toISOString()
   }
 ];
 
@@ -167,10 +178,38 @@ export const initialStores: Store[] = [
     longitude: 77.6430,
     contactPhone: '+919845012345',
     isActive: true
+  },
+  {
+    id: 'store-boutique-ind',
+    organizationId: 'org-boutique',
+    name: 'Indiranagar Boutique Atelier',
+    storeCode: 'IND-BTQ-01',
+    addressLine1: '12, 100ft Road, Indiranagar',
+    city: 'Bengaluru',
+    state: 'Karnataka',
+    postalCode: '560038',
+    latitude: 12.9789,
+    longitude: 77.6415,
+    contactPhone: '+919886012345',
+    isActive: true
   }
 ];
 
 export const initialShops: Shop[] = [
+  {
+    id: 'shop-boutique',
+    organizationId: 'org-boutique',
+    slug: 'indiranagar-boutique',
+    displayName: 'Indiranagar Boutique Collective',
+    tagline: 'Handcrafted Apparel, Heavyweight Tees & Technical Outerwear',
+    description: 'Independent atelier in Indiranagar specialising in organic cotton essentials, selvedge denim, and minimalist technical apparel.',
+    logoUrl: 'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=120&auto=format&fit=crop&q=80',
+    bannerUrl: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&auto=format&fit=crop&q=80',
+    primaryColor: '#111827',
+    ratingAvg: 4.9,
+    ratingCount: 188,
+    isPublished: true
+  },
   {
     id: 'shop-kirana',
     organizationId: 'org-kirana',
@@ -437,6 +476,155 @@ export const initialProducts: CanonicalProduct[] = [
     },
     imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
     tags: ['atta', 'wheat flour', 'aashirvaad', 'sharbati', 'roti', 'kirana', 'groceries', 'staples']
+  },
+  {
+    id: 'prod-iphone-16',
+    title: 'Apple iPhone 16 (128GB) - Teal',
+    brand: 'Apple',
+    category: 'Mobiles & Accessories',
+    subCategory: 'Smartphones',
+    upcEan: '195949000101',
+    description: 'Apple iPhone 16 featuring the ultra-fast A18 bionic chip, Camera Control button, 48MP Fusion camera, and durable color-infused back glass in Teal.',
+    attributes: {
+      storage: '128GB',
+      color: 'Teal',
+      chip: 'A18 Bionic',
+      display: '6.1-inch Super Retina XDR'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=600&auto=format&fit=crop&q=80',
+    tags: ['iphone', 'iphone 16', 'apple', 'mobile', 'smartphone', 'ios', '5g', 'phone']
+  },
+  {
+    id: 'prod-samsung-galaxy',
+    title: 'Samsung Galaxy S24 5G (128GB AI Smartphone) - Onyx Black',
+    brand: 'Samsung',
+    category: 'Mobiles & Accessories',
+    subCategory: 'Smartphones',
+    upcEan: '8806095000102',
+    description: 'Samsung Galaxy S24 with built-in Galaxy AI features including Live Translate and Circle to Search, 50MP pro camera, and all-day battery life.',
+    attributes: {
+      storage: '128GB',
+      color: 'Onyx Black',
+      ai_features: 'Circle to Search, Live Translate',
+      display: '6.2-inch FHD+ Dynamic AMOLED 2X'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80',
+    tags: ['samsung', 'galaxy', 'samsung galaxy', 's24', 'smartphone', 'android', '5g', 'mobile', 'phone']
+  },
+  {
+    id: 'prod-running-shoes',
+    title: 'Nike Air Zoom Pegasus 40 Road Running Shoes',
+    brand: 'Nike',
+    category: 'Sports & Fitness',
+    subCategory: 'Footwear',
+    upcEan: '0196605000103',
+    description: 'Responsive road running shoes with Nike React foam, dual Zoom Air units, and engineered mesh upper for breathable marathon comfort.',
+    attributes: {
+      size: 'UK 9 / US 10',
+      color: 'Black/White',
+      cushioning: 'Dual Zoom Air + React Foam',
+      surface: 'Road Running'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80',
+    tags: ['shoes', 'running shoes', 'nike', 'pegasus', 'sports', 'sneakers', 'men running shoes', 'footwear']
+  },
+  {
+    id: 'prod-office-chair',
+    title: 'ErgoFlex High-Back Mesh Ergonomic Office Chair',
+    brand: 'ErgoFlex',
+    category: 'Home & Kitchen',
+    subCategory: 'Furniture',
+    upcEan: '8901234567908',
+    description: 'Breathable Korean mesh ergonomic office chair with 3D adjustable lumbar support, 4D armrests, heavy-duty tilt lock, and smooth-gliding PU casters.',
+    attributes: {
+      material: 'Breathable Mesh + Alloy Base',
+      lumbar_support: 'Dynamic 3D Adaptive',
+      max_weight_kg: 150
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1580481077195-c228c3b7f290?w=600&auto=format&fit=crop&q=80',
+    tags: ['chair', 'office chair', 'ergonomic', 'mesh chair', 'desk chair', 'workspace', 'furniture']
+  },
+  {
+    id: 'prod-laptop-lenovo',
+    title: 'Lenovo ThinkPad E14 Gen 5 AMD Ryzen 5 Laptop (16GB/512GB SSD)',
+    brand: 'Lenovo',
+    category: 'Computers & Laptops',
+    subCategory: 'Laptops',
+    upcEan: '8901234567909',
+    description: 'Military-grade durable ThinkPad business laptop featuring AMD Ryzen 5 7530U processor, 16GB RAM, 512GB NVMe SSD, and backlit TrackPoint keyboard.',
+    attributes: {
+      processor: 'AMD Ryzen 5 7530U',
+      ram: '16GB DDR4',
+      storage: '512GB PCIe NVMe SSD',
+      display: '14-inch WUXGA IPS Antiglare'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&auto=format&fit=crop&q=80',
+    tags: ['laptop', 'laptop under 60000', 'lenovo', 'thinkpad', 'computer', 'ryzen', 'programming', 'notebook']
+  },
+  {
+    id: 'prod-headphones-under-2000',
+    title: 'SoundPro Tune Wireless Bluetooth On-Ear Headphones',
+    brand: 'SoundPro',
+    category: 'Electronics',
+    subCategory: 'Audio',
+    upcEan: '8901234567910',
+    description: 'Budget-friendly lightweight wireless headphones with punchy bass, 25-hour playback, soft cushioned earcups, and dual pairing Bluetooth 5.2.',
+    attributes: {
+      connectivity: 'Bluetooth 5.2',
+      battery_hours: 25,
+      weight_grams: 160
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80',
+    tags: ['headphones', 'headphones under 2000', 'bluetooth headphones', 'wireless', 'soundpro', 'audio', 'earphones']
+  },
+  {
+    id: 'prod-black-tshirt',
+    title: 'UrbanKnit 100% Organic Heavyweight Crewneck Black T-Shirt',
+    brand: 'UrbanKnit',
+    category: 'Boutique Apparel',
+    subCategory: 'T-Shirts',
+    upcEan: '8901234567911',
+    description: 'Pre-shrunk 240 GSM combed organic cotton black crewneck t-shirt with tailored fit and reinforced collar stitching. Handcrafted in Bengaluru.',
+    attributes: {
+      material: '100% Combed Organic Cotton',
+      gsm: 240,
+      color: 'Jet Black',
+      fit: 'Relaxed Tailored'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80',
+    tags: ['t-shirt', 'black t-shirt', 'tshirt', 'black tee', 'cotton', 'apparel', 'fashion', 'men clothing']
+  },
+  {
+    id: 'prod-mens-shoes',
+    title: "Woodland Handcrafted Leather Casual Men's Shoes",
+    brand: 'Woodland',
+    category: 'Fashion',
+    subCategory: 'Footwear',
+    upcEan: '8901234567912',
+    description: 'Full-grain genuine oiled nubuck leather casual shoes with grooved rubber traction outsoles and cushioned ankle collars for rugged outdoor use.',
+    attributes: {
+      upper_material: 'Full Grain Nubuck Leather',
+      sole: 'Anti-Skid Thermoplastic Rubber',
+      size: 'UK 8 / EU 42'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=600&auto=format&fit=crop&q=80',
+    tags: ['shoes', "men's shoes", 'mens shoes', 'leather shoes', 'woodland', 'footwear', 'casual shoes']
+  },
+  {
+    id: 'prod-cleaning-products',
+    title: 'EcoClean Pro All-Surface Multipurpose Cleaner & Disinfectant (1L)',
+    brand: 'EcoClean',
+    category: 'Kirana & Groceries',
+    subCategory: 'Home Care',
+    upcEan: '8901234567913',
+    description: 'Plant-based 99.9% antibacterial surface cleaner spray and disinfectant solution for kitchen countertops, glass, tile, and bathroom fixtures.',
+    attributes: {
+      volume: '1L Refill',
+      eco_friendly: true,
+      fragrance: 'Eucalyptus & Citrus'
+    },
+    imageUrl: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600&auto=format&fit=crop&q=80',
+    tags: ['cleaning', 'home cleaning products', 'cleaner', 'disinfectant', 'surface cleaner', 'kirana', 'groceries']
   }
 ];
 
@@ -653,10 +841,174 @@ export const initialListings: MerchantListing[] = [
     originalMrp: 360.00,
     condition: 'NEW',
     isActive: true
+  },
+  // Phase 2 Required Search Products Listings
+  {
+    id: 'list-sharma-iphone',
+    organizationId: 'org-sharma',
+    productId: 'prod-iphone-16',
+    merchantSku: 'SHAR-IPH-16',
+    sellingPrice: 79900.00,
+    originalMrp: 79900.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-patel-galaxy',
+    organizationId: 'org-patel',
+    productId: 'prod-samsung-galaxy',
+    merchantSku: 'PAT-GAL-S24',
+    sellingPrice: 74999.00,
+    originalMrp: 79999.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-city-shoes',
+    organizationId: 'org-citysuper',
+    productId: 'prod-running-shoes',
+    merchantSku: 'CITY-SHO-01',
+    sellingPrice: 8495.00,
+    originalMrp: 9995.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-modern-chair',
+    organizationId: 'org-modern',
+    productId: 'prod-office-chair',
+    merchantSku: 'MOD-CHR-01',
+    sellingPrice: 8999.00,
+    originalMrp: 12999.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-sharma-thinkpad',
+    organizationId: 'org-sharma',
+    productId: 'prod-laptop-lenovo',
+    merchantSku: 'SHAR-LPT-01',
+    sellingPrice: 52990.00,
+    originalMrp: 64990.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-sharma-tune',
+    organizationId: 'org-sharma',
+    productId: 'prod-headphones-under-2000',
+    merchantSku: 'SHAR-TUN-01',
+    sellingPrice: 1499.00,
+    originalMrp: 2499.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-boutique-tshirt',
+    organizationId: 'org-boutique',
+    productId: 'prod-black-tshirt',
+    merchantSku: 'BTQ-TSH-01',
+    sellingPrice: 799.00,
+    originalMrp: 1299.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-city-woodland',
+    organizationId: 'org-citysuper',
+    productId: 'prod-mens-shoes',
+    merchantSku: 'CITY-WOD-01',
+    sellingPrice: 2999.00,
+    originalMrp: 3999.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-city-cleaner',
+    organizationId: 'org-citysuper',
+    productId: 'prod-cleaning-products',
+    merchantSku: 'CITY-CLN-01',
+    sellingPrice: 249.00,
+    originalMrp: 320.00,
+    condition: 'NEW',
+    isActive: true
   }
 ];
 
 export const initialInventory: StoreInventory[] = [
+  // Required Search Products Inventories
+  {
+    id: 'inv-sharma-iphone-ind',
+    listingId: 'list-sharma-iphone',
+    storeId: 'store-sharma-ind',
+    quantity: 6,
+    reservedQuantity: 0,
+    reorderThreshold: 2
+  },
+  {
+    id: 'inv-patel-galaxy-jay',
+    listingId: 'list-patel-galaxy',
+    storeId: 'store-patel-jay',
+    quantity: 5,
+    reservedQuantity: 0,
+    reorderThreshold: 2
+  },
+  {
+    id: 'inv-city-shoes-ind',
+    listingId: 'list-city-shoes',
+    storeId: 'store-city-ind',
+    quantity: 12,
+    reservedQuantity: 0,
+    reorderThreshold: 3
+  },
+  {
+    id: 'inv-modern-chair-kor',
+    listingId: 'list-modern-chair',
+    storeId: 'store-modern-kor',
+    quantity: 8,
+    reservedQuantity: 0,
+    reorderThreshold: 2
+  },
+  {
+    id: 'inv-sharma-thinkpad-ind',
+    listingId: 'list-sharma-thinkpad',
+    storeId: 'store-sharma-ind',
+    quantity: 4,
+    reservedQuantity: 0,
+    reorderThreshold: 1
+  },
+  {
+    id: 'inv-sharma-tune-ind',
+    listingId: 'list-sharma-tune',
+    storeId: 'store-sharma-ind',
+    quantity: 15,
+    reservedQuantity: 0,
+    reorderThreshold: 3
+  },
+  {
+    id: 'inv-boutique-tshirt-ind',
+    listingId: 'list-boutique-tshirt',
+    storeId: 'store-boutique-ind',
+    quantity: 25,
+    reservedQuantity: 0,
+    reorderThreshold: 5
+  },
+  {
+    id: 'inv-city-woodland-ind',
+    listingId: 'list-city-woodland',
+    storeId: 'store-city-ind',
+    quantity: 9,
+    reservedQuantity: 0,
+    reorderThreshold: 2
+  },
+  {
+    id: 'inv-city-cleaner-ind',
+    listingId: 'list-city-cleaner',
+    storeId: 'store-city-ind',
+    quantity: 40,
+    reservedQuantity: 0,
+    reorderThreshold: 10
+  },
   // Kirana Inventories
   {
     id: 'inv-city-rice-ind',

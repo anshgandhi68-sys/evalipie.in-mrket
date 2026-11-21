@@ -7,7 +7,11 @@ import { Footer } from './components/common/Footer.js';
 import { CartDrawer } from './components/cart/CartDrawer.js';
 import { HomePage } from './pages/marketplace/HomePage.js';
 import { ProductsPage } from './pages/marketplace/ProductsPage.js';
+import { ProductDetailPage } from './pages/marketplace/ProductDetailPage.js';
+import { CategoriesPage } from './pages/marketplace/CategoriesPage.js';
+import { ShopsPage } from './pages/marketplace/ShopsPage.js';
 import { ShopStorefrontPage } from './pages/marketplace/ShopStorefrontPage.js';
+import { AccountPage } from './pages/marketplace/AccountPage.js';
 import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
 import DemoOne from './components/ui/demo.js';
@@ -23,17 +27,25 @@ export const App: React.FC = () => {
             <Navbar />
             <div className="flex-1">
               <Routes>
-                {/* Marketplace Routes */}
+                {/* Marketplace Core Routes */}
                 <Route path="/" element={<HomePage />} />
+                <Route path="/search" element={<ProductsPage />} />
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/products/:id" element={<ProductDetailPage />} />
+                <Route path="/product/:id" element={<ProductDetailPage />} />
+                <Route path="/categories" element={<CategoriesPage />} />
+                <Route path="/shops" element={<ShopsPage />} />
+                <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
+                <Route path="/account" element={<AccountPage />} />
+                <Route path="/ai" element={<HomePage />} />
+
+                {/* Demos */}
                 <Route path="/demo" element={<DemoOne />} />
                 <Route path="/demo/rail" element={<DemoOne />} />
                 <Route path="/demo/video" element={<MetroHeroDemo />} />
                 <Route path="/demo/tabs" element={<SlideTabsDemo />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
-                <Route path="/ai" element={<HomePage />} />
 
-                {/* Business Routes */}
+                {/* Business / Merchant Routes */}
                 <Route path="/business" element={<BusinessDashboardPage />} />
                 <Route path="/business/dashboard" element={<BusinessDashboardPage />} />
                 <Route path="/business/branches" element={<BusinessDashboardPage />} />

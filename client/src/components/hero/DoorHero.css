@@ -1,5 +1,6 @@
 /* EVALIPIE ARCHITECTURAL DOOR HERO & HEADER CSS
  * Day-lit storefront with warm morning sunshine, glass reflections, and 3D door entry animation.
+ * Exactly matches prototype reference in media_1795265028299_796ce432.html
  */
 
 :root {
@@ -16,7 +17,7 @@
   --err: #DC4444;
 }
 
-/* HEADER */
+/* HEADER — Clean, Minimal, matching Screenshot 5 */
 .hd {
   position: fixed;
   top: env(safe-area-inset-top, 0px);
@@ -66,13 +67,20 @@
   align-items: center;
 }
 
-.hd nav a {
+.hd nav a,
+.hd nav .nav-btn {
   color: var(--mut);
   text-decoration: none;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
   transition: color 0.15s;
 }
 
-.hd nav a:hover {
+.hd nav a:hover,
+.hd nav .nav-btn:hover {
   color: var(--teal);
 }
 
@@ -88,22 +96,23 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: transform 0.15s;
+  transition: transform 0.15s, background-color 0.15s;
 }
 
 .cart:hover {
   transform: translateY(-1px);
+  background: #000;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .hd nav a {
     display: none;
   }
 }
 
-/* HERO — scroll-driven door */
+/* HERO — SCROLL-DRIVEN 3D DOOR ENTRY */
 #hero {
-  height: 240vh;
+  height: 480vh;
   position: relative;
 }
 
@@ -115,27 +124,26 @@
   background: linear-gradient(180deg, #BFE6F7 0%, #E3F4FA 55%, #F7F9FC 100%);
 }
 
-/* DAYTIME SUN WITH WARM SUNSHINE HALO */
+/* DAYTIME SUN WITH WARM MORNING SUNSHINE GLOW */
 .sun {
   position: absolute;
   right: 12%;
-  top: 10%;
-  width: 95px;
-  height: 95px;
+  top: 14%;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: radial-gradient(circle, #FFF9D2 20%, #FFE285 65%, #FDBB2D 100%);
-  box-shadow: 0 0 100px 40px rgba(255, 226, 133, 0.7), 0 0 180px 80px rgba(255, 243, 176, 0.4);
+  background: radial-gradient(circle, #FFF4C2 30%, #FFE08A 70%);
+  box-shadow: 0 0 90px 30px rgba(255, 224, 138, 0.55), 0 0 160px 60px rgba(255, 243, 176, 0.35);
   pointer-events: none;
   z-index: 1;
 }
 
-/* SUNSHINE RAYS FROM SKY */
 .sun-rays {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 88% 15%, rgba(255, 248, 215, 0.4) 0%, rgba(255, 242, 190, 0.15) 40%, transparent 70%);
+  background: radial-gradient(circle at 88% 14%, rgba(255, 248, 215, 0.35) 0%, rgba(255, 242, 190, 0.12) 40%, transparent 70%);
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
 }
 
 .cloud {
@@ -144,7 +152,7 @@
   width: 120px;
   border-radius: 40px;
   background: #fff;
-  opacity: 0.88;
+  opacity: 0.85;
   filter: blur(1px);
   z-index: 1;
 }
@@ -171,27 +179,14 @@
   top: -16px;
 }
 
-.c1 {
-  left: 8%;
-  top: 20%;
-}
+.c1 { left: 8%; top: 22%; }
+.c2 { left: 58%; top: 12%; transform: scale(0.7); }
+.c3 { left: 30%; top: 34%; transform: scale(0.5); }
 
-.c2 {
-  left: 55%;
-  top: 10%;
-  transform: scale(0.7);
-}
-
-.c3 {
-  left: 28%;
-  top: 32%;
-  transform: scale(0.5);
-}
-
-/* INTRO TEXT — CLEARLY ABOVE STORE BUILDING, ZERO OVERLAP */
+/* INTRO TEXT — SAFELY IN SKY, ZERO OVERLAP ON ROOF */
 .intro {
   position: absolute;
-  top: clamp(68px, 11vh, 92px);
+  top: clamp(65px, 9dvh + 25px, 105px);
   left: 0;
   right: 0;
   text-align: center;
@@ -202,23 +197,22 @@
 
 .eyebrow {
   display: inline-block;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--deep);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  padding: 5px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 6px 14px;
   border-radius: 999px;
-  margin: 0 0 10px;
-  box-shadow: 0 2px 10px rgba(16, 91, 85, 0.08);
+  margin: 0 0 12px;
+  backdrop-filter: blur(6px);
 }
 
 .intro h1 {
   margin: 0;
-  font-size: clamp(26px, 4.4vw, 54px);
-  line-height: 1.06;
+  font-size: clamp(28px, 5.2vw, 64px);
+  line-height: 1.05;
   letter-spacing: -0.035em;
   font-weight: 800;
   color: var(--navy);
@@ -241,13 +235,13 @@
 .wall {
   position: absolute;
   left: 50%;
-  bottom: clamp(12px, 3.5vh, 28px);
+  bottom: 8dvh;
   transform: translateX(-50%);
-  width: min(92vw, 820px);
-  height: min(52vh, 500px);
+  width: min(94vw, 860px);
+  height: min(52dvh, 520px);
   background: linear-gradient(180deg, #1b9285, var(--teal));
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 25px 60px rgba(16, 91, 85, 0.28);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 30px 60px rgba(16, 91, 85, 0.25);
 }
 
 .wall::before {
@@ -267,9 +261,9 @@
   background: #fff;
   color: var(--deep);
   font-weight: 800;
-  font-size: clamp(13px, 2.2vw, 20px);
+  font-size: clamp(14px, 2.4vw, 22px);
   letter-spacing: -0.01em;
-  padding: 5px 20px;
+  padding: 6px 22px;
   border-radius: 10px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
@@ -277,35 +271,29 @@
 /* WINDOWS WITH DAYTIME SUNSHINE SHEEN */
 .win {
   position: absolute;
-  bottom: 12%;
+  bottom: 10%;
   width: 20%;
   height: 34%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 248, 215, 0.85) 35%, #D9F1F8 85%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 248, 220, 0.9) 35%, #D9F1F8 85%);
   border: 6px solid var(--deep);
-  border-radius: 12px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
-  font-size: clamp(20px, 3.8vw, 36px);
-  box-shadow: inset 0 0 20px rgba(255, 245, 180, 0.5), 0 8px 16px rgba(0, 0, 0, 0.15);
-  overflow: visible;
+  font-size: clamp(20px, 4vw, 36px);
+  box-shadow: inset 0 0 20px rgba(255, 240, 160, 0.5), 0 8px 16px rgba(0, 0, 0, 0.12);
 }
 
 .win::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 6px;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 245, 170, 0.5) 30%, transparent 60%);
+  border-radius: 4px;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 245, 180, 0.5) 30%, transparent 60%);
   pointer-events: none;
 }
 
-.win.l {
-  left: 6%;
-}
-
-.win.r {
-  right: 6%;
-}
+.win.l { left: 6%; }
+.win.r { right: 6%; }
 
 .win small {
   position: absolute;
@@ -337,8 +325,8 @@
   position: absolute;
   left: -14%;
   right: -14%;
-  top: -32px;
-  height: 28px;
+  top: -34px;
+  height: 30px;
   border-radius: 10px 10px 0 0;
   background: repeating-linear-gradient(90deg, #fff 0 22px, #E9F7F3 22px 44px);
   box-shadow: 0 6px 0 var(--deep);
@@ -374,13 +362,8 @@
   border-bottom: 1px solid var(--bd);
 }
 
-.in-hd b {
-  color: var(--deep);
-}
-
-.in-hd span {
-  color: var(--mut);
-}
+.in-hd b { color: var(--deep); }
+.in-hd span { color: var(--mut); }
 
 .inside h2 {
   margin: 0;
@@ -436,7 +419,7 @@
   font-size: 9cqw;
 }
 
-/* 3D ROTATING DOORS WITH SUNSHINE REFLECTIONS */
+/* 3D ROTATING DOORS WITH GOLD HANDLES & GLASS PANES */
 .door {
   position: absolute;
   top: 0;
@@ -469,51 +452,36 @@
   box-shadow: inset 0 0 14px rgba(255, 240, 160, 0.45);
 }
 
-/* GOLDEN BRASS DOOR HANDLES */
 .door::after {
   content: "";
   position: absolute;
   top: 56%;
-  width: 9px;
+  width: 8px;
   height: 22%;
   border-radius: 6px;
   background: linear-gradient(180deg, #FFEAA7, #F3D27A 60%, #D4AC0D);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), inset 1px 1px 2px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.dl::after {
-  right: 10px;
-}
-
-.dr::after {
-  left: 10px;
-}
+.dl::after { right: 10px; }
+.dr::after { left: 10px; }
 
 .ground {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: clamp(8px, 2vh, 16px);
-  background: linear-gradient(180deg, #D8DEE6, #C7CFDA);
-  border-top: 2px solid #fff;
+  height: 12px;
+  background: #111827;
   z-index: 2;
 }
 
-/* INTERACTIVE BOTTOM BUTTONS */
-.hero-controls {
-  position: absolute;
-  bottom: clamp(14px, 3vh, 24px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 6;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  white-space: nowrap;
-}
-
+/* BOTTOM HINT BUTTON */
 .hint {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
   background: var(--navy);
   color: #fff;
   font-size: 12px;
@@ -522,44 +490,26 @@
   text-transform: uppercase;
   padding: 8px 18px;
   border-radius: 999px;
+  white-space: nowrap;
+  animation: bob 1.6s ease-in-out infinite;
   border: 0;
   cursor: pointer;
+  z-index: 6;
   box-shadow: 0 4px 14px rgba(17, 24, 39, 0.25);
-  animation: bob 1.6s ease-in-out infinite;
   transition: transform 0.15s, background-color 0.15s;
 }
 
 .hint:hover {
   background: #000;
-  transform: scale(1.03);
-}
-
-.skip-btn {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--deep);
-  font-size: 12px;
-  font-weight: 700;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--bd);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(8px);
-  transition: all 0.15s;
-}
-
-.skip-btn:hover {
-  background: #fff;
-  border-color: var(--teal);
-  color: var(--teal);
+  transform: translateX(-50%) scale(1.03);
 }
 
 @keyframes bob {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate(-50%, 0);
   }
   50% {
-    transform: translateY(4px);
+    transform: translate(-50%, 5px);
   }
 }
 

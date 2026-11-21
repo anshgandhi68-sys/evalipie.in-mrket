@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Store, ShoppingCart, Star, Check, Sparkles, MapPin, Zap } from 'lucide-react';
 import { CanonicalProduct } from '../../../../shared/types.js';
 import { useCart } from '../../context/CartContext.js';
@@ -30,6 +31,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   featuredStoreName = "City Supermarket (Indiranagar)",
   badge
 }) => {
+  const navigate = useNavigate();
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
@@ -62,6 +64,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     setTimeout(() => setAdded(false), 1800);
   };
 
+  const handleOpenDetail = () => {
+    navigate(`/products/${product.id}`);
+  };
+
   return (
     <article className="bg-white rounded-2xl border border-gray-200/90 hover:border-[#167D73]/60 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col group relative overflow-hidden">
       
@@ -84,9 +90,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </span>
       </div>
 
-      {/* Product Image Canvas */}
+      {/* Product Image Canvas -> Navigates to Product Detail */}
       <div 
-        onClick={() => onCompare(product)}
+        onClick={handleOpenDetail}
         className="relative aspect-4/3 bg-white overflow-hidden flex items-center justify-center p-6 cursor-pointer border-b border-gray-100/80"
       >
         <img 
@@ -110,9 +116,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
-        {/* Product Title */}
+        {/* Product Title -> Navigates to Product Detail */}
         <h3 
-          onClick={() => onCompare(product)}
+          onClick={handleOpenDetail}
           className="font-bold text-gray-900 text-sm leading-snug line-clamp-2 hover:text-[#167D73] transition-colors cursor-pointer min-h-[38px]"
         >
           {product.title}
