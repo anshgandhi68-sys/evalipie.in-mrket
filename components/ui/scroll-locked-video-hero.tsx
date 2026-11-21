@@ -148,6 +148,9 @@ export default function MetroHero({
       b.width = "100%"
       b.height = "100%"
       b.overscrollBehavior = "none"
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent('hero-lock-change', { detail: { locked: true } }))
+      }
     }
 
     function releaseLock(scrollToContent = false) {
@@ -163,6 +166,9 @@ export default function MetroHero({
       b.width = ""
       b.height = ""
       b.overscrollBehavior = ""
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent('hero-lock-change', { detail: { locked: false } }))
+      }
       if (scrollToContent && section) {
         window.scrollTo({ top: section.offsetHeight, behavior: "smooth" })
       } else {
@@ -295,6 +301,9 @@ export default function MetroHero({
       b.height = ""
       b.overscrollBehavior = ""
       setUnlockedState(true)
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent('hero-lock-change', { detail: { locked: false } }))
+      }
       onComplete?.()
       if (sectionRef.current) {
         window.scrollTo({ top: sectionRef.current.offsetHeight, behavior: "smooth" })
@@ -307,12 +316,18 @@ export default function MetroHero({
       ref={sectionRef}
       className={className}
       style={{
-        position: "relative",
-        height: "100dvh",
-        width: "100%",
+        position: unlockedState ? "relative" : "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: unlockedState ? 1 : 100,
+        height: "100vh",
+        width: "100vw",
         overflow: "hidden",
         background: COL_BG,
         touchAction: "none",
+        transition: "opacity 0.5s ease",
         ...style,
       }}
     >
@@ -406,6 +421,28 @@ export default function MetroHero({
           </span>
         </div>
       )}
+
+      {/* Brand Pill (Top Left) */}
+      <div
+        style={{
+          position: "absolute",
+          top: "clamp(16px, 3vh, 32px)",
+          left: "clamp(16px, 3vw, 32px)",
+          zIndex: 30,
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          background: "rgba(18, 11, 46, 0.75)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.18)",
+          padding: "6px 14px",
+          borderRadius: "9999px",
+        }}
+      >
+        <img src="/assets/evalipie-favicon.png" alt="Evalipie" style={{ height: "18px", width: "18px", borderRadius: "4px" }} />
+        <span style={{ color: "#E6E9E4", fontSize: "11px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", fontFamily: SANS }}>Evalipie</span>
+      </div>
 
       {/* Skip / Enter marketplace button */}
       {(showSkipButton || autoUnlock) && (

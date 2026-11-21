@@ -24,7 +24,7 @@ export const DoorHero: React.FC<{
   scrollHint = "SCROLL TO ENTER",
 }) => {
   return (
-    <section id="hero-entry" className="relative w-full overflow-hidden">
+    <section id="hero-entry" className="relative w-full min-h-screen overflow-hidden">
       <MetroHero
         videoSrc={videoSrc}
         title={title}
