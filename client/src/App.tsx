@@ -15,13 +15,15 @@ import { AccountPage } from './pages/marketplace/AccountPage.js';
 import { PrivacyPolicyPage } from './pages/legal/PrivacyPolicyPage.js';
 import { BusinessDashboardPage } from './pages/business/BusinessDashboardPage.js';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage.js';
+import { AiDiscoveryPage } from './pages/marketplace/AiDiscoveryPage.js';
+import { AiFloatingAssistant } from './components/ai/AiFloatingAssistant.js';
 import DemoOne from './components/ui/demo.js';
 import MetroHeroDemo from './components/ui/metro-hero-demo.js';
 import SlideTabsDemo from './components/ui/slide-tabs-demo.js';
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  const isHome = location.pathname === '/' || location.pathname === '/ai';
+  const isHome = location.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F9FC] text-[#111827]">
@@ -39,7 +41,7 @@ const AppContent: React.FC = () => {
           <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
           <Route path="/account" element={<AccountPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
-          <Route path="/ai" element={<HomePage />} />
+          <Route path="/ai" element={<AiDiscoveryPage />} />
 
           {/* Demos */}
           <Route path="/demo" element={<DemoOne />} />
@@ -64,6 +66,7 @@ const AppContent: React.FC = () => {
       </main>
       <Footer />
       <CartDrawer />
+      <AiFloatingAssistant />
     </div>
   );
 };

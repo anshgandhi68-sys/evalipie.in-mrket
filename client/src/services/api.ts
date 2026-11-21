@@ -60,9 +60,24 @@ export const api = {
   },
 
   aiDiscover: (prompt: string, conversationId?: string, city = 'Bengaluru') => {
-    return fetchJson<AiDiscoveryResult>('/ai/discover', {
+    return fetchJson<any>('/ai/discover', {
       method: 'POST',
       body: JSON.stringify({ prompt, conversationId, city }),
+    });
+  },
+
+  aiChat: (prompt: string, sessionId?: string, city = 'Bengaluru') => {
+    return fetchJson<{
+      status: string;
+      sessionId: string;
+      tookMs: number;
+      intent: any;
+      message: string;
+      matches: any[];
+      suggestions: string[];
+    }>('/ai/chat', {
+      method: 'POST',
+      body: JSON.stringify({ prompt, sessionId, city }),
     });
   },
 

@@ -162,13 +162,13 @@ export const DoorHero: React.FC = () => {
           <div className="wall">
             <div className="sign">Evalipie</div>
             
-            {/* Display Windows */}
+            {/* Display Windows (Matching Screenshot 3) */}
             <div className="win l">
-              🎧
+              <span className="win-icon">🎧</span>
               <small>ELECTRONICS</small>
             </div>
             <div className="win r">
-              🏠
+              <span className="win-icon">🏠</span>
               <small>HOME</small>
             </div>
 
