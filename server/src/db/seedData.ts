@@ -57,11 +57,11 @@ export const initialOrganizations: Organization[] = [
     createdAt: new Date().toISOString()
   },
   {
-    id: 'org-kirana',
-    name: 'Sharma General Kirana & Provisions',
+    id: 'org-apex',
+    name: 'Apex Digital & Electronics Hub',
     businessType: 'INDEPENDENT_SHOP',
     taxIdentifier: '29ABCDE1234F1Z8',
-    contactEmail: 'kirana@evalipie.in',
+    contactEmail: 'contact@apexelectronics.in',
     contactPhone: '+919845012345',
     isVerified: true,
     isActive: true,
@@ -166,10 +166,10 @@ export const initialStores: Store[] = [
     isActive: true
   },
   {
-    id: 'store-kirana-ind',
-    organizationId: 'org-kirana',
-    name: 'Sharma General Kirana — Indiranagar',
-    storeCode: 'SHAR-KIR-01',
+    id: 'store-apex-ind',
+    organizationId: 'org-apex',
+    name: 'Apex Digital & Audio — Indiranagar',
+    storeCode: 'APEX-AUD-01',
     addressLine1: '88, 6th Main, Defence Colony, Indiranagar',
     city: 'Bengaluru',
     state: 'Karnataka',
@@ -211,15 +211,15 @@ export const initialShops: Shop[] = [
     isPublished: true
   },
   {
-    id: 'shop-kirana',
-    organizationId: 'org-kirana',
-    slug: 'sharma-kirana',
-    displayName: 'Sharma General Kirana',
-    tagline: 'Fresh Staples, Daily Groceries, Pure Ghee & Spices',
-    description: 'Neighbourhood grocery store serving Indiranagar since 1998 with hand-picked Basmati rice, premium pulses, and everyday staples.',
-    logoUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&auto=format&fit=crop&q=80',
-    bannerUrl: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=1200&auto=format&fit=crop&q=80',
-    primaryColor: '#059669',
+    id: 'shop-apex',
+    organizationId: 'org-apex',
+    slug: 'apex-audio',
+    displayName: 'Apex Digital & Audio Store',
+    tagline: 'High-Fidelity Sound, Laptops, Mobile Flagships & Accessories',
+    description: 'Premier independent electronics and gadgets store in Indiranagar offering verified local stock with instant express doorstep dispatch.',
+    logoUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=120&auto=format&fit=crop&q=80',
+    bannerUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&auto=format&fit=crop&q=80',
+    primaryColor: '#0c3d39',
     ratingAvg: 4.9,
     ratingCount: 520,
     isPublished: true
@@ -414,68 +414,72 @@ export const initialProducts: CanonicalProduct[] = [
     tags: ['watch', 'smartwatch', 'fitness', 'health', 'heart rate', 'tracker']
   },
   {
-    id: 'prod-kirana-1',
-    title: 'Daawat Rozana Gold Basmati Rice (5kg)',
-    brand: 'Daawat',
-    category: 'Kirana & Groceries',
-    subCategory: 'Rice & Grains',
-    upcEan: '8901234567901',
-    description: 'Finest long-grain Rozana Gold Basmati rice with authentic rich aroma, fluffy texture, and slender grains for daily biryani and pulav.',
+    id: 'prod-mob-samsung-m34',
+    title: 'Samsung Galaxy M34 5G 128GB Prism Silver',
+    brand: 'Samsung',
+    category: 'Mobiles & Accessories',
+    subCategory: 'Smartphones',
+    upcEan: '8801234567901',
+    description: '5G smartphone with 50MP No Shake OIS camera, 6000mAh monster battery, and 6.5-inch 120Hz Super AMOLED display.',
     attributes: {
-      weight: '5kg',
-      grain_type: 'Long Grain Basmati',
-      shelf_life: '24 Months'
+      storage: '128GB',
+      ram: '6GB',
+      camera: '50MP OIS No Shake Camera with 4K Video',
+      battery: '6000mAh Monster Battery',
+      display: '6.5-inch FHD+ 120Hz Super AMOLED'
     },
-    imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
-    tags: ['rice', 'basmati', 'daawat', 'rozana', 'groceries', 'kirana', 'grains', 'food', 'staples']
+    imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80',
+    tags: ['samsung', 'galaxy', 'm34', '5g', 'smartphone', 'mobile', 'android', 'camera', 'budget phone', '128gb', 'samsung under 20000']
   },
   {
-    id: 'prod-kirana-2',
-    title: 'Fortune Sunlite Refined Sunflower Oil (1L Pouch)',
-    brand: 'Fortune',
-    category: 'Kirana & Groceries',
-    subCategory: 'Edible Oils',
-    upcEan: '8901234567902',
-    description: 'Light, non-sticky refined sunflower cooking oil enriched with Vitamin A and Vitamin D for healthy everyday cooking and frying.',
+    id: 'prod-mob-samsung-a15',
+    title: 'Samsung Galaxy A15 5G 128GB Blue Black',
+    brand: 'Samsung',
+    category: 'Mobiles & Accessories',
+    subCategory: 'Smartphones',
+    upcEan: '8801234567902',
+    description: 'Sleek 5G smartphone with 50MP triple rear camera, Knox Security, and 6.5-inch Super AMOLED 90Hz display.',
     attributes: {
-      volume: '1L',
-      packaging: 'Pouch',
-      enriched_with: 'Vitamins A & D'
+      storage: '128GB',
+      ram: '8GB',
+      camera: '50MP Triple Camera',
+      battery: '5000mAh',
+      display: '6.5-inch Super AMOLED 90Hz'
     },
-    imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=80',
-    tags: ['oil', 'cooking oil', 'sunflower oil', 'fortune', 'sunlite', 'kirana', 'groceries', 'staples']
+    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02560?w=600&auto=format&fit=crop&q=80',
+    tags: ['samsung', 'galaxy', 'a15', '5g', 'smartphone', 'mobile', 'android', 'camera', 'budget phone', '128gb', 'samsung under 20000']
   },
   {
-    id: 'prod-kirana-3',
-    title: 'Tata Tea Gold Premium Black Tea (500g Pack)',
-    brand: 'Tata Tea',
-    category: 'Kirana & Groceries',
-    subCategory: 'Tea & Beverages',
-    upcEan: '8901234567903',
-    description: 'Exquisite blend of rich Assam CTC tea with 15% gently rolled long leaves for an irresistible aroma and rich full-bodied taste.',
+    id: 'prod-audio-boat-550',
+    title: 'boAt Rockerz 550 Wireless Bluetooth Headphones',
+    brand: 'boAt',
+    category: 'Electronics',
+    subCategory: 'Audio',
+    upcEan: '8801234567903',
+    description: 'Wireless over-ear headphones with 50mm dynamic drivers, physical noise isolation, and 20-hour playback.',
     attributes: {
-      weight: '500g',
-      blend: 'Assam CTC with Long Leaves',
-      caffeine: 'Medium'
+      drivers: '50mm',
+      battery: '20 Hours',
+      connectivity: 'Bluetooth 5.0'
     },
-    imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80',
-    tags: ['tea', 'chai', 'tata tea', 'gold', 'assam tea', 'beverages', 'kirana', 'groceries']
+    imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
+    tags: ['headphones', 'bluetooth', 'audio', 'wireless', 'budget', 'boat']
   },
   {
-    id: 'prod-kirana-4',
-    title: 'Aashirvaad Select 100% Sharbati Whole Wheat Atta (5kg)',
-    brand: 'Aashirvaad',
-    category: 'Kirana & Groceries',
-    subCategory: 'Flours & Grains',
-    upcEan: '8901234567904',
-    description: 'Premium quality 100% pure Sharbati wheat flour harvested from Sehore, Madhya Pradesh, producing golden, extra-soft rotis that stay soft longer.',
+    id: 'prod-audio-sony-xm5',
+    title: 'Sony WH-1000XM5 Wireless Noise Cancelling Headphones',
+    brand: 'Sony',
+    category: 'Electronics',
+    subCategory: 'Audio',
+    upcEan: '8801234567904',
+    description: 'Industry-leading noise canceling with two processors and 8 microphones, exceptional hands-free calling, and 30-hour battery life.',
     attributes: {
-      weight: '5kg',
-      grain_source: 'Madhya Pradesh Sharbati',
-      fiber: 'High Fiber Whole Wheat'
+      noise_canceling: 'Active Dual Processor ANC',
+      battery: '30 Hours',
+      connectivity: 'Bluetooth 5.2 LDAC'
     },
-    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
-    tags: ['atta', 'wheat flour', 'aashirvaad', 'sharbati', 'roti', 'kirana', 'groceries', 'staples']
+    imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80',
+    tags: ['headphones', 'sony', 'xm5', 'anc', 'noise cancelling', 'premium', 'audio']
   },
   {
     id: 'prod-iphone-16',
@@ -614,7 +618,7 @@ export const initialProducts: CanonicalProduct[] = [
     id: 'prod-cleaning-products',
     title: 'EcoClean Pro All-Surface Multipurpose Cleaner & Disinfectant (1L)',
     brand: 'EcoClean',
-    category: 'Kirana & Groceries',
+    category: 'Home & Kitchen',
     subCategory: 'Home Care',
     upcEan: '8901234567913',
     description: 'Plant-based 99.9% antibacterial surface cleaner spray and disinfectant solution for kitchen countertops, glass, tile, and bathroom fixtures.',
@@ -624,7 +628,7 @@ export const initialProducts: CanonicalProduct[] = [
       fragrance: 'Eucalyptus & Citrus'
     },
     imageUrl: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600&auto=format&fit=crop&q=80',
-    tags: ['cleaning', 'home cleaning products', 'cleaner', 'disinfectant', 'surface cleaner', 'kirana', 'groceries']
+    tags: ['cleaning', 'home cleaning products', 'cleaner', 'disinfectant', 'surface cleaner', 'home care', 'essentials']
   }
 ];
 
@@ -761,84 +765,84 @@ export const initialListings: MerchantListing[] = [
     condition: 'NEW',
     isActive: true
   },
-  // Kirana Products Matching User Reference
+  // Samsung & Audio Products Listings
   {
-    id: 'list-city-rice',
+    id: 'list-samsung-m34-patel',
     organizationId: 'org-citysuper',
-    productId: 'prod-kirana-1',
-    merchantSku: 'CITY-RICE-01',
-    sellingPrice: 420.00,
-    originalMrp: 480.00,
+    productId: 'prod-mob-samsung-m34',
+    merchantSku: 'SAM-M34-01',
+    sellingPrice: 16999.00,
+    originalMrp: 21999.00,
     condition: 'NEW',
     isActive: true
   },
   {
-    id: 'list-kirana-rice',
-    organizationId: 'org-kirana',
-    productId: 'prod-kirana-1',
-    merchantSku: 'KIR-RICE-01',
-    sellingPrice: 435.00,
-    originalMrp: 480.00,
+    id: 'list-samsung-m34-sharma',
+    organizationId: 'org-sharma',
+    productId: 'prod-mob-samsung-m34',
+    merchantSku: 'SAM-M34-02',
+    sellingPrice: 17499.00,
+    originalMrp: 21999.00,
     condition: 'NEW',
     isActive: true
   },
   {
-    id: 'list-kirana-oil',
-    organizationId: 'org-kirana',
-    productId: 'prod-kirana-2',
-    merchantSku: 'KIR-OIL-01',
-    sellingPrice: 145.00,
-    originalMrp: 175.00,
+    id: 'list-samsung-a15-sharma',
+    organizationId: 'org-sharma',
+    productId: 'prod-mob-samsung-a15',
+    merchantSku: 'SAM-A15-01',
+    sellingPrice: 19499.00,
+    originalMrp: 22499.00,
     condition: 'NEW',
     isActive: true
   },
   {
-    id: 'list-city-oil',
+    id: 'list-samsung-a15-patel',
     organizationId: 'org-citysuper',
-    productId: 'prod-kirana-2',
-    merchantSku: 'CITY-OIL-01',
-    sellingPrice: 152.00,
-    originalMrp: 175.00,
+    productId: 'prod-mob-samsung-a15',
+    merchantSku: 'SAM-A15-02',
+    sellingPrice: 19999.00,
+    originalMrp: 22499.00,
     condition: 'NEW',
     isActive: true
   },
   {
-    id: 'list-city-tea',
+    id: 'list-boat-550-sharma',
+    organizationId: 'org-sharma',
+    productId: 'prod-audio-boat-550',
+    merchantSku: 'BOAT-550-01',
+    sellingPrice: 1999.00,
+    originalMrp: 3999.00,
+    condition: 'NEW',
+    isActive: true
+  },
+  {
+    id: 'list-boat-550-patel',
     organizationId: 'org-citysuper',
-    productId: 'prod-kirana-3',
-    merchantSku: 'CITY-TEA-01',
-    sellingPrice: 285.00,
-    originalMrp: 320.00,
+    productId: 'prod-audio-boat-550',
+    merchantSku: 'BOAT-550-02',
+    sellingPrice: 2099.00,
+    originalMrp: 3999.00,
     condition: 'NEW',
     isActive: true
   },
   {
-    id: 'list-kirana-tea',
-    organizationId: 'org-kirana',
-    productId: 'prod-kirana-3',
-    merchantSku: 'KIR-TEA-01',
-    sellingPrice: 295.00,
-    originalMrp: 320.00,
+    id: 'list-sony-xm5-sharma',
+    organizationId: 'org-sharma',
+    productId: 'prod-audio-sony-xm5',
+    merchantSku: 'SONY-XM5-01',
+    sellingPrice: 29990.00,
+    originalMrp: 34990.00,
     condition: 'NEW',
     isActive: true
   },
   {
-    id: 'list-kirana-atta',
-    organizationId: 'org-kirana',
-    productId: 'prod-kirana-4',
-    merchantSku: 'KIR-ATTA-01',
-    sellingPrice: 310.00,
-    originalMrp: 360.00,
-    condition: 'NEW',
-    isActive: true
-  },
-  {
-    id: 'list-city-atta',
+    id: 'list-sony-xm5-patel',
     organizationId: 'org-citysuper',
-    productId: 'prod-kirana-4',
-    merchantSku: 'CITY-ATTA-01',
-    sellingPrice: 325.00,
-    originalMrp: 360.00,
+    productId: 'prod-audio-sony-xm5',
+    merchantSku: 'SONY-XM5-02',
+    sellingPrice: 30490.00,
+    originalMrp: 34990.00,
     condition: 'NEW',
     isActive: true
   },
@@ -1009,70 +1013,70 @@ export const initialInventory: StoreInventory[] = [
     reservedQuantity: 0,
     reorderThreshold: 10
   },
-  // Kirana Inventories
+  // Samsung & Audio Inventories
   {
-    id: 'inv-city-rice-ind',
-    listingId: 'list-city-rice',
+    id: 'inv-samsung-m34-patel',
+    listingId: 'list-samsung-m34-patel',
     storeId: 'store-city-ind',
     quantity: 18,
     reservedQuantity: 0,
     reorderThreshold: 5
   },
   {
-    id: 'inv-kirana-rice-ind',
-    listingId: 'list-kirana-rice',
-    storeId: 'store-kirana-ind',
+    id: 'inv-samsung-m34-sharma',
+    listingId: 'list-samsung-m34-sharma',
+    storeId: 'store-sharma-ind',
     quantity: 12,
     reservedQuantity: 0,
     reorderThreshold: 4
   },
   {
-    id: 'inv-kirana-oil-ind',
-    listingId: 'list-kirana-oil',
-    storeId: 'store-kirana-ind',
-    quantity: 24,
-    reservedQuantity: 0,
-    reorderThreshold: 6
-  },
-  {
-    id: 'inv-city-oil-ind',
-    listingId: 'list-city-oil',
-    storeId: 'store-city-ind',
-    quantity: 30,
-    reservedQuantity: 0,
-    reorderThreshold: 8
-  },
-  {
-    id: 'inv-city-tea-ind',
-    listingId: 'list-city-tea',
-    storeId: 'store-city-ind',
-    quantity: 15,
+    id: 'inv-samsung-a15-sharma',
+    listingId: 'list-samsung-a15-sharma',
+    storeId: 'store-sharma-ind',
+    quantity: 14,
     reservedQuantity: 0,
     reorderThreshold: 4
   },
   {
-    id: 'inv-kirana-tea-ind',
-    listingId: 'list-kirana-tea',
-    storeId: 'store-kirana-ind',
-    quantity: 10,
-    reservedQuantity: 0,
-    reorderThreshold: 3
-  },
-  {
-    id: 'inv-kirana-atta-ind',
-    listingId: 'list-kirana-atta',
-    storeId: 'store-kirana-ind',
+    id: 'inv-samsung-a15-patel',
+    listingId: 'list-samsung-a15-patel',
+    storeId: 'store-city-ind',
     quantity: 20,
     reservedQuantity: 0,
     reorderThreshold: 5
   },
   {
-    id: 'inv-city-atta-ind',
-    listingId: 'list-city-atta',
-    storeId: 'store-city-ind',
+    id: 'inv-boat-550-sharma',
+    listingId: 'list-boat-550-sharma',
+    storeId: 'store-sharma-ind',
     quantity: 25,
     reservedQuantity: 0,
-    reorderThreshold: 6
+    reorderThreshold: 5
+  },
+  {
+    id: 'inv-boat-550-patel',
+    listingId: 'list-boat-550-patel',
+    storeId: 'store-city-ind',
+    quantity: 16,
+    reservedQuantity: 0,
+    reorderThreshold: 3
+  },
+  {
+    id: 'inv-sony-xm5-sharma',
+    listingId: 'list-sony-xm5-sharma',
+    storeId: 'store-sharma-ind',
+    quantity: 8,
+    reservedQuantity: 0,
+    reorderThreshold: 2
+  },
+  {
+    id: 'inv-sony-xm5-patel',
+    listingId: 'list-sony-xm5-patel',
+    storeId: 'store-city-ind',
+    quantity: 6,
+    reservedQuantity: 0,
+    reorderThreshold: 2
   },
   // Sharma Headphone: EXACTLY 1 REMAINING! (Key for concurrency contest)
   {
@@ -1227,7 +1231,7 @@ export const initialLedgerCustomers: LedgerCustomer[] = [
     organizationId: 'org-sharma',
     name: 'Suresh',
     phone: '+919822334455',
-    disambiguationTag: 'Kirana Regular',
+    disambiguationTag: 'Daily Essentials',
     currentBalance: 0.00, // Settled
     isActive: true,
     createdAt: new Date(Date.now() - 45 * 86400000).toISOString()

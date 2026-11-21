@@ -196,6 +196,36 @@ const PRODUCTS_DATA = [
     imageUrl: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80'
   },
   {
+    id: 'prod-mob-samsung-m34',
+    title: 'Samsung Galaxy M34 5G (128GB, 6GB RAM, 50MP No Shake Camera)',
+    brand: 'SAMSUNG',
+    category: 'MOBILES',
+    store: 'Apex Digital & Audio Store',
+    locality: 'Indiranagar',
+    price: 16999,
+    originalMrp: 24499,
+    stockStatus: 'in' as const,
+    rating: 4.8,
+    reviewsCount: 640,
+    tags: ['samsung', 'phone', 'mobile', '5g', 'smartphone', '128gb', 'camera', 'budget', 'battery'],
+    imageUrl: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'prod-mob-samsung-a15',
+    title: 'Samsung Galaxy A15 5G (128GB, 8GB RAM, Super AMOLED)',
+    brand: 'SAMSUNG',
+    category: 'MOBILES',
+    store: 'Patel Digital Store',
+    locality: 'Jayanagar',
+    price: 19499,
+    originalMrp: 21499,
+    stockStatus: 'in' as const,
+    rating: 4.7,
+    reviewsCount: 380,
+    tags: ['samsung', 'phone', 'mobile', '5g', 'smartphone', '128gb', 'amoled', 'budget', 'display'],
+    imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80'
+  },
+  {
     id: 'prod-chargers-gan65',
     title: 'PowerVolt 65W GaN Fast Charger 3-Port (USB-C PD)',
     brand: 'POWERVOLT',

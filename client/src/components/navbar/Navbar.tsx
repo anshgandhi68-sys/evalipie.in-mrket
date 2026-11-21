@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext.js';
 import { PrivacyPolicyModal } from '../legal/PrivacyPolicyModal.js';
 import { VoiceShoppingModal } from '../voice/VoiceShoppingModal.js';
@@ -9,12 +9,19 @@ export const Navbar: React.FC = () => {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleScrollTo = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
     if (location.pathname === '/') {
-      e.preventDefault();
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
     }
   };
 
@@ -57,6 +64,17 @@ export const Navbar: React.FC = () => {
           <Link to="/business" className="hover:text-[#167D73] transition-colors hidden sm:inline-block">
             Become a Seller
           </Link>
+
+          {/* Voice Shopping Assistant Trigger */}
+          <button
+            type="button"
+            onClick={() => setIsVoiceModalOpen(true)}
+            className="flex items-center gap-1.5 bg-[#E9F7F3] hover:bg-[#d5f3eb] text-[#167D73] px-3.5 py-1.5 rounded-full font-bold text-xs transition-all cursor-pointer border border-[#A7E3D8] shadow-xs hover:scale-105 active:scale-95"
+            title="Speak to Evalipie Voice AI"
+          >
+            <span>🎙️</span>
+            <span>Voice AI</span>
+          </button>
 
           {/* Cart Pill matching Image 2 */}
           <button

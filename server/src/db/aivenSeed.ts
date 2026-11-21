@@ -210,8 +210,34 @@ export const SEED_PRODUCTS: SeedProductInput[] = [
     price: 74999,
     originalMrp: 79999,
     imageUrl: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop&q=80',
-    attributes: { chip: 'Exynos 2400', ram: '8GB', storage: '128GB', display: '6.2-inch FHD+ Dynamic AMOLED 2X' },
-    tags: ['samsung', 'galaxy', 's24', '5g', 'smartphone', 'android', 'mobile']
+    attributes: { chip: 'Exynos 2400', ram: '8GB', storage: '128GB', display: '6.2-inch FHD+ Dynamic AMOLED 2X', camera: '50MP Triple Pro Camera' },
+    tags: ['samsung', 'galaxy', 's24', '5g', 'smartphone', 'android', 'mobile', '128gb']
+  },
+  {
+    id: 'prod-mob-samsung-m34',
+    title: 'Samsung Galaxy M34 5G 128GB Prism Silver',
+    brand: 'Samsung',
+    category: 'MOBILES',
+    sku: 'SAMSUNG-M34-128-SLV',
+    description: '5G smartphone with 50MP No Shake OIS camera, 6000mAh monster battery, and 6.5-inch 120Hz Super AMOLED display.',
+    price: 16999,
+    originalMrp: 21999,
+    imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80',
+    attributes: { chip: 'Exynos 1280', ram: '6GB', storage: '128GB', camera: '50MP OIS No Shake Camera with 4K Video', battery: '6000mAh Monster Battery', display: '6.5-inch FHD+ 120Hz Super AMOLED' },
+    tags: ['samsung', 'galaxy', 'm34', '5g', 'smartphone', 'mobile', 'android', 'camera', 'budget phone', '128gb', 'samsung under 20000']
+  },
+  {
+    id: 'prod-mob-samsung-a15',
+    title: 'Samsung Galaxy A15 5G 128GB Blue Black',
+    brand: 'Samsung',
+    category: 'MOBILES',
+    sku: 'SAMSUNG-A15-128-BLU',
+    description: 'Sleek 5G smartphone with 50MP triple rear camera, Knox Security, and 6.5-inch Super AMOLED 90Hz display.',
+    price: 19499,
+    originalMrp: 22499,
+    imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02560?w=800&auto=format&fit=crop&q=80',
+    attributes: { chip: 'MediaTek Dimensity 6100+', ram: '8GB', storage: '128GB', camera: '50MP Triple Camera', battery: '5000mAh', display: '6.5-inch Super AMOLED 90Hz' },
+    tags: ['samsung', 'galaxy', 'a15', '5g', 'smartphone', 'mobile', 'android', 'camera', 'budget phone', '128gb', 'samsung under 20000']
   },
   {
     id: 'prod-mob-oneplus-12',
