@@ -222,7 +222,7 @@ export const HomePage: React.FC = () => {
       <main id="marketplace-feed" className="w-full relative z-10 space-y-10">
 
         {/* ── DEPARTMENT STRIP / SUB-NAV ─────────────────────────────────── */}
-        <div className="bg-white border-b border-gray-200 shadow-2xs sticky top-[64px] z-30 transition-all">
+        <div id="cats" className="bg-white border-b border-gray-200 shadow-2xs sticky top-[52px] z-30 transition-all">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4 overflow-x-auto no-scrollbar">
             {/* Left: Category Switcher Pills */}
             <div className="flex items-center gap-1.5 shrink-0">
@@ -357,7 +357,7 @@ export const HomePage: React.FC = () => {
               </div>
 
               {/* Promo Card 2: Evalipie AI Conversational Search */}
-              <div className="bg-gradient-to-br from-[#7657E8]/10 via-white to-[#F0ECFD]/50 rounded-3xl p-6 border border-[#7657E8]/30 shadow-sm flex flex-col justify-between flex-1 relative">
+              <div id="ai" className="bg-gradient-to-br from-[#7657E8]/10 via-white to-[#F0ECFD]/50 rounded-3xl p-6 border border-[#7657E8]/30 shadow-sm flex flex-col justify-between flex-1 relative">
                 <div className="space-y-2">
                   <div className="flex items-center gap-1.5 text-xs font-black text-[#7657E8] uppercase tracking-wide">
                     <Sparkles className="w-3.5 h-3.5" />
@@ -946,6 +946,7 @@ export const HomePage: React.FC = () => {
 
           {/* ── 6. MAIN MULTI-SELLER CATALOG FEED (Live Filtering & Sort) ─────── */}
           <section id="catalog-section" className="space-y-6 pt-4">
+            <div id="trend" />
             <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 border-b border-gray-200 pb-4">
               <div>
                 <div className="flex items-center gap-2">
