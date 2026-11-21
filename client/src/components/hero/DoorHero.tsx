@@ -4,12 +4,15 @@ import React from 'react';
 import MetroHero from '../ui/scroll-locked-video-hero.js';
 
 // ─────────────────────────────────────────────────────────────
-// EVALIPIE ENTRY SCROLL ANIMATION — Scroll-Locked Video Hero
+// EVALIPIE DAYLIGHT SUNSHINE SCROLL HERO
 //
-// Powered by the scroll-scrubbed video hero as demonstrated
-// in the 21st.dev screen recording:
-// "THE CITY OPENS" -> Doors swing open -> "Every door in the city is already open."
-// Wheel/touch input smoothly drives playback currentTime with RAF interpolation.
+// Native sticky track (220vh) with smooth hardware-accelerated
+// scroll scrubbing:
+// - Closed doors in morning sunlight with volumetric god-rays
+// - Scroll down naturally scrubs doors opening smoothly
+// - Golden morning sunlight streams through carriage windows
+// - Reaching the end transitions smoothly into the marketplace feed
+// - Zero body locks, zero preventDefault, 60fps fluid performance
 // ─────────────────────────────────────────────────────────────
 
 export const DoorHero: React.FC<{
@@ -24,25 +27,23 @@ export const DoorHero: React.FC<{
   scrollHint = "SCROLL TO ENTER",
 }) => {
   return (
-    <section id="hero-entry" className="relative w-full overflow-hidden bg-[#05070d]">
-      <MetroHero
-        videoSrc={videoSrc}
-        title={title}
-        tagline={tagline}
-        scrollHint={scrollHint}
-        showSkipButton={true}
-        signature={{
-          name: "Evalipie Marketplace",
-          url: "https://evalipie.in"
-        }}
-        onComplete={() => {
-          const feed = document.getElementById('marketplace-feed');
-          if (feed) {
-            feed.scrollIntoView({ behavior: 'smooth' });
-          }
-        }}
-      />
-    </section>
+    <div id="hero-entry" className="relative w-full h-[220vh] bg-[#080B12]">
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <MetroHero
+          videoSrc={videoSrc}
+          title={title}
+          tagline={tagline}
+          scrollHint={scrollHint}
+          showSkipButton={true}
+          onComplete={() => {
+            const feed = document.getElementById('marketplace-feed');
+            if (feed) {
+              feed.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+        />
+      </div>
+    </div>
   );
 };
 
