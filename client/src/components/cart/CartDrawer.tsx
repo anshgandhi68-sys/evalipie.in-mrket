@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { X, Trash2, ShoppingBag, ShieldCheck, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, Trash2, ShoppingBag, ShieldCheck, AlertCircle, CheckCircle2, ArrowRight, QrCode } from 'lucide-react';
 import { useCart } from '../../context/CartContext.js';
 import { api } from '../../services/api.js';
 
 export const CartDrawer: React.FC = () => {
+  const navigate = useNavigate();
   const { items, removeItem, updateQuantity, clearCart, isCartOpen, closeCart, totalAmount } = useCart();
   const [customerName, setCustomerName] = useState('Ananya Sharma');
   const [customerPhone, setCustomerPhone] = useState('+91 99887 76655');
@@ -35,6 +37,8 @@ export const CartDrawer: React.FC = () => {
       // Trigger pipeline pulse
       window.dispatchEvent(new CustomEvent('order-placed-event'));
       clearCart();
+      closeCart();
+      navigate(`/payment/${res.order.id}`);
     } catch (err: any) {
       if (err.status === 409 || err.data?.code === 'STOCK_EXHAUSTED') {
         setConcurrencyError(err.data || { message: 'HTTP 409 Conflict: Stock was just claimed by a concurrent buyer.' });
@@ -94,13 +98,23 @@ export const CartDrawer: React.FC = () => {
                 <div><span className="text-[#5A5852]">STATUS:</span> <span className="text-[#111111] font-bold uppercase">{orderResult.status}</span></div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => { closeCart(); setOrderResult(null); }}
-                className="w-full bg-[#111111] hover:bg-[#B84A27] text-white py-3 rounded-[0px] font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer"
-              >
-                RETURN TO CATALOG
-              </button>
+              <div className="space-y-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => { closeCart(); navigate(`/payment/${orderResult.id}`); }}
+                  className="w-full bg-[#105B55] hover:bg-[#167D73] text-white py-3 rounded-[0px] font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <QrCode className="w-4 h-4" />
+                  <span>PROCEED TO UPI QR PAYMENT</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { closeCart(); setOrderResult(null); }}
+                  className="w-full bg-white hover:bg-[#F6F5F0] text-[#111111] border border-[#E4E2DA] py-2.5 rounded-[0px] font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  RETURN TO CATALOG
+                </button>
+              </div>
             </div>
           ) : concurrencyError ? (
             /* Stock Exhaustion 409 Collision Screen */

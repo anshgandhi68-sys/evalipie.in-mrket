@@ -12,6 +12,7 @@ import { CategoriesPage } from './pages/marketplace/CategoriesPage.js';
 import { ShopsPage } from './pages/marketplace/ShopsPage.js';
 import { ShopStorefrontPage } from './pages/marketplace/ShopStorefrontPage.js';
 import { AccountPage } from './pages/marketplace/AccountPage.js';
+import { PaymentPage } from './pages/marketplace/PaymentPage.js';
 import { PrivacyPolicyPage } from './pages/legal/PrivacyPolicyPage.js';
 import DemoOne from './components/ui/demo.js';
 import MetroHeroDemo from './components/ui/metro-hero-demo.js';
@@ -38,6 +39,8 @@ const AppContent: React.FC = () => {
           <Route path="/shops" element={<ShopsPage />} />
           <Route path="/shop/:slug" element={<ShopStorefrontPage />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route path="/payment/:orderId" element={<PaymentPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/ai" element={<Navigate to="/#ai" replace />} />
 

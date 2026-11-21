@@ -10,6 +10,7 @@ import { orderController } from '../controllers/orderController.js';
 import { sseEventStream } from '../controllers/eventsController.js';
 import { aiAssistantController } from '../controllers/aiAssistantController.js';
 import { adminMetricsController } from '../controllers/adminMetricsController.js';
+import { paymentController } from '../controllers/paymentController.js';
 import { aiRouter } from './aiRoutes.js';
 import voiceRouter from './voiceRoutes.js';
 
@@ -51,6 +52,12 @@ apiRouter.post('/checkout/reserve', checkoutController.reserve);
 apiRouter.post('/orders/checkout', orderController.checkout);
 apiRouter.get('/orders', checkoutController.getOrders);
 apiRouter.get('/orders/:id', checkoutController.getOrderById);
+
+// 4b. Live Razorpay UPI QR & Real-Time Payment Verification
+apiRouter.post('/payments/create-qr', paymentController.createQr);
+apiRouter.get('/payments/status/:qrId', paymentController.checkStatus);
+apiRouter.post('/payments/verify', paymentController.verifyPayment);
+apiRouter.get('/payments/order/:orderId', paymentController.getOrderPayment);
 
 // 5. Merchant & Multi-Branch Business Console
 apiRouter.get('/merchant/dashboard', merchantController.getDashboard);

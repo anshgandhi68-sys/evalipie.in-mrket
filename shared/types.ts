@@ -151,6 +151,11 @@ export interface Order {
   createdAt: string;
   shopName?: string;
   storeName?: string;
+  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED';
+  paymentId?: string;
+  razorpayOrderId?: string;
+  razorpayQrId?: string;
+  paidAt?: string;
 }
 
 // Merchant Ledger Domain Models

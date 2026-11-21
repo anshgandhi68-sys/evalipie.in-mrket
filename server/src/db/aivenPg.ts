@@ -46,6 +46,11 @@ export interface OrderRow {
   status: string;
   fulfillment_type: string;
   created_at: Date;
+  paymentStatus?: string;
+  paymentId?: string;
+  paidAt?: string;
+  razorpayQrId?: string;
+  razorpayOrderId?: string;
 }
 
 export interface OutboxRow {

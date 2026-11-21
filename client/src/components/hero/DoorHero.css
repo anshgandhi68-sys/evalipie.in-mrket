@@ -237,20 +237,20 @@
   z-index: 5;
 }
 
-/* INTERIOR DISCOVERY PREVIEW (Container Queries matching Prototype) */
+/* INTERIOR DISCOVERY PREVIEW */
 .inside {
   position: absolute;
   inset: 0;
   background: radial-gradient(120% 70% at 50% 0%, var(--mint), var(--bg) 70%);
-  container-type: size;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3cqw;
-  padding: 6cqw;
+  gap: clamp(10px, 2.5vh, 20px);
+  padding: clamp(16px, 3.5vw, 36px);
   text-align: center;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .in-hd {
@@ -260,72 +260,97 @@
   right: 0;
   display: flex;
   justify-content: space-between;
-  padding: 3.5cqw 5cqw;
-  font-size: 4cqw;
+  align-items: center;
+  padding: 8px 14px;
+  font-size: 11px;
+  white-space: nowrap;
   background: #fff;
   border-bottom: 1px solid var(--bd);
+  z-index: 2;
 }
 
-.in-hd b { color: var(--deep); font-weight: 700; }
-.in-hd span { color: var(--mut); }
+.in-hd b { color: var(--deep); font-weight: 800; letter-spacing: -0.01em; }
+.in-hd span { color: var(--mut); font-size: 11px; font-weight: 600; }
 
 .inside h2 {
   margin: 0;
-  font-size: 9.5cqw;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-size: clamp(16px, 2.4vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   color: var(--navy);
   font-weight: 800;
+  max-width: 92%;
 }
 
 .inside p {
   margin: 0;
-  font-size: 4.6cqw;
+  font-size: clamp(11px, 1.4vw, 14px);
   color: var(--teal);
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .in-search {
-  width: 100%;
+  width: min(92%, 300px);
   background: #fff;
-  border: 1px solid var(--bd);
+  border: 1.5px solid var(--bd);
   border-radius: 999px;
-  padding: 2.6cqw 3cqw 2.6cqw 4cqw;
+  padding: 6px 10px 6px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 3.8cqw;
+  font-size: clamp(10px, 1.2vw, 12px);
   color: var(--mut);
-  box-shadow: 0 4px 16px rgba(17, 24, 39, 0.06);
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.in-search:hover {
+  border-color: var(--teal);
+  box-shadow: 0 6px 18px rgba(22, 125, 115, 0.15);
 }
 
 .in-search u {
   text-decoration: none;
-  background: var(--ai);
+  background: var(--teal);
   color: #fff;
   border-radius: 999px;
-  padding: 1.2cqw 3cqw;
+  padding: 3px 10px;
   font-weight: 700;
-  font-size: 3.4cqw;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .in-row {
   display: flex;
-  gap: 3cqw;
+  gap: 6px;
+  margin-top: 2px;
 }
 
+.in-row button,
 .in-row span {
-  width: 19cqw;
-  height: 19cqw;
-  border-radius: 4cqw;
+  padding: 4px 10px;
+  border-radius: 6px;
   background: #fff;
   border: 1px solid var(--bd);
-  display: grid;
-  place-items: center;
-  font-size: 2.8cqw;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
   font-weight: 700;
   color: var(--deep);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.in-row button:hover {
+  border-color: var(--teal);
+  background: var(--mint);
+  transform: translateY(-1px);
 }
 
 /* 3D ROTATING DOORS */

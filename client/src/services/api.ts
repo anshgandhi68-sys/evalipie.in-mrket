@@ -118,6 +118,56 @@ export const api = {
     return fetchJson<Order[]>('/orders');
   },
 
+  // Razorpay Live Payments
+  createPaymentQr: (orderId: string, amount: number, customerName?: string) => {
+    return fetchJson<{
+      qrId: string;
+      qrImageUrl: string;
+      paymentAmount: number;
+      currency: string;
+      razorpayOrderId: string;
+      keyId: string;
+      orderId: string;
+    }>('/payments/create-qr', {
+      method: 'POST',
+      body: JSON.stringify({ orderId, amount, customerName }),
+    });
+  },
+
+  checkPaymentStatus: (qrId: string, orderId?: string) => {
+    const query = orderId ? `?orderId=${encodeURIComponent(orderId)}` : '';
+    return fetchJson<{
+      paid: boolean;
+      status: string;
+      paymentId?: string;
+      amountReceived?: number;
+      order?: Order;
+    }>(`/payments/status/${qrId}${query}`);
+  },
+
+  verifyPayment: (data: {
+    orderId: string;
+    razorpayOrderId: string;
+    razorpayPaymentId: string;
+    razorpaySignature: string;
+  }) => {
+    return fetchJson<{
+      paid: boolean;
+      orderId: string;
+      paymentId: string;
+    }>('/payments/verify', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  getOrderPayment: (orderId: string) => {
+    return fetchJson<{
+      order: Order;
+      keyId: string;
+    }>(`/payments/order/${orderId}`);
+  },
+
   // Merchant Portal
   getMerchantDashboard: (orgId = 'org-sharma') => {
     return fetchJson<any>(`/merchant/dashboard?orgId=${orgId}`);

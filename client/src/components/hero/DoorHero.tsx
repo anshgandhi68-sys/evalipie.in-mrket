@@ -198,14 +198,49 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
                 </div>
                 <h2>Find exactly what you need.</h2>
                 <p>From every shop.</p>
-                <div className="in-search">
+                <div 
+                  className="in-search"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const aiInput = document.getElementById('ai-search-input') || document.getElementById('ai');
+                    aiInput?.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => (document.getElementById('ai-search-input') as HTMLInputElement)?.focus(), 400);
+                  }}
+                >
                   <span>Describe what you need…</span>
-                  <u>AI</u>
+                  <u>AI Search</u>
                 </div>
                 <div className="in-row">
-                  <span>AUDIO</span>
-                  <span>MOBILES</span>
-                  <span>LAPTOPS</span>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectCategory?.('AUDIO');
+                      document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    AUDIO
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectCategory?.('MOBILES');
+                      document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    MOBILES
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectCategory?.('LAPTOPS');
+                      document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    LAPTOPS
+                  </button>
                 </div>
               </div>
 
