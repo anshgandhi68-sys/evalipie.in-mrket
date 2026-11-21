@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { config } from './config.js';
 import { apiRouter } from './routes/apiRoutes.js';
 import { outboxService } from './services/outboxService.js';
+import { setupVoiceWebSocket } from './services/voiceWebSocket.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,6 +47,9 @@ app.get('*', (req, res, next) => {
 
 // Create HTTP server
 const server = http.createServer(app);
+
+// Setup WebSocket for Real-time Voice Shopping with Gnani Prisma v3.0 & Timbre v3.0
+setupVoiceWebSocket(server);
 
 server.listen(config.port, () => {
   console.log(`\n======================================================`);

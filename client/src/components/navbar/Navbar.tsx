@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingBag } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext.js';
 import { PrivacyPolicyModal } from '../legal/PrivacyPolicyModal.js';
+import { VoiceShoppingModal } from '../voice/VoiceShoppingModal.js';
 
 export const Navbar: React.FC = () => {
   const { totalCount, openCart } = useCart();
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+  const location = useLocation();
+
+  const handleScrollTo = (id: string, e: React.MouseEvent) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-4 px-4 sm:px-8 py-3 bg-white/85 backdrop-blur-md border-b border-[#E5EAF0]">
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-10 py-3.5 bg-white/85 backdrop-blur-md border-b border-[#E5EAF0]">
         
-        {/* Left: Brand Logo matching Screenshot 5 */}
+        {/* Left: Brand Logo matching Image 2 */}
         <Link to="/" className="flex items-center gap-2 group">
-          <i className="w-7 h-7 rounded-lg bg-[#167D73] text-white flex items-center justify-center font-bold text-sm not-italic shadow-sm group-hover:bg-[#105B55] transition-colors">
+          <i className="w-7 h-7 rounded-lg bg-[#167D73] text-white flex items-center justify-center font-bold text-sm not-italic shadow-xs group-hover:bg-[#105B55] transition-colors">
             e
           </i>
           <span className="font-extrabold text-xl tracking-tight text-[#111827]">
@@ -22,39 +32,45 @@ export const Navbar: React.FC = () => {
           </span>
         </Link>
 
-        {/* Center / Nav Links matching Screenshot 3 & user specs */}
-        <nav className="flex items-center gap-4 sm:gap-6 text-sm font-semibold text-[#687385]">
-          <Link to="/ai" className="hover:text-[#167D73] transition-colors hidden sm:inline-block">
+        {/* Right Nav Links matching Image 2 */}
+        <nav className="flex items-center gap-5 sm:gap-7 text-sm font-semibold text-[#687385]">
+          <Link to="/ai" className="hover:text-[#167D73] transition-colors">
             Evalipie AI
           </Link>
-          <a href="#cats" className="hover:text-[#167D73] transition-colors hidden sm:inline-block">
+          <a 
+            href="#cats" 
+            onClick={(e) => handleScrollTo('cats', e)}
+            className="hover:text-[#167D73] transition-colors"
+          >
             Categories
           </a>
-          <a href="#trend" className="hover:text-[#167D73] transition-colors hidden sm:inline-block">
+          <a 
+            href="#trend" 
+            onClick={(e) => handleScrollTo('trend', e)}
+            className="hover:text-[#167D73] transition-colors"
+          >
             Trending
           </a>
-          <Link to="/business" className="hover:text-[#167D73] transition-colors hidden md:inline-block">
+          <Link to="/business" className="hover:text-[#167D73] transition-colors hidden sm:inline-block">
             Become a Seller
           </Link>
-          <button
-            type="button"
-            onClick={() => setIsPrivacyModalOpen(true)}
-            className="hover:text-[#167D73] transition-colors hidden lg:inline-block text-xs font-semibold text-[#687385] hover:text-[#167D73] cursor-pointer"
-          >
-            Privacy Policy
-          </button>
 
-          {/* Cart Pill matching Screenshot 3 */}
+          {/* Cart Pill matching Image 2 */}
           <button
             type="button"
             onClick={openCart}
-            className="bg-[#111827] hover:bg-black text-white px-4 py-2 rounded-full font-semibold text-sm transition-all flex items-center gap-2 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+            className="bg-[#111827] hover:bg-black text-white px-4 py-1.5 rounded-full font-semibold text-sm transition-all cursor-pointer shadow-xs hover:scale-105 active:scale-95"
           >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Cart · {totalCount}</span>
+            Cart · {totalCount}
           </button>
         </nav>
       </header>
+
+      {/* Voice Shopping Interactive Experience Modal */}
+      <VoiceShoppingModal
+        isOpen={isVoiceModalOpen}
+        onClose={() => setIsVoiceModalOpen(false)}
+      />
 
       {/* DPDP Act 2023 Privacy Policy Modal */}
       <PrivacyPolicyModal 

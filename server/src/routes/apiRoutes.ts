@@ -11,11 +11,13 @@ import { sseEventStream } from '../controllers/eventsController.js';
 import { aiAssistantController } from '../controllers/aiAssistantController.js';
 import { adminMetricsController } from '../controllers/adminMetricsController.js';
 import { aiRouter } from './aiRoutes.js';
+import voiceRouter from './voiceRoutes.js';
 
 export const apiRouter = Router();
 
 // AI Intelligence Engine Routes
 apiRouter.use('/ai', aiRouter);
+apiRouter.use('/voice', voiceRouter);
 
 // 1. Catalog & Marketplace (V1 & V2)
 apiRouter.get('/products', catalogController.getProducts);

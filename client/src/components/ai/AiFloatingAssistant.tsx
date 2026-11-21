@@ -33,6 +33,27 @@ export const AiFloatingAssistant: React.FC = () => {
     return null;
   }
 
+  const isHome = location.pathname === '/';
+  const [hasScrolled, setHasScrolled] = useState(!isHome);
+
+  useEffect(() => {
+    if (!isHome) {
+      setHasScrolled(true);
+      return;
+    }
+    const handleScroll = () => {
+      // Only show assistant once user scrolls past the initial hero viewport
+      if (window.scrollY > 300) {
+        setHasScrolled(true);
+      } else {
+        setHasScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isHome]);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -125,6 +146,11 @@ export const AiFloatingAssistant: React.FC = () => {
       setAddedItems(prev => ({ ...prev, [rec.id]: false }));
     }, 2000);
   };
+
+  // On home page, hide when still on the hero so the architectural 3D storefront is completely clear
+  if (isHome && !hasScrolled && !isOpen) {
+    return null;
+  }
 
   return (
     <>

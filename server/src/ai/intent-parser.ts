@@ -40,6 +40,10 @@ export class IntentParser {
         cleanJson = cleanJson.trim();
 
         const rawParsed = JSON.parse(cleanJson);
+        const validSorts = ['relevance', 'price_low_to_high', 'price_high_to_low', 'rating', 'distance'];
+        if (!validSorts.includes(rawParsed.sort_preference)) {
+          rawParsed.sort_preference = 'relevance';
+        }
         const validated = StructuredIntentSchema.parse(rawParsed);
 
         // Query-anchored category refinement
