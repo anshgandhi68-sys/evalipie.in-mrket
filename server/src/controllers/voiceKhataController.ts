@@ -51,7 +51,8 @@ export const voiceKhataController = {
   // POST /api/voice/process-text (Voice Command Processor via REST with Gnani Timbre Audio Response)
   processVoiceText: async (req: Request, res: Response) => {
     try {
-      const { sessionId, text, orgId } = req.body;
+      const { sessionId, orgId } = req.body;
+      const text = req.body.text || req.body.transcript;
       if (!text) {
         return res.status(400).json({ status: 'error', message: 'Voice text is required' });
       }
