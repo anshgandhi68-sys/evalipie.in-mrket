@@ -552,6 +552,311 @@ export const HomePage: React.FC = () => {
             </div>
           )}
 
+          {/* ── 2B. AMAZON & FLIPKART SIGNATURE 4-BOX PROMO GRID ─────────── */}
+          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            
+            {/* Box 1: Up to 60% off Electronics */}
+            <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
+              <div>
+                <h3 className="font-black text-lg text-gray-900 leading-snug mb-3">
+                  Up to 60% off | Top Electronics & Tech
+                </h3>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Electronics');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&auto=format&fit=crop&q=80" 
+                      alt="Headphones" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">ANC Headphones</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">From ₹4,999</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Computers & Laptops');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&auto=format&fit=crop&q=80" 
+                      alt="Keyboard" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">RGB Keyboard</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">From ₹2,799</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Electronics');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&auto=format&fit=crop&q=80" 
+                      alt="Mic" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">USB Condenser Mic</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">From ₹3,299</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Computers & Laptops');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=300&auto=format&fit=crop&q=80" 
+                      alt="Mouse" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Ergonomic Mouse</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">From ₹1,499</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedCategory('Electronics');
+                  document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="mt-4 text-xs font-black text-[#167D73] hover:text-amber-600 flex items-center gap-1 cursor-pointer"
+              >
+                <span>See all electronics offers</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Box 2: 30-Min Kirana Truth */}
+            <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
+              <div>
+                <div className="flex items-center gap-1.5 mb-1 text-[10px] font-black uppercase text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded w-max">
+                  <Zap className="w-3 h-3 fill-emerald-600" />
+                  <span>30-Min Doorstep Delivery</span>
+                </div>
+                <h3 className="font-black text-lg text-gray-900 leading-snug mb-3">
+                  Kirana & Daily Staples at Store MRP
+                </h3>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Kirana & Groceries');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=80" 
+                      alt="Basmati" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Basmati Rice 5kg</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹499 (Save 22%)</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Kirana & Groceries');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=80" 
+                      alt="Oil" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Mustard Oil 1L</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹165 (Save 21%)</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Kirana & Groceries');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=80" 
+                      alt="Tea" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Tata Tea 1kg</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹380 (Save 17%)</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Kirana & Groceries');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=80" 
+                      alt="Atta" 
+                      className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Chakki Atta 10kg</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹410 (Save 20%)</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedCategory('Kirana & Groceries');
+                  document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="mt-4 text-xs font-black text-emerald-700 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>Shop all daily essentials</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Box 3: Curated Fashion Rail */}
+            <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
+              <div>
+                <h3 className="font-black text-lg text-gray-900 leading-snug mb-3">
+                  Boutique Fashion | Local Bengaluru Edit
+                </h3>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Boutique Apparel');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-purple-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=300&auto=format&fit=crop&q=80" 
+                      alt="Apparel" 
+                      className="w-full aspect-square object-cover rounded-lg group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Denim Jacket</span>
+                    <span className="text-[10px] font-extrabold text-purple-700">₹2,499</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Boutique Apparel');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-purple-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=300&auto=format&fit=crop&q=80" 
+                      alt="Kurta" 
+                      className="w-full aspect-square object-cover rounded-lg group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Linen Kurta</span>
+                    <span className="text-[10px] font-extrabold text-purple-700">₹1,499</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Boutique Apparel');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-purple-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=300&auto=format&fit=crop&q=80" 
+                      alt="Sneakers" 
+                      className="w-full aspect-square object-cover rounded-lg group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Classic Sneakers</span>
+                    <span className="text-[10px] font-extrabold text-purple-700">₹2,999</span>
+                  </div>
+
+                  <div 
+                    onClick={() => {
+                      setSelectedCategory('Boutique Apparel');
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-purple-400 transition-colors"
+                  >
+                    <img 
+                      src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&auto=format&fit=crop&q=80" 
+                      alt="Tote" 
+                      className="w-full aspect-square object-cover rounded-lg group-hover/tile:scale-105 transition-transform"
+                    />
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Canvas Tote</span>
+                    <span className="text-[10px] font-extrabold text-purple-700">₹699</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedCategory('Boutique Apparel');
+                  document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="mt-4 text-xs font-black text-purple-700 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>Inspect on interactive 3D rail</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Box 4: Verified Neighbourhood Stores */}
+            <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
+              <div>
+                <h3 className="font-black text-lg text-gray-900 leading-snug mb-3">
+                  Verified Local Kiranas Near You
+                </h3>
+                <div className="space-y-2.5">
+                  {[
+                    { name: 'Sharma Electronics', dist: '1.4 km', rating: '4.9', area: 'Indiranagar' },
+                    { name: 'City Supermarket', dist: '2.1 km', rating: '4.8', area: 'Koramangala' },
+                    { name: 'Patel Digital & Mobiles', dist: '0.8 km', rating: '4.7', area: 'HSR Layout' },
+                    { name: 'Modern Living Home Store', dist: '3.0 km', rating: '4.8', area: 'Jayanagar' },
+                  ].map((store, i) => (
+                    <div 
+                      key={i}
+                      onClick={() => {
+                        document.getElementById('stores-section')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="flex items-center justify-between p-2 rounded-xl bg-gray-50 hover:bg-amber-50/70 border border-gray-100 hover:border-amber-300 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Store className="w-4 h-4 text-amber-500" />
+                        <div>
+                          <h5 className="font-bold text-xs text-gray-900 leading-none">{store.name}</h5>
+                          <span className="text-[10px] text-gray-400">{store.area} · {store.dist}</span>
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded">
+                        ★ {store.rating}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  document.getElementById('stores-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="mt-4 text-xs font-black text-gray-900 hover:text-[#167D73] flex items-center gap-1 cursor-pointer"
+              >
+                <span>Browse 142 local shops</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </section>
+
           {/* ── 3. VISUAL CATEGORY TILES (Amazon / Blinkit Level Categorisation) ── */}
           <section className="space-y-4">
             <div className="flex justify-between items-end">
