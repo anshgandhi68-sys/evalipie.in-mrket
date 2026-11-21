@@ -96,7 +96,7 @@ export const Footer: React.FC = () => {
             <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">Make Money with Us</h4>
             <ul className="space-y-2 text-gray-400">
               <li><Link to="/business/dashboard" className="text-amber-400 hover:underline font-semibold">Sell on Evalipie (Merchant OS)</Link></li>
-              <li><Link to="/business/listings" className="hover:text-amber-400 transition-colors">Sync Offline Kirana Inventory</Link></li>
+              <li><Link to="/business/listings" className="hover:text-amber-400 transition-colors">Sync Offline Store Inventory</Link></li>
               <li><Link to="/business/branches" className="hover:text-amber-400 transition-colors">Multi-Branch Retail Management</Link></li>
               <li><span className="text-gray-500">Become an Evalipie Fast-Rider</span></li>
               <li><span className="text-gray-500">Fulfilled by Local Rail Network</span></li>

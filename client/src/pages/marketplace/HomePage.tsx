@@ -16,98 +16,6 @@ import { RAIL_DEMO_ITEMS } from '../../components/ui/clothing-rail-demo.js';
 import { api } from '../../services/api.js';
 import { CanonicalProduct, MultiSellerOffer, Shop } from '../../../../shared/types.js';
 
-// Curated Kirana & Grocery Products for Local Bengaluru Kiranas
-const LOCAL_KIRANA_PRODUCTS = [
-  {
-    product: {
-      id: 'prod-kirana-1',
-      title: 'Daawat Rozana Gold Basmati Rice (5kg)',
-      brand: 'Daawat',
-      category: 'Kirana & Groceries',
-      subCategory: 'Staples',
-      description: 'Aged aromatic long-grain basmati rice for daily family meals. Sourced directly from verified Indiranagar grocery shelves.',
-      attributes: { weight: '5kg', grain: 'Long Grain' },
-      imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
-      tags: ['rice', 'basmati', 'grocery', 'kirana']
-    },
-    minPrice: 420,
-    originalMrp: 499,
-    sellerCount: 3,
-    inStock: true,
-    rating: 4.8,
-    reviewsCount: 310,
-    featuredStoreName: 'City Supermarket (Indiranagar)',
-    distanceKm: 0.8,
-    badge: 'Fresh Stock'
-  },
-  {
-    product: {
-      id: 'prod-kirana-2',
-      title: 'Fortune Sunlite Refined Sunflower Oil (1L Pouch)',
-      brand: 'Fortune',
-      category: 'Kirana & Groceries',
-      subCategory: 'Cooking Oils',
-      description: 'Light, healthy cooking oil enriched with Vitamins A and D. Physical inventory verified at your neighbourhood Kirana.',
-      attributes: { volume: '1L', type: 'Refined Sunflower Oil' },
-      imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=80',
-      tags: ['oil', 'cooking', 'grocery', 'kirana']
-    },
-    minPrice: 145,
-    originalMrp: 175,
-    sellerCount: 4,
-    inStock: true,
-    rating: 4.9,
-    reviewsCount: 520,
-    featuredStoreName: 'Sharma General Kirana',
-    distanceKm: 0.5,
-    badge: 'Popular'
-  },
-  {
-    product: {
-      id: 'prod-kirana-3',
-      title: 'Tata Tea Gold Premium Black Tea (500g Pack)',
-      brand: 'Tata Tea',
-      category: 'Kirana & Groceries',
-      subCategory: 'Beverages',
-      description: 'Rich Assam CTC blend with 15% gently rolled long tea leaves for irresistible aroma and strength.',
-      attributes: { weight: '500g', form: 'Granules & Leaves' },
-      imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80',
-      tags: ['tea', 'chai', 'grocery', 'beverage']
-    },
-    minPrice: 285,
-    originalMrp: 320,
-    sellerCount: 3,
-    inStock: true,
-    rating: 4.9,
-    reviewsCount: 680,
-    featuredStoreName: 'City Supermarket (Jayanagar)',
-    distanceKm: 1.1,
-    badge: 'Top Rated'
-  },
-  {
-    product: {
-      id: 'prod-kirana-4',
-      title: 'Aashirvaad Select 100% Sharbati Whole Wheat Atta (5kg)',
-      brand: 'Aashirvaad',
-      category: 'Kirana & Groceries',
-      subCategory: 'Flours',
-      description: 'Crafted from golden Sharbati wheat grains from Madhya Pradesh. Delivers extra soft and fluffy rotis.',
-      attributes: { weight: '5kg', type: 'Whole Wheat' },
-      imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
-      tags: ['atta', 'flour', 'wheat', 'grocery']
-    },
-    minPrice: 310,
-    originalMrp: 360,
-    sellerCount: 3,
-    inStock: true,
-    rating: 4.8,
-    reviewsCount: 440,
-    featuredStoreName: 'Sharma General Kirana',
-    distanceKm: 0.5,
-    badge: 'Daily Essential'
-  }
-];
-
 // Curated Apparel Products matching the Boutique Rail
 const BOUTIQUE_APPAREL_PRODUCTS = [
   {
@@ -246,10 +154,9 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  // Combine products with curated Kirana and Apparel
+  // Combine products with curated Boutique Apparel
   const allCombinedProducts = [
     ...products,
-    ...LOCAL_KIRANA_PRODUCTS,
     ...BOUTIQUE_APPAREL_PRODUCTS
   ];
 
@@ -269,9 +176,6 @@ export const HomePage: React.FC = () => {
     }
     if (sel.includes('kitchen') || sel.includes('home')) {
       return cat.includes('kitchen') || cat.includes('home');
-    }
-    if (sel.includes('kirana') || sel.includes('grocery')) {
-      return cat.includes('kirana') || cat.includes('grocery');
     }
     if (sel.includes('apparel') || sel.includes('fashion')) {
       return cat.includes('apparel') || cat.includes('fashion');
@@ -299,7 +203,6 @@ export const HomePage: React.FC = () => {
     { id: 'Computers & Laptops', label: 'Computers & Workspaces', icon: <Laptop className="w-3.5 h-3.5" />, count: 2 },
     { id: 'Mobiles & Accessories', label: 'Mobiles & GaN Chargers', icon: <Smartphone className="w-3.5 h-3.5" />, count: 1 },
     { id: 'Home & Kitchen', label: 'Kitchen & Appliances', icon: <Utensils className="w-3.5 h-3.5" />, count: 2 },
-    { id: 'Kirana & Groceries', label: 'Kirana & Daily Staples', icon: <ShoppingBag className="w-3.5 h-3.5" />, count: 4 },
     { id: 'Boutique Apparel', label: 'Boutique Apparel', icon: <Shirt className="w-3.5 h-3.5" />, count: 3 },
   ];
 
@@ -307,7 +210,7 @@ export const HomePage: React.FC = () => {
     'Noise-cancelling headphones for video meetings under ₹3,000',
     'Compact digital air fryer for apartment kitchen',
     'Wireless ergonomic keyboard for programming',
-    'Daily kirana cooking oil and aged basmati rice'
+    'PowerVolt 65W GaN fast charger 3-port'
   ];
 
   return (
@@ -434,29 +337,29 @@ export const HomePage: React.FC = () => {
             {/* Right Side Dual Promos (4 cols) */}
             <div className="lg:col-span-4 flex flex-col gap-5 justify-between">
               
-              {/* Promo Card 1: Kirana Truth */}
+              {/* Promo Card 1: 65W GaN Fast Tech */}
               <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-sm flex flex-col justify-between flex-1 relative overflow-hidden group hover:border-[#167D73]/50 transition-all">
                 <div className="space-y-2">
                   <span className="bg-amber-100 text-amber-800 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full inline-block">
-                    ⚡ Instant Kirana Truth
+                    ⚡ GaN Tech & Hardware
                   </span>
                   <h3 className="font-extrabold text-lg text-gray-900 leading-snug">
-                    Zero-Markup Daily Essentials
+                    65W Fast Chargers & Audio Tech
                   </h3>
                   <p className="text-xs text-gray-500 font-medium">
-                    Order Aashirvaad Atta, Fortune Oil, and Daawat Basmati directly from your local neighbourhood Kirana at store prices.
+                    Order 3-port GaN fast chargers, Bluetooth studio headphones, and USB condenser mics directly from Sharma Electronics with zero phantom stock.
                   </p>
                 </div>
                 <div className="pt-4 flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-400">4 Stores nearby</span>
+                  <span className="text-xs font-bold text-gray-400">Sharma Electronics · Indiranagar</span>
                   <button
                     onClick={() => {
-                      setSelectedCategory('Kirana & Groceries');
+                      setSelectedCategory('Mobiles & Accessories');
                       document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
                     className="text-xs font-black text-[#167D73] hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    <span>Shop Kirana</span>
+                    <span>Shop Hardware</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -639,90 +542,90 @@ export const HomePage: React.FC = () => {
               </button>
             </div>
 
-            {/* Box 2: 30-Min Kirana Truth */}
+            {/* Box 2: Smart Wearables & Mobile Tech */}
             <div className="bg-white rounded-3xl p-6 border border-gray-200/90 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
               <div>
-                <div className="flex items-center gap-1.5 mb-1 text-[10px] font-black uppercase text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded w-max">
-                  <Zap className="w-3 h-3 fill-emerald-600" />
-                  <span>30-Min Doorstep Delivery</span>
+                <div className="flex items-center gap-1.5 mb-1 text-[10px] font-black uppercase text-amber-700 bg-amber-50 px-2 py-0.5 rounded w-max">
+                  <Zap className="w-3 h-3 fill-amber-500 text-amber-500" />
+                  <span>30-Min Local Walk-in</span>
                 </div>
                 <h3 className="font-black text-lg text-gray-900 leading-snug mb-3">
-                  Kirana & Daily Staples at Store MRP
+                  Smart Wearables & Tech Accessories
                 </h3>
                 <div className="grid grid-cols-2 gap-2.5">
                   <div 
                     onClick={() => {
-                      setSelectedCategory('Kirana & Groceries');
+                      setSelectedCategory('Electronics');
                       document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
                   >
                     <img 
-                      src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=80" 
-                      alt="Basmati" 
+                      src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=300&auto=format&fit=crop&q=80" 
+                      alt="Smartwatch" 
                       className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
                     />
-                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Basmati Rice 5kg</span>
-                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹499 (Save 22%)</span>
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">AMOLED Watch</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹3,499 (Save 22%)</span>
                   </div>
 
                   <div 
                     onClick={() => {
-                      setSelectedCategory('Kirana & Groceries');
+                      setSelectedCategory('Mobiles & Accessories');
                       document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
                   >
                     <img 
-                      src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=80" 
-                      alt="Oil" 
+                      src="https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=300&auto=format&fit=crop&q=80" 
+                      alt="Charger" 
                       className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
                     />
-                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Mustard Oil 1L</span>
-                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹165 (Save 21%)</span>
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">65W GaN Charger</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹1,499 (Save 25%)</span>
                   </div>
 
                   <div 
                     onClick={() => {
-                      setSelectedCategory('Kirana & Groceries');
+                      setSelectedCategory('Electronics');
                       document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
                   >
                     <img 
-                      src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300&auto=format&fit=crop&q=80" 
-                      alt="Tea" 
+                      src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300&auto=format&fit=crop&q=80" 
+                      alt="Studio Mic" 
                       className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
                     />
-                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Tata Tea 1kg</span>
-                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹380 (Save 17%)</span>
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Podcasting Mic</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹3,299 (Save 21%)</span>
                   </div>
 
                   <div 
                     onClick={() => {
-                      setSelectedCategory('Kirana & Groceries');
+                      setSelectedCategory('Home & Kitchen');
                       document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-emerald-400 transition-colors"
+                    className="group/tile cursor-pointer bg-[#F8FAFC] p-2 rounded-xl border border-gray-100 hover:border-amber-400 transition-colors"
                   >
                     <img 
-                      src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=80" 
-                      alt="Atta" 
+                      src="https://images.unsplash.com/photo-1585515320310-259814833e62?w=300&auto=format&fit=crop&q=80" 
+                      alt="Air Fryer" 
                       className="w-full aspect-square object-contain group-hover/tile:scale-105 transition-transform"
                     />
-                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Chakki Atta 10kg</span>
-                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹410 (Save 20%)</span>
+                    <span className="text-[11px] font-bold text-gray-800 line-clamp-1 mt-1 block">Digital Air Fryer</span>
+                    <span className="text-[10px] font-extrabold text-[#388E3C]">₹4,299 (Save 28%)</span>
                   </div>
                 </div>
               </div>
               <button 
                 onClick={() => {
-                  setSelectedCategory('Kirana & Groceries');
+                  setSelectedCategory('Mobiles & Accessories');
                   document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="mt-4 text-xs font-black text-emerald-700 hover:underline flex items-center gap-1 cursor-pointer"
+                className="mt-4 text-xs font-black text-amber-700 hover:underline flex items-center gap-1 cursor-pointer"
               >
-                <span>Shop all daily essentials</span>
+                <span>Shop all mobile & smart gadgets</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -918,11 +821,11 @@ export const HomePage: React.FC = () => {
                   badge: 'Indiranagar Edit'
                 },
                 { 
-                  name: 'Kirana & Staples', 
-                  filterId: 'Kirana & Groceries', 
-                  count: '4 Items', 
-                  img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&auto=format&fit=crop&q=80',
-                  badge: 'Store Prices'
+                  name: 'Smartwatches & Fitness', 
+                  filterId: 'Electronics', 
+                  count: 'PulsePro Series', 
+                  img: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&auto=format&fit=crop&q=80',
+                  badge: 'AMOLED'
                 },
               ].map((cat, idx) => (
                 <div
@@ -1160,7 +1063,7 @@ export const HomePage: React.FC = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-bold text-[#105B55] bg-[#E9F7F3] px-2.5 py-0.5 rounded-full uppercase">
-                        {shop.stores && shop.stores.length > 1 ? `${shop.stores.length} Branches` : 'Independent Kirana'}
+                        {shop.stores && shop.stores.length > 1 ? `${shop.stores.length} Branches` : 'Independent Retail Store'}
                       </span>
                       <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
                         <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -1241,7 +1144,7 @@ export const HomePage: React.FC = () => {
                 <span className="p-2.5 bg-purple-100 text-purple-800 rounded-xl inline-block">
                   <ShieldCheck className="w-5 h-5" />
                 </span>
-                <h4 className="font-extrabold text-sm text-gray-900">Direct Verified Kirana Truth</h4>
+                <h4 className="font-extrabold text-sm text-gray-900">Direct Verified Local Store Truth</h4>
                 <p className="text-xs text-gray-500 font-medium leading-relaxed">
                   Every product price and stock count is directly synced with verified neighborhood retailers with zero phantom listings.
                 </p>

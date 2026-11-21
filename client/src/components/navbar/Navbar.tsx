@@ -122,7 +122,7 @@ export const Navbar: React.FC = () => {
               <option value="All">All Departments</option>
               <option value="Electronics">Electronics & Hardware</option>
               <option value="Audio & Gaming">Audio & Headphones</option>
-              <option value="Kirana & Fresh">30-Min Kirana & Grocery</option>
+              <option value="Mobiles & Accessories">Mobiles & Fast Chargers</option>
               <option value="Fashion">Local Boutique Fashion</option>
               <option value="Home & Kitchen">Home & Kitchen</option>
             </select>
@@ -135,7 +135,7 @@ export const Navbar: React.FC = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search Amazon & Flipkart verified local shops (e.g. Sony ANC, Daawat Basmati, Sharma Electronics)..."
+              placeholder="Search Amazon & Flipkart verified local shops (e.g. Sony ANC, PulsePro Watch, Sharma Electronics)..."
               className="w-full h-full px-4 py-2.5 text-xs sm:text-sm text-gray-900 font-medium placeholder-gray-400 outline-none"
             />
           </div>
@@ -265,11 +265,11 @@ export const Navbar: React.FC = () => {
           </Link>
 
           <Link 
-            to="/products?category=Kirana%20%26%20Fresh"
+            to="/products?category=Electronics"
             className="flex items-center gap-1 hover:text-amber-400 py-1 px-2 rounded transition-colors font-medium text-emerald-300"
           >
             <Zap className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
-            <span>Kirana & Grocery (30-Min)</span>
+            <span>Smartwatches & Fitness</span>
           </Link>
 
           <Link 
