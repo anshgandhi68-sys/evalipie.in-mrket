@@ -1,17 +1,21 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import './DoorHero.css';
 
 export interface DoorHeroProps {
+  onEnter?: () => void;
+  onExploreDemo?: () => void;
   onSelectCategory?: (catKey: string) => void;
   onSearch?: (query: string) => void;
 }
 
-export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }) => {
-  const { activeCity } = useAuth();
-
+export const DoorHero: React.FC<DoorHeroProps> = ({ 
+  onEnter, 
+  onExploreDemo,
+  onSelectCategory,
+  onSearch
+}) => {
   const heroRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
@@ -60,7 +64,7 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
       const st = stage.getBoundingClientRect().top;
       cy = r.top - st + r.height / 2;
       world.style.transformOrigin = `${cx}px ${cy}px`;
-      S = Math.max(window.innerWidth / fw, window.innerHeight / fh) * 1.06;
+      S = Math.max(window.innerWidth / fw, window.innerHeight / fh) * 1.08;
       update();
     };
 
@@ -71,25 +75,25 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
       if (total <= 0) return;
       const p = clamp(-hero.getBoundingClientRect().top / total, 0, 1);
 
-      // 1. Door opening rotation (0 -> 0.32)
-      const a = ease(clamp(p / 0.32, 0, 1));
+      // 1. Door opening rotation (0 -> 0.35)
+      const a = ease(clamp(p / 0.35, 0, 1));
       dl.style.transform = `rotateY(${a * 108}deg)`;
       dr.style.transform = `rotateY(${-a * 108}deg)`;
 
-      // 2. Camera zoom through doorway (0.30 -> 0.92)
-      const e = ease(clamp((p - 0.30) / 0.62, 0, 1));
+      // 2. Camera zoom through doorway (0.30 -> 0.90)
+      const e = ease(clamp((p - 0.30) / 0.60, 0, 1));
       world.style.transform = `translate(${(window.innerWidth / 2 - cx) * e}px, ${(window.innerHeight / 2 - cy) * e}px) scale(${1 + (S - 1) * e})`;
 
-      // 3. Intro text fade & slide up (0 -> 0.16)
+      // 3. Intro text fade & slide up (0 -> 0.18)
       if (intro) {
-        const introOpacity = 1 - clamp(p / 0.16, 0, 1);
+        const introOpacity = 1 - clamp(p / 0.18, 0, 1);
         intro.style.opacity = String(introOpacity);
         intro.style.transform = `translateY(${-p * 80}px)`;
       }
 
       // 4. Hint button fade
       if (hint) {
-        hint.style.opacity = String(1 - clamp(p * 10, 0, 1));
+        hint.style.opacity = String(1 - clamp(p * 8, 0, 1));
       }
 
       // 5. Progress bar
@@ -102,14 +106,20 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
       if (c2) c2.style.marginLeft = `${-p * 100}px`;
       if (c3) c3.style.marginLeft = `${-p * 140}px`;
 
-      // 7. Seamless fade-out into live marketplace page (0.85 -> 1.0)
-      if (p >= 0.85) {
-        const fade = (p - 0.85) / 0.15;
+      // 7. Smooth dissolve into live platform page (0.76 -> 0.96)
+      if (p >= 0.76) {
+        const fade = (p - 0.76) / 0.20;
         stage.style.opacity = String(Math.max(0, 1 - fade));
-        stage.style.pointerEvents = fade > 0.5 ? 'none' : 'auto';
+        stage.style.pointerEvents = fade > 0.4 ? 'none' : 'auto';
+        if (p >= 0.96) {
+          stage.style.visibility = 'hidden';
+        } else {
+          stage.style.visibility = 'visible';
+        }
       } else {
         stage.style.opacity = '1';
         stage.style.pointerEvents = 'auto';
+        stage.style.visibility = 'visible';
       }
     };
 
@@ -123,7 +133,7 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
     
     // Initial measurement
     measure();
-    const timer = setTimeout(measure, 100);
+    const timer = setTimeout(measure, 120);
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
@@ -140,13 +150,14 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
         behavior: 'smooth'
       });
     }
+    onEnter?.();
   };
 
   return (
     <section id="hero" ref={heroRef}>
       <div className="stage" id="top" ref={stageRef}>
         
-        {/* Daytime Sky with Morning Sunshine & Parallax Clouds */}
+        {/* Sky with Sun & Parallax Clouds */}
         <div className="sky">
           <i className="sun" />
           <i className="cloud c1" ref={c1Ref} />
@@ -156,10 +167,10 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
 
         {/* Intro Headline */}
         <div className="intro" id="intro" ref={introRef}>
-          <p className="eyebrow">evalipie.in</p>
+          <p className="eyebrow">evalipie.in • AI Software Evaluation</p>
           <h1>
-            Every Shop.<br />
-            <em>One Intelligent Marketplace.</em>
+            Your project makes claims.<br />
+            <em>Evalipie tries to break them.</em>
           </h1>
         </div>
 
@@ -171,81 +182,62 @@ export const DoorHero: React.FC<DoorHeroProps> = ({ onSelectCategory, onSearch }
             {/* Display Windows */}
             <div 
               className="win l cursor-pointer"
-              title="Click to explore Electronics & Audio"
-              onClick={() => {
-                onSelectCategory?.('AUDIO');
-                document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              title="Requirements vs Reality"
+              onClick={handleOpenDoors}
             >
-              <small>ELECTRONICS</small>
+              <small>CLAIMS AUDIT</small>
             </div>
             <div 
               className="win r cursor-pointer"
-              title="Click to explore Home & Kitchen"
-              onClick={() => {
-                onSelectCategory?.('HOME & KITCHEN');
-                document.getElementById('trend')?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              title="Bug Reproduction Sandbox"
+              onClick={handleOpenDoors}
             >
-              <small>HOME</small>
+              <small>BUG SANDBOX</small>
             </div>
 
-            {/* Frame and Interior Preview */}
+            {/* Frame and Interior Preview with Responsive Container Query Sizing */}
             <div 
               className="frame cursor-pointer" 
               id="frame" 
               ref={frameRef}
-              title="Enter Evalipie Marketplace"
+              title="Enter Evalipie Evaluation Platform"
               onClick={handleOpenDoors}
             >
               <div className="inside">
                 <div className="in-hd">
-                  <b>Evalipie</b>
-                  <span>{activeCity || 'Bengaluru'} ▾</span>
+                  <b>Evalipie AI</b>
+                  <span>Autonomous Evaluation Engine</span>
                 </div>
 
-                {/* Live Bento Preview Cards Visible through Open Doorway */}
-                <div className="in-bento-preview">
-                  <div className="in-bento-card card-mac">
-                    <div className="in-card-txt">
-                      <span className="in-badge">FLAGSHIP</span>
-                      <h4>Macbook m4 pro</h4>
-                      <p>Elevate entertainment</p>
-                    </div>
-                    <img 
-                      src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&auto=format&fit=crop&q=80" 
-                      alt="Macbook" 
-                      className="in-card-img"
-                    />
-                  </div>
+                <div className="in-hero-claims">
+                  <span className="in-badge-eval">10-STAGE PIPELINE</span>
+                  <h2>
+                    Find what your<br />
+                    <em>tests missed.</em>
+                  </h2>
+                  <p>Static checks • Sandbox reproduction • 0–100 quality score</p>
+                </div>
 
-                  <div className="in-bento-card card-airpods">
-                    <img 
-                      src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=200&auto=format&fit=crop&q=80" 
-                      alt="AirPods Max" 
-                      className="in-card-img"
-                    />
-                    <div className="in-card-txt">
-                      <h4>AirPods Max</h4>
-                      <p>Studio fidelity</p>
-                    </div>
+                <div className="in-cards-row">
+                  <div className="in-mini-card">
+                    <span>⚡</span>
+                    <b>Race Conditions</b>
+                    <small>Reproduced</small>
                   </div>
-
-                  <div className="in-bento-card card-shoes">
-                    <div className="in-card-txt">
-                      <h4>Flat 20% Off</h4>
-                      <p>Regular Shoes</p>
-                    </div>
-                    <img 
-                      src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&auto=format&fit=crop&q=80" 
-                      alt="Shoes" 
-                      className="in-card-img"
-                    />
+                  <div className="in-mini-card">
+                    <span>🛡️</span>
+                    <b>IDOR Security</b>
+                    <small>Detected</small>
+                  </div>
+                  <div className="in-mini-card">
+                    <span>📊</span>
+                    <b>Claims Matrix</b>
+                    <small>Verified</small>
                   </div>
                 </div>
 
                 <div className="in-enter-cta">
-                  <span>Enter Storefront ↓</span>
+                  <span>Enter Evaluation Platform ↓</span>
                 </div>
               </div>
 

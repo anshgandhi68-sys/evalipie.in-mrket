@@ -337,3 +337,167 @@ export interface AdminStats {
   lowStockCount: number;
   recentOrders: Order[];
 }
+
+// ══════════════════════════════════════════════════════════════════
+// EVALIPIE SOFTWARE EVALUATION & BUG DISCOVERY PLATFORM TYPES
+// ══════════════════════════════════════════════════════════════════
+
+export type EvaluationSourceType = 'GITHUB' | 'ZIP' | 'DEMO' | 'FILES';
+export type EvaluationStatus = 'QUEUED' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+export type StageStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'SKIPPED';
+export type FindingSeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFO';
+export type FindingCategory = 'LOGIC' | 'SECURITY' | 'PERFORMANCE' | 'EDGE_CASE' | 'SYNTAX' | 'ARCHITECTURE';
+export type VerificationStatus = 'REPRODUCED' | 'LIKELY' | 'SUGGESTION';
+export type RequirementStatus = 'SATISFIED' | 'PARTIAL' | 'NOT_IMPLEMENTED' | 'CONTRADICTED';
+
+export interface EvaluationStage {
+  id: number;
+  name: string;
+  code: string;
+  status: StageStatus;
+  startedAt?: string;
+  completedAt?: string;
+  durationMs?: number;
+  message?: string;
+}
+
+export interface ScoreBreakdown {
+  requirements: number; // Max 25
+  reliability: number;   // Max 25
+  security: number;      // Max 20
+  tests: number;         // Max 15
+  architecture: number;  // Max 10
+  dependencies: number;  // Max 5
+  total: number;         // 0 - 100
+}
+
+export interface EvaluationProject {
+  id: string;
+  userId?: string;
+  name: string;
+  description?: string;
+  sourceType: EvaluationSourceType;
+  repoUrl?: string;
+  branch?: string;
+  commitHash?: string;
+  createdAt: string;
+  updatedAt: string;
+  lastEvaluationId?: string;
+  lastScore?: number;
+}
+
+export interface RequirementEvidence {
+  filePath: string;
+  lineNumbers?: string;
+  snippet?: string;
+  symbolName?: string;
+}
+
+export interface RequirementMatrixItem {
+  id: string;
+  evaluationId: string;
+  requirementNumber: number;
+  requirementText: string;
+  status: RequirementStatus;
+  verdict: string;
+  evidence: RequirementEvidence[];
+  gapAnalysis?: string;
+}
+
+export interface EvaluationFinding {
+  id: string;
+  evaluationId: string;
+  title: string;
+  summary: string;
+  severity: FindingSeverity;
+  category: FindingCategory;
+  verificationStatus: VerificationStatus;
+  filePath: string;
+  lineNumbers: string;
+  failureMechanism: string;
+  reproductionSteps: string[];
+  reproductionCode?: string;
+  sandboxOutput?: string;
+  recommendedFix: string;
+  codeDiff?: string;
+  createdAt: string;
+}
+
+export interface TestRunRecord {
+  id: string;
+  evaluationId: string;
+  testSuiteName: string;
+  testName: string;
+  status: 'PASSED' | 'FAILED' | 'SKIPPED';
+  durationMs: number;
+  errorMessage?: string;
+  stackTrace?: string;
+}
+
+export interface EvaluationEventLog {
+  id: string;
+  evaluationId: string;
+  stageId: number;
+  stageName: string;
+  timestamp: string;
+  level: 'INFO' | 'WARN' | 'ERROR' | 'SUCCESS';
+  currentFile?: string;
+  message: string;
+}
+
+export interface RepoMetadata {
+  filesCount: number;
+  linesOfCode: number;
+  languages: Record<string, number>;
+  primaryLanguage: string;
+  framework?: string;
+  buildTool?: string;
+  packageManager?: string;
+  dependenciesCount: number;
+  vulnerableDependenciesCount: number;
+}
+
+export interface EvaluationRun {
+  id: string;
+  projectId: string;
+  projectName: string;
+  sourceType: EvaluationSourceType;
+  repoUrl?: string;
+  branch?: string;
+  problemStatement?: string;
+  status: EvaluationStatus;
+  currentStageId: number;
+  stages: EvaluationStage[];
+  score: number;
+  scoreBreakdown: ScoreBreakdown;
+  executiveSummary: string;
+  repoMetadata: RepoMetadata;
+  totalRequirements: number;
+  satisfiedRequirements: number;
+  totalFindings: number;
+  criticalCount: number;
+  highCount: number;
+  mediumCount: number;
+  lowCount: number;
+  reproducedCount: number;
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  startedAt: string;
+  completedAt?: string;
+  durationMs?: number;
+  error?: string;
+}
+
+export interface StartEvaluationRequest {
+  sourceType: EvaluationSourceType;
+  repoUrl?: string;
+  branch?: string;
+  projectName?: string;
+  problemStatement?: string;
+  analysisDepth?: 'QUICK' | 'STANDARD' | 'DEEP';
+  runTests?: boolean;
+  attemptReproduction?: boolean;
+  zipBase64?: string;
+  fileName?: string;
+}

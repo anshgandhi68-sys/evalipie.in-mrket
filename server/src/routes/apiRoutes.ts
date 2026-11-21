@@ -15,12 +15,14 @@ import { flagshipCatalogueController } from '../controllers/flagshipCatalogueCon
 import { adminFlagshipController } from '../controllers/adminFlagshipController.js';
 import { aiRouter } from './aiRoutes.js';
 import voiceRouter from './voiceRoutes.js';
+import { evaluationRouter } from './evaluationRoutes.js';
 
 export const apiRouter = Router();
 
-// AI Intelligence Engine Routes
+// AI Intelligence Engine & Software Evaluation Platform Routes
 apiRouter.use('/ai', aiRouter);
 apiRouter.use('/voice', voiceRouter);
+apiRouter.use(evaluationRouter);
 
 // ── 1. Flagship 180-Product Catalogue & 10-Category Taxonomy ───────────
 apiRouter.get('/catalog/taxonomy', (req, res) => flagshipCatalogueController.getTaxonomy(req, res));
