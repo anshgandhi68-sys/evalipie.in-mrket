@@ -125,25 +125,26 @@ export const WishlistPage: React.FC = () => {
             </Link>
           </div>
         ) : (
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="mt-8 product-grid">
             {wishlistItems.map((product) => (
               <div
                 key={product.id}
-                className="group bg-white rounded-xl border border-gray-200 hover:border-gray-300 shadow-2xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
+                className="product-card group relative overflow-hidden flex flex-col justify-between"
               >
                 <div>
                   {/* Image */}
                   <div 
                     onClick={() => navigate(`/products/${product.id}`)}
-                    className="relative aspect-square bg-[#F7F7F8] overflow-hidden cursor-pointer"
+                    className="product-image-container relative cursor-pointer"
                   >
                     <img
                       src={product.imageUrl}
                       alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="product-image"
+                      loading="lazy"
                     />
                     {product.discountPercent > 0 && (
-                      <span className="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                      <span className="absolute top-2.5 left-2.5 bg-[#105B55] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
                         {product.discountPercent}% OFF
                       </span>
                     )}
@@ -153,7 +154,7 @@ export const WishlistPage: React.FC = () => {
                         e.stopPropagation();
                         handleRemove(product.id);
                       }}
-                      className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-red-500 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
+                      className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/95 hover:bg-white text-red-500 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                       title="Remove from wishlist"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -161,7 +162,7 @@ export const WishlistPage: React.FC = () => {
                   </div>
 
                   {/* Info */}
-                  <div className="p-4">
+                  <div className="p-4 sm:p-5">
                     <span className="text-[10px] uppercase font-mono font-bold text-[#105B55] tracking-wider block mb-1">
                       {product.brand}
                     </span>
@@ -199,11 +200,11 @@ export const WishlistPage: React.FC = () => {
                 </div>
 
                 {/* Move to Cart Action */}
-                <div className="p-4 pt-0">
+                <div className="p-4 sm:p-5 pt-0">
                   <button
                     type="button"
                     onClick={() => handleMoveToCart(product)}
-                    className="w-full py-2 px-3 rounded-lg bg-[#111827] hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#105B55] hover:bg-[#0c4742] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <ShoppingBag className="w-3.5 h-3.5" />
                     Move to Cart

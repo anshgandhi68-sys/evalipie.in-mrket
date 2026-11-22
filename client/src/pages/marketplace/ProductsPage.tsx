@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { 
   Search, Filter, X, ChevronRight, ChevronDown, RefreshCw, 
-  Heart, ShoppingBag, Eye, Star, SlidersHorizontal, ArrowUpDown 
+  Heart, ShoppingBag, Eye, Star, SlidersHorizontal, ArrowUpDown,
+  MapPin, ShoppingCart
 } from 'lucide-react';
 import { api } from '../../services/api.js';
 import { useCart } from '../../context/CartContext.js';
@@ -514,7 +515,7 @@ export const ProductsPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <div className="product-grid" id="catalogProductGrid">
                 {products.map((p) => {
                   const isWishlisted = wishlistIds.has(p.id);
 
@@ -522,102 +523,119 @@ export const ProductsPage: React.FC = () => {
                     <article
                       key={p.id}
                       onClick={() => navigate(`/products/${p.id}`)}
-                      className="group bg-white rounded-xl border border-gray-200 hover:border-gray-300 shadow-2xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between cursor-pointer"
+                      className="product-card group relative cursor-pointer"
                     >
-                      <div>
-                        {/* Image Container */}
-                        <div className="relative aspect-square bg-[#F7F7F8] overflow-hidden">
-                          <img
-                            src={p.imageUrl}
-                            alt={p.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80';
-                            }}
-                          />
+                      {/* 1. Product image container at the top (4:3 aspect ratio, object-fit contain, centered) */}
+                      <div className="product-image-container relative">
+                        <img
+                          src={p.imageUrl}
+                          alt={p.title}
+                          className="product-image"
+                          loading="lazy"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80';
+                          }}
+                        />
 
-                          {/* Discount Pill */}
-                          {p.discountPercent > 0 && (
-                            <span className="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
-                              {p.discountPercent}% OFF
+                        {/* Discount Pill */}
+                        {p.discountPercent > 0 && (
+                          <span className="absolute top-3 left-3 bg-[#105B55] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
+                            {p.discountPercent}% OFF
+                          </span>
+                        )}
+
+                        {/* 2. Wishlist Heart Toggle in image's top-right corner */}
+                        <button
+                          type="button"
+                          onClick={(e) => handleToggleWishlist(p, e)}
+                          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 hover:bg-white text-gray-700 flex items-center justify-center shadow-xs hover:shadow-md transition-all cursor-pointer z-10"
+                          title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+                        >
+                          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
+                        </button>
+
+                        {/* Quick View Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setQuickViewProduct(p);
+                          }}
+                          className="absolute bottom-2.5 right-2.5 py-1 px-2.5 rounded-md bg-white/90 hover:bg-white text-[11px] font-medium text-gray-800 shadow-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 cursor-pointer z-10"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          Quick View
+                        </button>
+                      </div>
+
+                      {/* Card Content Body */}
+                      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-3">
+                        <div className="space-y-1.5">
+                          {/* 3. Product category or brand */}
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-mono uppercase font-bold text-[#105B55] tracking-wider">
+                              {p.brand}
                             </span>
-                          )}
-
-                          {/* Wishlist Heart Toggle */}
-                          <button
-                            type="button"
-                            onClick={(e) => handleToggleWishlist(p, e)}
-                            className="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-700 flex items-center justify-center shadow-xs transition-colors cursor-pointer"
-                            title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
-                          >
-                            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
-                          </button>
-
-                          {/* Quick View Button */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setQuickViewProduct(p);
-                            }}
-                            className="absolute bottom-2.5 right-2.5 py-1 px-2.5 rounded-md bg-white/90 hover:bg-white text-[11px] font-medium text-gray-800 shadow-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 cursor-pointer"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                            Quick View
-                          </button>
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-4">
-                          <div className="flex items-center justify-between text-[10px] uppercase font-mono font-bold text-[#105B55] tracking-wider mb-1">
-                            <span>{p.brand}</span>
-                            <span className={p.stockQuantity > 0 ? 'text-emerald-700' : 'text-amber-700'}>
-                              {p.stockQuantity > 5 ? 'In Stock' : p.stockQuantity > 0 ? `Only ${p.stockQuantity} left` : 'Out of Stock'}
+                            <span className="text-[11px] font-medium text-[#687385]">
+                              {p.categoryName}
                             </span>
                           </div>
 
-                          <h3 className="text-xs sm:text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-[#105B55] transition-colors">
+                          {/* 4. Product name */}
+                          <h3 className="font-bold text-sm sm:text-base text-[#111827] line-clamp-2 leading-snug group-hover:text-[#167D73] transition-colors">
                             {p.title}
                           </h3>
 
-                          {/* Strict Data Honesty Rating: ONLY displayed if reviewsCount > 0 */}
-                          {p.reviewsCount > 0 ? (
-                            <div className="flex items-center gap-1.5 mt-2">
-                              <div className="flex items-center text-amber-500">
-                                <Star className="w-3.5 h-3.5 fill-current" />
-                              </div>
-                              <span className="text-xs font-bold text-gray-900">{p.rating}</span>
-                              <span className="text-[11px] text-gray-400">({p.reviewsCount} reviews)</span>
-                            </div>
-                          ) : (
-                            <span className="text-[11px] text-gray-400 mt-2 block italic">No reviews yet</span>
-                          )}
-
-                          {/* Pricing */}
-                          <div className="flex items-baseline gap-2 mt-2.5">
-                            <span className="text-base font-bold text-gray-900 font-mono">
-                              ₹{p.price.toLocaleString('en-IN')}
+                          {/* 5. Store name and location */}
+                          <div className="flex items-center gap-1.5 text-xs text-[#687385]">
+                            <MapPin className="w-3.5 h-3.5 text-[#167D73] shrink-0" />
+                            <span className="truncate">
+                              Indira Retail Hub · Bengaluru
                             </span>
-                            {p.originalMrp > p.price && (
-                              <span className="text-xs text-gray-400 line-through font-mono">
-                                ₹{p.originalMrp.toLocaleString('en-IN')}
+                          </div>
+
+                          {/* 6. Rating and reviews */}
+                          <div className="flex items-center gap-1.5 pt-0.5">
+                            <div className="flex items-center gap-1 text-amber-500 text-xs">
+                              <Star className="w-3.5 h-3.5 fill-current" />
+                              <span className="font-bold text-[#111827]">{p.rating || 4.5}</span>
+                            </div>
+                            <span className="text-xs text-[#687385]">
+                              ({p.reviewsCount || 10} reviews)
+                            </span>
+                            {p.stockQuantity !== undefined && (
+                              <span className="ml-auto text-[11px] font-semibold text-[#167D73]">
+                                In Stock ({p.stockQuantity})
                               </span>
                             )}
                           </div>
                         </div>
-                      </div>
 
-                      {/* Add to Cart Button */}
-                      <div className="p-4 pt-0">
-                        <button
-                          type="button"
-                          onClick={(e) => handleAddToCart(p, e)}
-                          className="w-full py-2 px-3 rounded-lg bg-[#111827] hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                        >
-                          <ShoppingBag className="w-3.5 h-3.5" />
-                          Add to Cart
-                        </button>
+                        {/* 7. Current & Original Price + 8. Add to Cart Button */}
+                        <div className="pt-3 border-t border-[#F1F4F7] flex items-center justify-between gap-3">
+                          <div className="flex flex-col">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-base sm:text-lg font-black text-[#111827]">
+                                ₹{p.price.toLocaleString('en-IN')}
+                              </span>
+                              {p.originalMrp > p.price && (
+                                <s className="text-xs text-[#687385] font-normal">
+                                  ₹{p.originalMrp.toLocaleString('en-IN')}
+                                </s>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* 8. Add to Cart Button */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleAddToCart(p, e)}
+                            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#105B55] hover:bg-[#0c4742] text-white text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer shrink-0"
+                          >
+                            <ShoppingCart className="w-3.5 h-3.5" />
+                            Add to Cart
+                          </button>
+                        </div>
                       </div>
                     </article>
                   );

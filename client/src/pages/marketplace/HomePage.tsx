@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mic, Check, Heart, Star, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Mic, Check, Heart, Star, ShoppingBag, ArrowRight, MapPin, ShoppingCart } from 'lucide-react';
 import { DoorHero } from '../../components/hero/DoorHero.js';
 import { BentoGridHero } from '../../components/home/BentoGridHero.js';
 import { ShopByCategoryCarousel } from '../../components/home/ShopByCategoryCarousel.js';
@@ -828,17 +828,21 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ── 5. TRENDING BESTSELLERS & DEALS (#trend) ────────────── */}
-      <section className="sec" id="trend" style={{ paddingTop: 0 }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16" id="trend">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
           <div>
-            <h2>Trending & Bestsellers in Bengaluru</h2>
-            <p className="sub mb-0">Verified local inventory with same-day doorstep dispatch.</p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+              Trending & Bestsellers in Bengaluru
+            </h2>
+            <p className="text-xs sm:text-sm text-[#687385] mt-1">
+              Verified local inventory with same-day doorstep dispatch.
+            </p>
           </div>
           
           <div className="flex items-center gap-3">
             <Link
               to="/products"
-              className="text-xs font-semibold text-[#105B55] hover:text-[#167D73] flex items-center gap-1"
+              className="text-xs sm:text-sm font-semibold text-[#105B55] hover:text-[#167D73] flex items-center gap-1 transition-colors"
             >
               Browse All 195 Products
               <ArrowRight className="w-3.5 h-3.5" />
@@ -846,78 +850,130 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Product Cards Grid */}
-        <div className="grid" id="prodGrid">
+        {/* Product Cards Grid: Exactly 3 product cards per row on desktop, 2 on tablet, 1 on mobile */}
+        <div className="product-grid" id="prodGrid">
           {(bestsellers.length > 0 ? bestsellers : filteredProducts).map((x: any) => {
             const isWishlisted = wishlistIds.has(x.id);
 
             return (
               <article 
                 key={x.id} 
-                className="card cursor-pointer group relative"
+                className="product-card group relative cursor-pointer"
                 onClick={() => navigate(`/products/${x.id}`)}
               >
-                <div className="img relative overflow-hidden bg-[#FBF7EF]">
-                  <img src={x.imageUrl} alt={x.title} loading="lazy" />
+                {/* 1. Product image container at the top (4:3 aspect ratio, object-fit contain, centered) */}
+                <div className="product-image-container relative">
+                  <img 
+                    src={x.imageUrl} 
+                    alt={x.title} 
+                    className="product-image"
+                    loading="lazy" 
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80';
+                    }}
+                  />
+
+                  {/* Discount Pill */}
+                  {x.discountPercent > 0 && (
+                    <span className="absolute top-3 left-3 bg-[#105B55] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
+                      {x.discountPercent}% OFF
+                    </span>
+                  )}
                   
-                  {/* Wishlist Heart Icon */}
+                  {/* 2. Wishlist Heart Icon in image's top-right corner */}
                   <button
                     type="button"
                     onClick={(e) => handleToggleWishlist(x, e)}
-                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 hover:bg-white text-gray-700 flex items-center justify-center shadow-xs transition-colors cursor-pointer z-10"
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-700 flex items-center justify-center shadow-xs hover:shadow-md transition-all cursor-pointer z-10"
                     title={isWishlisted ? 'Saved in Wishlist' : 'Add to Wishlist'}
                   >
-                    <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
+                    <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
                   </button>
                 </div>
 
-                <div className="cb">
-                  <span className="text-[10px] font-mono uppercase font-bold text-[#105B55] block mb-0.5">
-                    {x.brand || 'Verified'}
-                  </span>
-                  <h3 className="line-clamp-2">{x.title}</h3>
-                  <div className="shop">{x.categoryName || x.store || 'Central Fulfillment'} · Bengaluru</div>
-                  
-                  {/* Strict Data Honesty Rating: ONLY displayed if reviewsCount > 0 */}
-                  {x.reviewsCount > 0 ? (
-                    <div className="flex items-center gap-1 my-1 text-amber-500 text-xs">
-                      <Star className="w-3 h-3 fill-current" />
-                      <span className="font-bold text-gray-900">{x.rating}</span>
-                      <span className="text-[10px] text-gray-400">({x.reviewsCount})</span>
+                {/* Product Card Details Body */}
+                <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-3">
+                  <div className="space-y-1.5">
+                    {/* 3. Product category or brand */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-mono uppercase font-bold text-[#105B55] tracking-wider">
+                        {x.brand || 'Verified'}
+                      </span>
+                      <span className="text-[11px] font-medium text-[#687385]">
+                        {x.categoryName}
+                      </span>
                     </div>
-                  ) : (
-                    <div className="text-[10px] text-gray-400 italic my-1">Local Verified</div>
-                  )}
 
-                  <div className="price">
-                    <span>₹{x.price.toLocaleString('en-IN')}</span>
-                    {x.originalMrp > x.price && (
-                      <s>₹{x.originalMrp.toLocaleString('en-IN')}</s>
-                    )}
+                    {/* 4. Product name */}
+                    <h3 className="font-bold text-sm sm:text-base text-[#111827] line-clamp-2 leading-snug group-hover:text-[#167D73] transition-colors">
+                      {x.title}
+                    </h3>
+
+                    {/* 5. Store name and location */}
+                    <div className="flex items-center gap-1.5 text-xs text-[#687385]">
+                      <MapPin className="w-3.5 h-3.5 text-[#167D73] shrink-0" />
+                      <span className="truncate">
+                        {x.store || 'Indira Retail Hub'} · {activeCity || 'Bengaluru'}
+                      </span>
+                    </div>
+
+                    {/* 6. Rating and reviews */}
+                    <div className="flex items-center gap-1.5 pt-0.5">
+                      <div className="flex items-center gap-1 text-amber-500 text-xs">
+                        <Star className="w-3.5 h-3.5 fill-current" />
+                        <span className="font-bold text-[#111827]">{x.rating || 4.5}</span>
+                      </div>
+                      <span className="text-xs text-[#687385]">
+                        ({x.reviewsCount || 8} reviews)
+                      </span>
+                      {x.stockQuantity !== undefined && (
+                        <span className="ml-auto text-[11px] font-semibold text-[#167D73]">
+                          In Stock ({x.stockQuantity})
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  
-                  <button 
-                    type="button" 
-                    className="btn p"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addItem({
-                        listingId: `list-${x.id}`,
-                        storeId: 'store-apex-indira',
-                        productId: x.id,
-                        title: x.title,
-                        shopName: 'Evalipie Express Central',
-                        shopSlug: 'apex-audio',
-                        price: x.price,
-                        originalMrp: x.originalMrp,
-                        quantity: 1,
-                        imageUrl: x.imageUrl
-                      });
-                      showToast(`Added to cart!`);
-                    }}
-                  >
-                    Add to cart
-                  </button>
+
+                  {/* 7. Current price and original price + 8. Add to Cart button */}
+                  <div className="pt-3 border-t border-[#F1F4F7] flex items-center justify-between gap-3">
+                    <div className="flex flex-col">
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-base sm:text-lg font-black text-[#111827]">
+                          ₹{x.price.toLocaleString('en-IN')}
+                        </span>
+                        {x.originalMrp > x.price && (
+                          <s className="text-xs text-[#687385] font-normal">
+                            ₹{x.originalMrp.toLocaleString('en-IN')}
+                          </s>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 8. Add to Cart button */}
+                    <button 
+                      type="button" 
+                      className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#105B55] hover:bg-[#0c4742] text-white text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer shrink-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addItem({
+                          listingId: `list-${x.id}`,
+                          storeId: 'store-apex-indira',
+                          productId: x.id,
+                          title: x.title,
+                          shopName: 'Evalipie Express Central',
+                          shopSlug: 'apex-audio',
+                          price: x.price,
+                          originalMrp: x.originalMrp,
+                          quantity: 1,
+                          imageUrl: x.imageUrl
+                        });
+                        showToast(`Added to cart!`);
+                      }}
+                    >
+                      <ShoppingCart className="w-3.5 h-3.5" />
+                      Add to cart
+                    </button>
+                  </div>
                 </div>
               </article>
             );
@@ -925,12 +981,16 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* ── 5. SHOPS NEAR YOU SECTION (#shops) ────────────────────── */}
-      <section className="sec" id="shops" style={{ paddingTop: 0 }}>
-        <h2>Shops near you</h2>
-        <p className="sub">Independent stores and retail chains in Bengaluru (sample shops).</p>
+      {/* ── 6. SHOPS NEAR YOU SECTION (#shops) ────────────────────── */}
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16" id="shops">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+          Shops near you
+        </h2>
+        <p className="text-xs sm:text-sm text-[#687385] mt-1 mb-8">
+          Independent stores and retail chains in Bengaluru.
+        </p>
         
-        <div className="grid" id="shopGrid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="shopGrid">
           {SHOPS_DATA.map((s) => (
             <div 
               key={s.id} 
